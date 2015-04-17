@@ -819,6 +819,10 @@ public class BookService {
 		htmlFile.mkdirs();
 		File constractFile = new File(constract);
 		constractFile.mkdirs();
+
+		new File(cover.replace("MOBI","电子书封面")).mkdirs();
+		new File(cover.replace("MOBI", "样章")).mkdirs();
+
 	}
 
 	/**
