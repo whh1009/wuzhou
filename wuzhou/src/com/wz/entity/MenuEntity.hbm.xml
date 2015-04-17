@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	
+	<class name="MenuEntity" table="wz_menu">
+		<id name="menu_id" type="java.lang.Integer" column="menu_id">
+			<generator class="native" />
+		</id>
+		<property name="menu_name" type="java.lang.String" column="menu_name" />
+		<property name="menu_sort" type="java.lang.Float" column="menu_sort" />
+		<property name="menu_action" type="java.lang.String" column="menu_action" />
+		<property name="menu_leval" type="java.lang.Integer" column="menu_leval" />
+		<property name="menu_pid" type="java.lang.Integer" column="menu_pid" />
+		<property name="menu_desc" type="java.lang.String" column="menu_desc" />
+		<property name="menu_flag" type="java.lang.String" column="menu_flag" />
+	</class>
+</hibernate-mapping>

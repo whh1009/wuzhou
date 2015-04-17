@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	
+	<class name="BookEntity" table="wz_book">
+		<id name="book_id" type="java.lang.Integer" column="book_id">
+			<generator class="native" />
+		</id>
+		<property name="book_type" type="java.lang.Integer" column="book_type"></property>
+		<property name="book_serial_number" type="java.lang.String" column="book_serial_number"></property>
+		<property name="book_name_cn" type="java.lang.String" column="book_name_cn" />
+		<property name="book_name_english" type="java.lang.String" column="book_name_english" />
+		<property name="book_name_foreign" type="java.lang.String" column="book_name_foreign" />
+		<property name="book_name_fa" type="java.lang.String" column="book_name_fa" />
+		<property name="book_name_xi" type="java.lang.String" column="book_name_xi" />
+		<property name="book_name_e" type="java.lang.String" column="book_name_e" />
+		<property name="book_author" type="java.lang.String" column="book_author" />
+		<property name="book_author_english" type="java.lang.String" column="book_author_english" />
+		<property name="book_author_foreign" type="java.lang.String" column="book_author_foreign" />
+		<property name="book_author_fa" type="java.lang.String" column="book_author_fa" />
+		<property name="book_author_xi" type="java.lang.String" column="book_author_xi" />
+		<property name="book_author_e" type="java.lang.String" column="book_author_e" />
+		
+		<property name="book_editor" type="java.lang.String" column="book_editor" />
+		
+		<property name="book_translator" type="java.lang.String" column="book_translator" />
+		<property name="book_translator_english" type="java.lang.String" column="book_translator_english" />
+		<property name="book_translator_foreign" type="java.lang.String" column="book_translator_foreign" />
+		<property name="book_translator_fa" type="java.lang.String" column="book_translator_fa" />
+		<property name="book_translator_xi" type="java.lang.String" column="book_translator_xi" />
+		<property name="book_translator_e" type="java.lang.String" column="book_translator_e" />
+		<property name="book_cooperate_press" type="java.lang.String" column="book_cooperate_press" />
+		<property name="book_isbn" type="java.lang.String" column="book_isbn" />
+		<property name="book_clcc" type="java.lang.String" column="book_clcc" />
+		<property name="book_alcc" type="java.lang.String" column="book_alcc" />
+		<property name="book_category1" type="java.lang.String" column="book_category1" />
+		<property name="book_category2" type="java.lang.String" column="book_category2" />
+		<property name="book_category3" type="java.lang.String" column="book_category3" />
+		<property name="book_series_cn" type="java.lang.String" column="book_series_cn" />
+		<property name="book_series_english" type="java.lang.String" column="book_series_english" />
+		<property name="book_series_foreign" type="java.lang.String" column="book_series_foreign" />
+		<property name="book_series_fa" type="java.lang.String" column="book_series_fa" />
+		<property name="book_series_xi" type="java.lang.String" column="book_series_xi" />
+		<property name="book_series_e" type="java.lang.String" column="book_series_e" />
+		<property name="book_publish_count" type="java.lang.Integer" column="book_publish_count" />
+		<property name="book_print_count" type="java.lang.Integer" column="book_print_count" />
+		<property name="book_copyright_word_count" type="java.lang.Float" column="book_copyright_word_count" />
+		<property name="book_size" type="java.lang.String" column="book_size" />
+		<property name="book_kaiben" type="java.lang.String" column="book_kaiben" />
+		<property name="book_heigh" type="java.lang.String" column="book_heigh" />
+		<property name="book_language" type="java.lang.String" column="book_language" />
+		<property name="book_bilingual" type="java.lang.String" column="book_bilingual" />
+		<property name="book_publish_time" type="java.lang.String" column="book_publish_time" />
+		<property name="book_copyright_expires" type="java.lang.String" column="book_copyright_expires" />
+		<property name="book_image_count" type="java.lang.Integer" column="book_image_count" />
+		<property name="book_image_spread" type="java.lang.String" column="book_image_spread" />
+		<property name="book_table_count" type="java.lang.Integer" column="book_table_count" />
+		<property name="book_disk_type" type="java.lang.String" column="book_disk_type" />
+		<property name="book_disk_send" type="java.lang.String" column="book_disk_send" />
+		<property name="book_paper_price" type="java.lang.Float" column="book_paper_price" />
+		<property name="book_paper_dollar_price" type="java.lang.Float" column="book_paper_dollar_price" />
+		<property name="book_ebook_price" type="java.lang.Float" column="book_ebook_price" />
+		<property name="book_ebook_dollar_price" type="java.lang.Float" column="book_ebook_dollar_price" />
+		<property name="book_cover_paper" type="java.lang.String" column="book_cover_paper" />
+		<property name="book_cover_publish_color" type="java.lang.String" column="book_cover_publish_color" />
+		<property name="book_image_paper" type="java.lang.String" column="book_image_paper" />
+		<property name="book_image_publish_color" type="java.lang.String" column="book_image_publish_color" />
+		<property name="book_neiwen_paper" type="java.lang.String" column="book_neiwen_paper" />
+		<property name="book_neiwen_publish_color" type="java.lang.String" column="book_neiwen_publish_color" />
+		<property name="book_zhuangzhen_class" type="java.lang.String" column="book_zhuangzhen_class" />
+		<property name="book_zhuangzhen_type" type="java.lang.String" column="book_zhuangzhen_type" />
+		<!-- <property name="book_jiaoding" type="java.lang.String" column="book_jiaoding" /> -->
+		<!-- <property name="book_qimading" type="java.lang.String" column="book_qimading" /> -->
+		<!-- <property name="book_other" type="java.lang.String" column="book_other" /> -->
+		<property name="book_end_fumo" type="java.lang.String" column="book_end_fumo" />
+		<property name="book_end_uv" type="java.lang.String" column="book_end_uv" />
+		<property name="book_end_lekou" type="java.lang.String" column="book_end_lekou" />
+		<!-- <property name="book_end_mm" type="java.lang.String" column="book_end_mm" /> -->
+		<property name="book_end_sufeng" type="java.lang.String" column="book_end_sufeng" />
+		<property name="book_end_other" type="java.lang.String" column="book_end_other" />
+		<property name="book_design_cover_company" type="java.lang.String" column="book_design_cover_company" />
+		<property name="book_design_style_company" type="java.lang.String" column="book_design_style_company" />
+		<property name="book_neiwen_page_count" type="java.lang.Integer" column="book_neiwen_page_count" />
+		<property name="book_image_page_count" type="java.lang.Integer" column="book_image_page_count" />
+		<property name="book_publish_page_count" type="java.lang.Float" column="book_publish_page_count" />
+		<!-- <property name="book_evaluate_weight" type="java.lang.Float" column="book_evaluate_weight" /> -->
+		<property name="book_weight" type="java.lang.Float" column="book_weight" />
+		<property name="book_publish_explain" type="java.lang.String" column="book_publish_explain" />
+		<property name="book_news_publish_count" type="java.lang.Integer" column="book_news_publish_count" />
+		<property name="book_news_distribute_count" type="java.lang.Integer" column="book_news_distribute_count" />
+		<property name="book_news_count" type="java.lang.Integer" column="book_news_count" />
+		<property name="book_news_shangjiao_count" type="java.lang.Integer" column="book_news_shangjiao_count" />
+		<property name="book_keyword_cn" type="java.lang.String" column="book_keyword_cn" />
+		<property name="book_keyword_english" type="java.lang.String" column="book_keyword_english" />
+		<property name="book_keyword_foreign" type="java.lang.String" column="book_keyword_foreign" />
+		<property name="book_keyword_fa" type="java.lang.String" column="book_keyword_fa" />
+		<property name="book_keyword_xi" type="java.lang.String" column="book_keyword_xi" />
+		<property name="book_keyword_e" type="java.lang.String" column="book_keyword_e" />
+		<property name="book_paper_neiwen_style_file" type="java.lang.String" column="book_paper_neiwen_style_file" />
+		<property name="book_neiwen_serverpath" type="java.lang.String" column="book_neiwen_serverpath" />
+		<!-- <property name="book_neiwen_localpath" type="java.lang.String" column="book_neiwen_localpath" /> -->
+		<property name="book_paper_cover_style_file" type="java.lang.String" column="book_paper_cover_style_file" />
+		<property name="book_cover_serverpath" type="java.lang.String" column="book_cover_serverpath" />
+		<!-- <property name="book_cover_localpath" type="java.lang.String" column="book_cover_localpath" /> -->
+		<!-- <property name="book_paper_image" type="java.lang.String" column="book_paper_image" /> -->
+		<property name="book_paper_font" type="java.lang.String" column="book_paper_font" />
+		<property name="book_font_serverpath" type="java.lang.String" column="book_font_serverpath" />
+		<!-- <property name="book_font_localpath" type="java.lang.String" column="book_font_localpath" /> -->
+		<property name="book_paper_word" type="java.lang.String" column="book_paper_word" />
+		<property name="book_word_serverpath" type="java.lang.String" column="book_word_serverpath" />
+		<!-- <property name="book_word_localpath" type="java.lang.String" column="book_word_localpath" /> -->
+		<property name="book_paper_publish_pdf" type="java.lang.String" column="book_paper_publish_pdf" />
+		<property name="book_pdf_publish_serverpath" type="java.lang.String" column="book_pdf_publish_serverpath" />
+		<!-- <property name="book_pdf_publish_localpath" type="java.lang.String" column="book_pdf_publish_localpath" /> -->
+		<property name="book_e_xml" type="java.lang.String" column="book_e_xml" />
+		<property name="book_xml_serverpath" type="java.lang.String" column="book_xml_serverpath" />
+		<!-- <property name="book_xml_localpath" type="java.lang.String" column="book_xml_localpath" /> -->
+		<property name="book_e_epub" type="java.lang.String" column="book_e_epub" />
+		<property name="book_epub_serverpath" type="java.lang.String" column="book_epub_serverpath" />
+		<!-- <property name="book_epub_localpath" type="java.lang.String" column="book_epub_localpath" /> -->
+		<property name="book_e_mobi" type="java.lang.String" column="book_e_mobi" />
+		<property name="book_mobi_serverpath" type="java.lang.String" column="book_mobi_serverpath" />
+		<!-- <property name="book_mobi_localpath" type="java.lang.String" column="book_mobi_localpath" /> -->
+		<property name="book_e_pdf" type="java.lang.String" column="book_e_pdf" />
+		<property name="book_pdf_read_serverpath" type="java.lang.String" column="book_pdf_read_serverpath" />
+		<!-- <property name="book_pdf_read_localpath" type="java.lang.String" column="book_pdf_read_localpath" /> -->
+		<property name="book_e_html" type="java.lang.String" column="book_e_html" />
+		<property name="book_html_serverpath" type="java.lang.String" column="book_html_serverpath" />
+		<!-- <property name="book_html_localpath" type="java.lang.String" column="book_html_localpath" /> -->
+		
+		<property name="book_contract" type="java.lang.String" column="book_contract" />
+		<property name="book_contract_serverpath" type="java.lang.String" column="book_contract_serverpath" />
+		
+		<property name="book_publish_soft" type="java.lang.String" column="book_publish_soft" />
+		<property name="book_send_info" type="java.lang.String" column="book_send_info" />
+		<property name="book_content_intr_cn" type="java.lang.String" column="book_content_intr_cn" />
+		<property name="book_content_intr_english" type="java.lang.String" column="book_content_intr_english" />
+		<property name="book_content_intr_foreign" type="java.lang.String" column="book_content_intr_foreign" />
+		<property name="book_content_intr_fa" type="java.lang.String" column="book_content_intr_fa" />
+		<property name="book_content_intr_xi" type="java.lang.String" column="book_content_intr_xi" />
+		<property name="book_content_intr_e" type="java.lang.String" column="book_content_intr_e" />
+		<property name="book_author_intr_cn" type="java.lang.String" column="book_author_intr_cn" />
+		<property name="book_author_intr_english" type="java.lang.String" column="book_author_intr_english" />
+		<property name="book_author_intr_foreign" type="java.lang.String" column="book_author_intr_foreign" />
+		<property name="book_author_intr_fa" type="java.lang.String" column="book_author_intr_fa" />
+		<property name="book_author_intr_xi" type="java.lang.String" column="book_author_intr_xi" />
+		<property name="book_author_intr_e" type="java.lang.String" column="book_author_intr_e" />
+		<property name="book_editor_recommend_cn" type="java.lang.String" column="book_editor_recommend_cn" />
+		<property name="book_editor_recommend_english" type="java.lang.String" column="book_editor_recommend_english" />
+		<property name="book_editor_recommend_foreign" type="java.lang.String" column="book_editor_recommend_foreign" />
+		<property name="book_editor_recommend_fa" type="java.lang.String" column="book_editor_recommend_fa" />
+		<property name="book_editor_recommend_xi" type="java.lang.String" column="book_editor_recommend_xi" />
+		<property name="book_editor_recommend_e" type="java.lang.String" column="book_editor_recommend_e" />
+		<property name="book_flag" type="java.lang.Integer" column="book_flag" />
+		<property name="book_del_flag" type="java.lang.Integer" column="book_del_flag" />
+		<property name="user_id" type="java.lang.Integer" column="user_id" />
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,138 @@
+package com.wz.service.eBookFactory.impl;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.wz.common.ConfigInfo;
+import com.wz.entity.BookEntity;
+import com.wz.entity.UserEntity;
+import com.wz.service.eBookFactory.EBookFormat;
+import com.wz.service.eBookFactory.EBookTool;
+import com.wz.util.StringUtil;
+
+/**
+ * That's Books on China 平台
+ * @author wanghonghui
+ *
+ */
+public class ThatsBookEBookImpl implements EBookFormat {
+	
+	private List<BookEntity> bookList;
+	private String excelPath;
+	
+	@Override
+	public void renameEBook(List<BookEntity> bookList, List<UserEntity> userList, String desPath, String excelPath) { //中文书名
+		if(bookList==null||bookList.isEmpty()) return;
+		this.bookList = bookList;
+		this.excelPath = excelPath;
+		for(BookEntity be : bookList) {
+			String path = be.getBook_mobi_serverpath().replace("/", "\\");
+			String bookRootPath = ConfigInfo.FTP_ROOT +"\\" + EBookTool.getUserNameByUserId(be.getUser_id(), userList) +"\\"+ be.getBook_serial_number();
+			if(path.startsWith("\\201409之前书目\\")) {
+				bookRootPath = ConfigInfo.FTP_ROOT +"\\201409之前书目\\"+ be.getBook_serial_number();
+			}
+			String epubRootPath = bookRootPath + "\\EPUB";
+			EBookTool.copy(epubRootPath, desPath, "epub", be.getBook_name_cn());
+			String pdfRootPath = bookRootPath + "\\阅读PDF";
+			EBookTool.copy(pdfRootPath, desPath, "pdf", be.getBook_name_cn());
+			String coverRootPath = bookRootPath + "\\封面";
+			EBookTool.copy(coverRootPath, desPath, "jpg", be.getBook_name_cn());
+		}
+	}
+
+	@Override
+	public void createExcel(OutputStream out) {
+		if(bookList==null||bookList.isEmpty()) return;
+		try {
+			InputStream in = new FileInputStream(new File(excelPath));
+			XSSFWorkbook wb = new XSSFWorkbook(in);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			int rowNum = 1; //从第2行开始写入数据
+			for(BookEntity be : bookList) {
+				XSSFRow row = sheet.createRow(rowNum);
+				createBaseCell(wb, row, 0, StringUtil.ObjectToString(be.getBook_isbn()), 0);
+				String wenzhong = StringUtil.ObjectToString(be.getBook_language());
+				if("003--中文".equals(wenzhong)){
+					createBaseCell(wb, row, 1, (StringUtil.ObjectToString(be.getBook_name_cn())+"（"+StringUtil.ObjectToString(be.getBook_series_cn())+"）（"+StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}--","")+"）").replace("（无）", "").replace("（）", ""), 0);
+				} else if("500--双语对应".equals(wenzhong)) {
+					createBaseCell(wb, row, 1, (StringUtil.ObjectToString(be.getBook_name_cn())+"（"+StringUtil.ObjectToString(be.getBook_series_foreign())+"）（"+StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}--","")+"）").replace("（无）", "").replace("（）", ""), 0);
+				} else if("001--英文".equals(wenzhong)){
+					createBaseCell(wb, row, 1, (StringUtil.ObjectToString(be.getBook_name_cn())+"（"+StringUtil.ObjectToString(be.getBook_series_english())+"）（"+StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}--","")+"）").replace("（无）", "").replace("（）", ""), 0);
+				} else {
+					createBaseCell(wb, row, 1, (StringUtil.ObjectToString(be.getBook_name_cn())+"（"+StringUtil.ObjectToString(be.getBook_series_foreign())+"）（"+StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}--","")+"）").replace("（无）", "").replace("（）", ""), 0);
+				}
+				
+				createBaseCell(wb, row, 2, StringUtil.ObjectToString(be.getBook_name_english()), 0);
+				createBaseCell(wb, row, 3, StringUtil.ObjectToString(be.getBook_name_xi()), 0);
+				createBaseCell(wb, row, 4, StringUtil.ObjectToString(be.getBook_name_e()), 1);
+				createBaseCell(wb, row, 5, "五洲传播出版社", 0);
+				createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_author()), 0);
+				createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_author_english()), 0);
+				createBaseCell(wb, row, 8, StringUtil.ObjectToString(be.getBook_author_xi()), 0);
+				createBaseCell(wb, row, 9, StringUtil.ObjectToString(be.getBook_author_e()), 1);
+				createBaseCell(wb, row, 10, StringUtil.ObjectToString(be.getBook_publish_time()), 0);
+				createBaseCell(wb, row, 11, StringUtil.ObjectToString(be.getBook_series_cn()), 0);
+				createBaseCell(wb, row, 12, StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}--",""), 0);
+				createBaseCell(wb, row, 13, StringUtil.ObjectToString(be.getBook_category1()).replaceAll("[0-9]{2}-",""), 0);
+				createBaseCell(wb, row, 14, "0", 0); //库存数量，默认0
+				createBaseCell(wb, row, 15, StringUtil.ObjectToString(be.getBook_content_intr_cn()), 0);
+				createBaseCell(wb, row, 16, StringUtil.ObjectToString(be.getBook_content_intr_english()), 0);
+				createBaseCell(wb, row, 17, StringUtil.ObjectToString(be.getBook_content_intr_xi()), 0);
+				createBaseCell(wb, row, 18, StringUtil.ObjectToString(be.getBook_content_intr_e()), 1);
+				createBaseCell(wb, row, 19, StringUtil.ObjectToString(be.getBook_paper_price()), 0);
+				createBaseCell(wb, row, 20, StringUtil.ObjectToString(be.getBook_paper_dollar_price()), 0);
+				createBaseCell(wb, row, 21, StringUtil.ObjectToString(be.getBook_ebook_price()), 0);
+				createBaseCell(wb, row, 22, StringUtil.ObjectToString(be.getBook_ebook_dollar_price()), 0);
+				createBaseCell(wb, row, 23, StringUtil.ObjectToString(be.getBook_copyright_word_count()), 0);
+				createBaseCell(wb, row, 24, StringUtil.ObjectToString(be.getBook_neiwen_page_count()), 0);
+				createBaseCell(wb, row, 25, StringUtil.ObjectToString(be.getBook_size()), 0);
+				createBaseCell(wb, row, 26, StringUtil.ObjectToString(be.getBook_weight()), 0);
+				createBaseCell(wb, row, 27, StringUtil.ObjectToString(be.getBook_zhuangzhen_class()), 0);
+				createBaseCell(wb, row, 28, StringUtil.ObjectToString(be.getBook_print_count()), 0);
+				createBaseCell(wb, row, 29, "", 0);//电子图书文件大小
+				createBaseCell(wb, row, 30, StringUtil.ObjectToString(be.getBook_keyword_cn()), 0);
+				createBaseCell(wb, row, 31, StringUtil.ObjectToString(be.getBook_keyword_english()), 0);
+				createBaseCell(wb, row, 32, StringUtil.ObjectToString(be.getBook_keyword_xi()), 0);
+				createBaseCell(wb, row, 33, StringUtil.ObjectToString(be.getBook_keyword_e()), 1);
+				rowNum++;
+			}
+			wb.write(out);
+			out.close();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 基本单元格，样式四周边框
+	 * @param wb
+	 * @param row
+	 * @param cellNum
+	 * @param cellValue
+	 * @param flag 标记是否需要右对齐
+	 */
+	private void createBaseCell(XSSFWorkbook wb,XSSFRow row, int cellNum, String cellValue, int flag) {
+		XSSFCell cell = row.createCell(cellNum);
+		cell.setCellValue(cellValue);
+		CellStyle style = wb.createCellStyle();
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBorderLeft(CellStyle.BORDER_THIN);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		if(flag==1) {
+			style.setVerticalAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		}
+		cell.setCellStyle(style);
+	}
+
+}

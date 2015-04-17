@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	
+	<class name="RoleEntity" table="wz_role">
+		<id name="role_id" type="java.lang.Integer" column="role_id">
+			<generator class="native" />
+		</id>
+		<property name="role_name" type="java.lang.String" column="role_name" />
+		<property name="status" type="java.lang.Integer" column="status" />
+	</class>
+</hibernate-mapping>

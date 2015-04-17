@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	
+	<class name="UserRoleEntity" table="wz_user_role">
+		<id name="user_role_id" type="java.lang.Integer" column="user_role_id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="userEntity" column="user_id" />
+		<many-to-one name="roleEntity" column="role_id" />
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	<class name="ConfigEntity" table="wz_config">
+		<id name="config_id" type="java.lang.Integer" column="config_id">
+			<generator class="native" />
+		</id>
+		<property name="user_id" type="java.lang.Integer" column="user_id" />
+		<property name="show_column" type="java.lang.String" column="show_column" />
+		<property name="export_column" type="java.lang.String" column="export_column" />
+		<property name="search_column" type="java.lang.String" column="search_column" />
+	</class>
+</hibernate-mapping>

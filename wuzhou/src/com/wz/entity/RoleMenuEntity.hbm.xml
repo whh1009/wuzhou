@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	
+	<class name="RoleMenuEntity" table="wz_role_menu">
+		<id name="role_menu_id" type="java.lang.Integer" column="role_menu_id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="roleEntity" column="role_id" />
+		<many-to-one name="menuEntity" column="menu_id" />
+	</class>
+</hibernate-mapping>

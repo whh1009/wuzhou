@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	
+	<class name="BookOnlineEntity" table="wz_book_online">
+		<id name="online_id" type="java.lang.Integer" column="online_id">
+			<generator class="native" />
+		</id>
+		<property name="book_id" type="java.lang.Integer" column="book_id" />
+		<property name="os_id" type="java.lang.Integer" column="os_id" />
+		<property name="is_online" type="java.lang.Integer" column="is_online" />
+		<property name="online_desc" type="java.lang.String" column="online_desc" />
+	</class>
+</hibernate-mapping>

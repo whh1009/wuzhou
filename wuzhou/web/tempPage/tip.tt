@@ -1,0 +1,61 @@
+-- 数据库更新 2015-1-28
+
+
+-- 更新斜杠
+/*
+update wz_book
+set book_neiwen_serverpath = replace(book_neiwen_serverpath, '\\', '/'),
+book_cover_serverpath = replace(book_cover_serverpath, '\\', '/'),
+book_font_serverpath = replace(book_font_serverpath, '\\', '/'),
+book_pdf_publish_serverpath = replace(book_pdf_publish_serverpath, '\\', '/'),
+book_word_serverpath = replace(book_word_serverpath, '\\', '/'),
+book_xml_serverpath = replace(book_xml_serverpath, '\\', '/'),
+book_epub_serverpath = replace(book_epub_serverpath, '\\', '/'),
+book_mobi_serverpath = replace(book_mobi_serverpath, '\\', '/'),
+book_pdf_read_serverpath = replace(book_pdf_read_serverpath, '\\', '/'),
+book_html_serverpath = replace(book_html_serverpath, '\\', '/'),
+book_contract_serverpath = replace(book_contract_serverpath, '\\', '/');
+*/
+
+-- 更新NaN
+/*
+update wz_book 
+set book_pdf_read_serverpath = replace(book_pdf_read_serverpath, '/NaN', CONCAT('/', book_serial_number,'/阅读PDF'))
+where book_pdf_read_serverpath like '%NaN';
+*/
+
+-- 更新EP=>B_EP_
+/*
+update wz_book
+set book_neiwen_serverpath = replace(book_neiwen_serverpath, '/EP_', '/B_EP_'),
+book_cover_serverpath = replace(book_cover_serverpath, '/EP_', '/B_EP_'),
+book_font_serverpath = replace(book_font_serverpath, '/EP_', '/B_EP_'),
+book_pdf_publish_serverpath = replace(book_pdf_publish_serverpath, '/EP_', '/B_EP_'),
+book_word_serverpath = replace(book_word_serverpath, '/EP_', '/B_EP_'),
+book_xml_serverpath = replace(book_xml_serverpath, '/EP_', '/B_EP_'),
+book_epub_serverpath = replace(book_epub_serverpath, '/EP_', '/B_EP_'),
+book_mobi_serverpath = replace(book_mobi_serverpath, '/EP_', '/B_EP_'),
+book_pdf_read_serverpath = replace(book_pdf_read_serverpath, '/EP_', '/B_EP_'),
+book_html_serverpath = replace(book_html_serverpath, '/EP_', '/B_EP_'),
+book_contract_serverpath = replace(book_contract_serverpath, '/EP_', '/B_EP_');
+*/
+
+update wz_book
+set book_pdf_publish_serverpath = replace(book_pdf_publish_serverpath, '/印刷PDF', '/分层PDF'),
+
+
+
+
+-- 0. 找到所有已经删除的数目，然后删除FTP目录
+SELECT CONCAT(u.user_name,'\\', b.book_serial_number)  from wz_book b, wz_user u where b.book_del_flag = 1 and b.user_id = u.user_id;
+
+
+--  1.删除所有已经有删除标志的图书
+--  delete from wz_book where book_del_flag = 1 ;
+
+-- 2. 计算总重复书目数量
+/*
+select book_isbn, book_serial_number, book_name_cn, book_pdf_publish_serverpath from wz_book
+where book_isbn in (select book_isbn from wz_book group by book_isbn having count(1) >= 2)
+order by book_isbn;
+*/

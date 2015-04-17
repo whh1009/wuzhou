@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="default" namespace="/" extends="struts-default">
+		<interceptors>
+			<interceptor name="authorityInterceptor" class="com.wz.interceptor.AuthorityInterceptor" />
+			<interceptor-stack name="authorityStack">
+				<interceptor-ref name="authorityInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		
+		<global-results>
+			<result name="error">/Error.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+		</global-results>
+		<!-- 
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="error" />
+			<exception-mapping exception="java.io.IOException" result="error" />
+			<exception-mapping exception="org.hibernate.HibernateException" result="error" />
+			<exception-mapping exception="java.sql.Exception" result="error" />
+			<exception-mapping exception="org.apache.jasper.JasperException" result="error" />
+		</global-exception-mappings> -->
+
+		
+
+		<!-- 返回登录页面 -->
+		<action name="toLogin" class="com.wz.action.UserAction" method="toLogin">
+			<result name="success" type="redirect">Login.jsp</result>
+		</action>
+
+		<!-- 登录 -->
+		<action name="login" class="com.wz.action.UserAction" method="login"></action>
+
+		<!-- 修改密码 -->
+		<action name="modifyPwd" class="com.wz.action.UserAction" method="modifyPwd" />
+
+		<!-- ##用户角色注册 -->
+		<action name="addUserPage" class="com.wz.action.UserAction" method="addUserPage">
+			<result name="success">AddUser.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 新增一个用户 -->
+		<action name="addUser" class="com.wz.action.UserAction" method="addUser">
+			<result name="success" type="redirectAction">wzuser/userList</result>
+			<result name="error">../Error.jsp</result>
+		</action>
+
+		<!-- 删除用户 -->
+		<action name="deleteUser" class="com.wz.action.UserAction" method="deleteUser"></action>
+
+		<!-- 更新用户 -->
+		<action name="updateUser" class="com.wz.action.UserAction" method="updateUser"></action>
+
+		<!-- 用户列表操作 -->
+		<action name="userList" class="com.wz.action.UserAction" method="userList">
+			<result name="success">UserListControl.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 检查用户名是否重复 -->
+		<action name="checkUserName" class="com.wz.action.UserAction" method="checkUserName" />
+
+		<!-- ##角色权限配置 -->
+		<action name="addRolePage" class="com.wz.action.UserAction" method="addRolePage">
+			<result name="success">AddRole.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 检测角色名是否重复 -->
+		<action name="checkRoleName" class="com.wz.action.UserAction" method="checkRoleName"></action>
+		
+		<!-- 添加角色 -->
+		<action name="addRole" class="com.wz.action.UserAction" method="addRole">
+			<result type="redirectAction">wzrole/addRolePage</result>
+		</action>
+
+		<!-- 保存权限的分配 -->
+		<action name="saveRoleMenu" class="com.wz.action.UserAction" method="saveRoleMenu"></action>
+
+		<!-- ##新书数据采集 -->
+		<action name="addBookPage" class="com.wz.action.BookAction" method="addBookPage">
+			<result name="success">AddBook.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 填写新书发稿、设计、印制通知单页面 -->
+		<action name="addBook" class="com.wz.action.BookAction" method="addBook">
+			<!-- <result name="success" type="redirectAction">wzmybook/myBookList</result>
+			<result name="input" type="redirectAction">addBookPage</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result name="ftpError" type="redirect">FtpError.jsp</result> -->
+		</action>
+
+		<!-- ##我的图书列表 -->
+		<action name="myBookList" class="com.wz.action.BookAction" method="myBookList">
+			<result name="success">MyBookList.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- ##图书列表查询 -->
+		<action name="allBookList" class="com.wz.action.BookAction" method="allBookList">
+			<result>AllBookList.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- ##图书列表操作 -->
+		<action name="bookListControl" class="com.wz.action.BookAction" method="bookListControl">
+			<result>BookListControl.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- ##删除图书恢复 -->
+		<action name="showDelBook" class="com.wz.action.BookAction" method="showDelBook">
+			<result>ShowDelBook.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- ##版权到期查询 -->
+		<action name="copyrightExpires" class="com.wz.action.BookAction" method="copyrightExpires">
+			<result>CopyrightExpires.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 根据标记获取版权图书 -->
+		<action name="getBookByBiaoji" class="com.wz.action.BookAction" method="getBookByBiaoji" />
+
+		<!-- 处理版权到期 -->
+		<action name="handleCopyrightExpires" class="com.wz.action.BookAction" method="handleCopyrightExpires" />
+
+		<!-- ##显示字段配置 -->
+		<action name="showColumnConfig" class="com.wz.action.ConfigAction" method="showColumnConfig">
+			<result>ShowColumnConfig.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 更新显示字段 -->
+		<action name="updateShowColumnconfig" class="com.wz.action.ConfigAction" method="updateShowColumnConfig">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result type="redirectAction">wzshowcolumn/showColumnConfig</result>
+		</action>
+
+
+		<!-- ##导出字段配置 -->
+		<action name="exportColumnConfig" class="com.wz.action.ConfigAction" method="exportColumnConfig">
+			<result>ExportColumnConfig.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 更新导出字段 -->
+		<action name="updateExportColumnConfig" class="com.wz.action.ConfigAction" method="updateExportColumnConfig">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result type="redirectAction">wzexportcolumn/exportColumnConfig</result>
+		</action>
+
+
+		<!-- ##检索字段配置 -->
+		<action name="searchColumnConfig" class="com.wz.action.ConfigAction" method="searchColumnConfig">
+			<result>SearchColumnConfig.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+
+		<!-- 更新检索字段 -->
+		<action name="updateSearchColumnConfig" class="com.wz.action.ConfigAction" method="updateSearchColumnConfig">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result type="redirectAction">wzsearchcolumn/searchColumnConfig</result>
+		</action>
+
+
+		<!-- 根据页码获取用户信息列表 -->
+		<action name="getUserListByPage" class="com.wz.action.UserAction" method="getUserListByPage"></action>
+
+		<!-- 获取图书列表 -->
+		<action name="getBookList" class="com.wz.action.BookAction" method="getBookList"></action>
+
+		<!-- 根据条件返回图书list -->
+		<action name="getBookListByParm" class="com.wz.action.BookAction" method="getBookListByParm"></action>
+
+		<!-- 根据条件检索图书信息 -->
+		<action name="getBookListByCon" class="com.wz.action.BookAction" method="getBookList1"></action>
+
+		<!-- 详细图书 -->
+		<action name="detailBook" class="com.wz.action.BookAction" method="detailBook">
+			<!-- <result name="noBookId" type="redirectAction">myBookList</result> -->
+			<result>DetailBook.jsp</result>
+		</action>
+
+		<!-- 假删除图书 更改图书状态 -->
+		<action name="deleteBook" class="com.wz.action.BookAction" method="deleteBook"></action>
+
+		<!-- 真实删除图书 -->
+		<action name="realDelBook" class="com.wz.action.BookAction" method="realDelBook"></action>
+
+		<!-- 根据图书编号，修改图书信息 -->
+		<action name="editBook" class="com.wz.action.BookAction" method="editBook">
+			<result>EditBook.jsp</result>
+		</action>
+
+		<!-- 修改后保存图书 -->
+		<action name="updateBook" class="com.wz.action.BookAction" method="updateBook">
+			<!-- <result name="success" type="redirectAction">editBook</result>
+			<result name="input">EditBook.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result name="ftpError" type="redirect">FtpError.jsp</result> -->
+		</action>
+
+		<!-- 根据书号获取图书信息 -->
+		<action name="getBookEntityByBookId" class="com.wz.action.BookAction" method="getBookEntityByBookId"></action>
+
+		<!-- 添加“其他”的书 -->
+		<action name="addOtherBook" class="com.wz.action.BookAction" method="addOtherBook"></action>
+
+		<action name="getDelBookList" class="com.wz.action.BookAction" method="getDelBookList"></action>
+
+		<action name="recoveryDelBook" class="com.wz.action.BookAction" method="recoveryDelBook"></action>
+
+		<!-- 文件上传 -->
+		<action name="upLoad" class="com.wz.action.TestAction" method="upLoad">
+			<interceptor-ref name="fileUpload">
+				<param name="allowedTypes">image/jpeg,image/jpg,image/png</param>
+				<param name="maximumSize">900000000</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack" />
+			<param name="savePath">/file</param>
+			<result>ok.jsp</result>
+		</action>
+
+		<!-- ##日志管理 -->
+		<action name="logList" class="com.wz.action.LogAction" method="logList">
+			<result name="success">LogList.jsp</result>
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<interceptor-ref name="authorityStack" />
+		</action>
+		<!-- 日志列表 -->
+		<action name="getLogList" class="com.wz.action.LogAction" method="getLogList"></action>
+		
+		<!-- 根据关键字检索日志信息 -->
+		<action name="getlogListByParm" class="com.wz.action.LogAction" method="getlogListByParm"></action>
+		
+		<!-- 删除日志 -->
+		<action name="deleteLog" class="com.wz.action.LogAction" method="deleteLog"></action>
+
+		<!-- -->
+		<action name="jsonToExcel" class="com.wz.action.BookAction" method="jsonToExcel"></action>
+
+		<action name="excelDownload" class="com.wz.action.BookAction" method="excelDownload">
+			<result type="stream">
+				<param name="contentDisposition">attachment;filename=${downloadName}</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">10240</param>
+			</result>
+		</action>
+
+		<!-- 添加引用 -->
+		<action name="refByISBN" class="com.wz.action.BookAction" method="refByISBN"></action>
+
+		<!-- 组装下载列表 -->
+		<action name="getTaskXml" class="com.wz.action.BookAction" method="getTaskXml"></action>
+
+		<!-- 下载上传的任务列表 -->
+		<action name="downTaskXml" class="com.wz.action.BookAction" method="downTaskXml">
+			<result type="stream">
+				<param name="contentDisposition">attachment;filename=${FTPUploadConfig}</param>
+				<param name="contentType">text/xml</param>
+				<param name="inputName">FtpInStream</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+
+		<!-- 获取ftp目录文件，组装下载列表 -->
+		<action name="getFtpFiles" class="com.wz.action.BookAction" method="getFtpFiles"></action>
+		
+		<!-- 下载上传的任务列表 -->
+		<action name="downFtpFileXml" class="com.wz.action.BookAction" method="downFtpFileXml">
+			<result type="stream">
+				<param name="contentDisposition">attachment;filename=${FTPDownloadConfig}</param>
+				<param name="contentType">text/xml</param>
+				<param name="inputName">FtpDownInStream</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+
+		<action name="getBookListByCondition" class="com.wz.action.BookAction" method="getBookListByCondition"></action>
+		
+		<action name="createExcel" class="com.wz.action.BookAction" method="createExcel"></action>
+		
+
+		<!-- 根据bookid，生成word -->
+		<action name="createDocxByBookId" class="com.wz.action.BookAction" method="createDocxByBookId"></action>
+		
+		<!-- 下载word -->
+		<action name="downloadWord" class="com.wz.action.BookAction" method="downloadWord">
+			<result type="stream">
+				<param name="contentDisposition">attachment;filename=${wordDownloadName}</param>
+				<param name="contentType">text/xml</param>
+				<param name="inputName">wordInStream</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+
+		<action name="createFtpFold" class="com.wz.action.BookAction" method="createFtpFold"></action>
+		
+		
+		
+		
+		
+		<!-- begin 生成各平台电子档命名规范及excel///////////////////////////////////////////////////// -->
+		<!-- 首页 -->
+		<action name="formatIndex" class="com.wz.action.EBookManAction" method="index">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result name="success">formatOS/Index.jsp</result>
+		</action>
+		
+		<!-- 电子书上线平台管理 -->
+		<action name="eBookOSMan" class="com.wz.action.EBookManAction" method="eBookOSMan">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result name="success">EBookOSMan.jsp</result>
+		</action>
+		
+		<!-- 添加平台名 -->
+		<action name="addEBookOS" class="com.wz.action.EBookManAction" method="addEBookOS">
+			<result name="success" type="redirectAction">formatOS/eBookOSMan</result>
+		</action>
+		
+		<!-- 删除平台名 -->
+		<action name="deleteEBookOs" class="com.wz.action.EBookManAction" method="deleteEBookOs"></action>
+		
+		<!-- 修改平台名 -->
+		<action name="updateEBookOS" class="com.wz.action.EBookManAction" method="updateEBookOS"></action>
+		
+		<!-- 电子书上线管理 -->
+		<action name="eBookOnlineMan" class="com.wz.action.EBookManAction" method="eBookOnlineMan">
+			<result name="success">EBookOnlineMan.jsp</result>
+		</action>
+		
+		<action name="getBookOnlineListByCondition" class="com.wz.action.EBookManAction" method="getBookOnlineListByCondition"></action>
+		<action name="updateBookOnline" class="com.wz.action.EBookManAction" method="updateBookOnline"></action>
+		
+		<action name="getOnlineOsByBookId" class="com.wz.action.EBookManAction" method="getOnlineOsByBookId"></action>
+		
+		<!-- 电子书规范 -->
+		<action name="formatEBook" class="com.wz.action.EBookManAction" method="formatEBook">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result name="success">FormatEBookMan.jsp</result>
+		</action>
+		<!-- 根据图书id获取图书类表，返回json -->
+		<action name="getBookListByBookIds" class="com.wz.action.EBookManAction" method="getBookListByBookIds"></action>
+		<!-- 转换单本或多本书到各平台 -->
+		<action name="formatEBookByBookId" class="com.wz.action.EBookManAction" method="formatEBookByBookId"></action>
+		
+		
+		
+		<!-- 导入存量资源 -->
+		<action name="importEBook" class="com.wz.action.EBookManAction" method="importEBook">
+			<result name="success">ImportEBook.jsp</result>
+		</action>
+		
+		<!-- 获取服务器的文件列表 -->
+		<action name="getEBookFileList" class="com.wz.action.EBookManAction" method="getEBookFileList"></action>
+		
+		<!-- 把“电子书成品”移动到存量资源目录下 -->
+		<action name="moveEBooks" class="com.wz.action.EBookManAction" method="moveEBooks"></action>
+		
+		<!-- 根据给定的excel，更新图书价格 -->
+		<action name="updateBookPrice" class="com.wz.action.EBookManAction" method="updateBookPrice"></action>
+		
+		
+		<!-- txt中保存已经找出的book_serial_number -->
+		<!-- 根据txt删除FTP中重复的数据 -->
+		<action name="deleteFtpFold" class="com.wz.action.BookAction" method="deleteFtpFold"></action>
+		
+		<!-- 资源上传列表 -->
+		<action name="allResource" class="com.wz.action.BookAction" method="allResource">
+			<result>AllResource.jsp</result>
+		</action>
+		
+		<!-- 组装FTP目录中资源列表,用于计算pdf/封面。。。等文件夹的大小 -->
+		<action name="getAllResourceByCondition" class="com.wz.action.BookAction" method="getAllResourceByCondition"></action>
+		
+		<action name="renamePDFFold" class="com.wz.action.BookAction" method="renamePDFFold"></action>
+		
+		<!-- 更新图书数据的中文 -->
+		<action name="updateBookInfo1" class="com.wz.action.BookAction" method="updateBookInfo1"></action>
+		<!-- 更新图书数据的阿文 -->
+		<action name="updateBookInfo2" class="com.wz.action.BookAction" method="updateBookInfo2"></action>
+		
+		<!-- 更新电子书流程状态 -->
+		<action name="updateOnlineStatus" class="com.wz.action.EBookManAction" method="updateOnlineStatus"></action>
+		
+		<!-- 根据在线码(0,1,2,3)获得图书列表 -->
+		<action name="getOnlineStatusBook" class="com.wz.action.EBookManAction" method="getOnlineStatusBook"></action>
+		<!-- 历史数据归档 -->
+		<action name="historyBookArchive" class="com.wz.action.BookAction" method="historyBookArchive"></action>
+		<!-- end ///////////////////////////////////////////////////// -->
+		
+		<!-- 标注图书状态，获取excel的sheet -->
+		<action name="getSheetsByOnlineStatus" class="com.wz.action.EBookManAction" method="getSheetsByOnlineStatus"></action>
+		<!-- 标注图书状态，根据sheet的id来更新图书状态 -->
+		<action name="updateBookOnlineStatusBySheetIds" class="com.wz.action.EBookManAction" method="updateBookOnlineStatusBySheetIds"></action>
+		<!-- 更新电子书价格2 -->
+		<action name="updateBookPrice2" class="com.wz.action.EBookManAction" method="updateBookPrice2"></action>
+		
+		<!-- 补充采集系统中有目录，ftp中没有的目录 -->
+		<action name="createFtpFold2" class="com.wz.action.BookAction" method="createFtpFold2"></action>
+		
+		<!-- FTP建立"电子书封面"和"样章"文件夹 -->
+		<action name="createFtpFold3" class="com.wz.action.BookAction" method="createFtpFold3"></action>
+
+		<!-- 加载数据库中的图书字段信息 -->
+		<action name="getBookInfoXml" class="com.wz.action.BookAction" method="getBookInfoXml"></action>
+		<!-- 自定义字段更新图书 -->
+		<action name="getSheetsByBookInfoExcel" class="com.wz.action.BookAction" method="getSheetsByBookInfoExcel"></action>
+		<!-- 通过配置excel来更新图书信息 -->
+		<action name="updateBookInfoByExcel" class="com.wz.action.BookAction" method="updateBookInfoByExcel"></action>
+		
+	</package>
+
+</struts>
