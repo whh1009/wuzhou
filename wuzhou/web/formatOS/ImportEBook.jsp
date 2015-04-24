@@ -13,11 +13,14 @@
 	height:600px;
 	overflow:auto;
 }
+.aa{align:center;}
+.aa img {display:block; margin:auto;}
 </style>
 <script>
 $(function() {
-	
-	
+	//初始化tooltip
+	$('[data-toggle="tooltip"]').tooltip();
+
 	$("#EbookGoHomeBtn").on("click", function() {
 		$(this).button("loading");
 		$(".out").html("");
@@ -25,8 +28,34 @@ $(function() {
 			url:"moveEBooks.action",
 			type:"post",
 			async : true,
+			beforeSend:function(XMLHttpRequest){
+				$(".out").html("<div class='aa'><img src='<%=basePath %>images/loading.gif' /></div>");
+			},
 			success:function(data) {
 				$(".out").html(data);
+			},
+			error:function(XMLHttpRequest,textStatus,errorThrown){
+				$(".out").html("<p class='text-danger'>"+textStatus+ "  " + errorThrown + "</p>");
+			}
+		});
+		$(this).button("reset");
+	});
+
+	$("#yzBtn").on("click", function() {
+		$(this).button("loading");
+		$(".out").html("");
+		$.ajax({
+			url:"moveYZEBooks.action",
+			type:"post",
+			async : true,
+			beforeSend:function(XMLHttpRequest){
+				$(".out").html("<div class='aa'><img src='<%=basePath %>images/loading.gif' /></div>");
+			},
+			success:function(data) {
+				$(".out").html(data);
+			},
+			error:function(XMLHttpRequest,textStatus,errorThrown){
+				$(".out").html("<p class='text-danger'>"+textStatus+ "  " + errorThrown + "</p>");
 			}
 		});
 		$(this).button("reset");
@@ -38,8 +67,9 @@ $(function() {
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			
-			<button type="button" class="btn btn-info" id="EbookGoHomeBtn" data-loading-text="请稍等..." autocomplete="off">电子书归档</button>
+			<button type="button" class="btn btn-info" id="EbookGoHomeBtn" data-loading-text="请稍等..." autocomplete="off" data-toggle="tooltip" data-placement="bottom" title="电子书归档，包括EPUB，MOBI，阅读PDF，封面(非电子书封面)">电子书归档</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<button type="button" class="btn btn-success" id="yzBtn" data-loading-text="请稍等..." autocomplete="off" data-toggle="tooltip" data-placement="bottom" title="样章归档">样章归档</button>
 			<p>&nbsp;</p>
 			<div class="well">
 				<div class="out"></div>

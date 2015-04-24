@@ -717,7 +717,6 @@ public class BookAction extends ActionSupport {
 	/**
 	 * 真实删除图书
 	 * 
-	 * @param bookId
 	 * @return
 	 */
 	public void realDelBook() throws Exception {

@@ -1,15 +1,14 @@
 package com.wz.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.wz.common.ConfigInfo;
+import com.wz.dao.BookDao;
+import com.wz.dao.EBookDao;
+import com.wz.dao.UserDao;
+import com.wz.entity.*;
+import com.wz.service.eBookFactory.EBookFormat;
+import com.wz.service.eBookFactory.EBookFormatFactory;
+import com.wz.util.FileUtil;
+import com.wz.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -20,19 +19,10 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import com.wz.common.ConfigInfo;
-import com.wz.dao.BookDao;
-import com.wz.dao.EBookDao;
-import com.wz.dao.UserDao;
-import com.wz.entity.BookEntity;
-import com.wz.entity.BookOnlineEntity;
-import com.wz.entity.BookOnlineOSEntity;
-import com.wz.entity.UserEntity;
-import com.wz.entity.YuanDataEntity;
-import com.wz.service.eBookFactory.EBookFormat;
-import com.wz.service.eBookFactory.EBookFormatFactory;
-import com.wz.util.FileUtil;
-import com.wz.util.StringUtil;
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EBookManService {
 	public static Logger log = Logger.getLogger("wuzhou");
@@ -123,7 +113,6 @@ public class EBookManService {
 	
 	/**
 	 * 把在线平台列表转为xml
-	 * @param list
 	 * @return
 	 * @throws Exception 
 	 */
@@ -236,18 +225,18 @@ public class EBookManService {
 	 * @return
 	 * @throws java.io.IOException
 	 */
-	public List<YuanDataEntity> loadYuanDataExcel() throws IOException {
+	public List<YuanDataEntity> loadYuanDataExcel(String excelPath) throws IOException {
 		List<YuanDataEntity> list = new ArrayList<YuanDataEntity>();
-		File excelFile = new File(ConfigInfo.EBOOK_ROOT_PATH+"\\元数据.xlsx");
+		File excelFile = new File(excelPath);
 		if(!excelFile.exists()){
-			System.out.println(ConfigInfo.EBOOK_ROOT_PATH+"\\元数据.xlsx 不存在");
+			System.out.println(excelPath+" 不存在");
 			return null;
 		} else{
 			InputStream in = new FileInputStream(excelFile);
 			XSSFWorkbook wb = new XSSFWorkbook(in);
 			XSSFSheet sheet = wb.getSheetAt(0);
 			YuanDataEntity yuan = null;
-			for(int i = 1; i<=sheet.getLastRowNum();i++){ //从第二行开始，忽略第一行的"isbn 书名"
+			for(int i = 1; i<=sheet.getLastRowNum();i++){ //从第二行开始，忽略第一行的标题"isbn 书名等信息"
 				XSSFRow row = sheet.getRow(i);
 				yuan = new YuanDataEntity();
 				yuan.setIsbn(getCellValue(row.getCell(0)).trim());
@@ -279,7 +268,6 @@ public class EBookManService {
 					for(YuanDataEntity yuan : list) {
 						if(name.equals(yuan.getName())) {
 							flag = true;
-							
 							String isbn = yuan.getIsbn();
 							if(isbn.contains("_")){
 								isbn = isbn.split("_")[1]+isbn.split("_")[0];
@@ -325,6 +313,69 @@ public class EBookManService {
 			
 		}
 		return out;
+	}
+
+	/**
+	 * 移动样章，电子书封面归档
+	 * @param excelFile
+	 * @return
+	 * @throws Exception
+	 */
+	public String moveYZEBooks(File excelFile) throws Exception {
+		File []files = excelFile.getParentFile().listFiles();
+		StringBuffer sb = new StringBuffer();
+		InputStream in = new FileInputStream(excelFile);
+		XSSFWorkbook wb = new XSSFWorkbook(in);
+		XSSFSheet sheet = wb.getSheet("Sheet1");//固定Sheet名
+		for(int i = 1; i<=sheet.getLastRowNum();i++){ //从第二行开始，忽略第一行的标题"isbn 书名等信息"
+			XSSFRow row = sheet.getRow(i);
+			String bianhao = getCellValue(row.getCell(0)).trim();
+			String name = getCellValue(row.getCell(2)).trim();
+			List<BookEntity> list = bookDao.getBookListByHql("from BookEntity where book_serial_number like '%\\_"+bianhao.replace("_", "\\_")+"\\_%'");
+			if(list==null||list.isEmpty()){
+				sb.append("<p class='text-danger'>").append(bianhao).append("\t").append(name).append("采集系统中未找到</p>");
+			} else {
+				if(list.size()>1) {
+					sb.append("<p class='text-danger'>").append(bianhao).append("\t").append(name).append("采集系统中有多本</p>");
+				} else {
+					BookEntity be = list.get(0);
+					if(be==null) {
+						sb.append("<p class='text-danger'>").append(bianhao).append("\t").append(name).append("获取图书资源失败</p>");
+					} else {
+						boolean flag = false;
+						for(File ff: files) {
+							String fullName = ff.getName().toLowerCase().trim();
+							String fileName = fullName.substring(0, fullName.lastIndexOf("."));
+							String extension = fullName.substring(fullName.lastIndexOf(".")+1);
+							if(name.equals(fileName)) {
+								String baseBookPath = "";
+								if(be.getUser_id()==1){ //存量资源
+									baseBookPath = ConfigInfo.FTP_ROOT + "\\201409之前书目\\"+be.getBook_serial_number();
+								} else {
+									baseBookPath = ConfigInfo.FTP_ROOT + "\\"+userDao.getUserEntityByUserId(be.getUser_id()).getUser_name()+"\\"+be.getBook_serial_number();
+								}
+								if("jpg".equals(extension)) {
+									copyFile(ff, baseBookPath + "\\电子书封面", fullName);
+								} else {
+									copyFile(ff, baseBookPath + "\\样章", fullName);
+								}
+								sb.append("<p class='text-info'>").append(bianhao).append("\t").append(fullName).append("已经复制</p>");
+								flag=true;
+							}
+						}
+						if(!flag) {
+							sb.append("<p style='color:red'>").append(name).append("\t").append(excelFile.getParent()).append("文件夹中没有找到</p>");
+						}
+					}
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	public void copyFile(File srcFile, String destPath, String destFileName) throws  Exception{
+		new File(destPath).mkdirs();
+		FileUtil.copyFile(srcFile, new File(destPath+"\\"+destFileName), true);
 	}
 	
 	/**

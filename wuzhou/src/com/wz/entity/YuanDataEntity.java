@@ -11,6 +11,16 @@ import java.io.Serializable;
 public class YuanDataEntity implements Serializable{
 	private String isbn;
 	private String name;
+	private String wenzhong;
+
+	public String getWenzhong() {
+		return wenzhong;
+	}
+
+	public void setWenzhong(String wenzhong) {
+		this.wenzhong = wenzhong;
+	}
+
 	public String getIsbn() {
 		return isbn;
 	}

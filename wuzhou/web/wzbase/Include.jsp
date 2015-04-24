@@ -18,6 +18,7 @@
 %>
 <link rel="shortcut icon" href="<%=basePath %>images/favicon.ico" />
 <link rel="stylesheet" href="<%=basePath %>css/bootstrap.min.css" />
+<link rel="stylesheet" href="<%=basePath%>css/showLoading.css" />
 <style>
 li:hover{ background:#DDDDDD;}
 .navbar-brand{padding:10px 15px; width:150px;}
@@ -25,6 +26,7 @@ li:hover{ background:#DDDDDD;}
 
 <script src="<%=basePath %>js/jquery-1.10.2.min.js"></script>
 <script src="<%=basePath %>js/bootstrap.min.js"></script>
+<script src="<%=basePath%>js/jquery.showLoading.min.js"></script>
 <script>
 //初始化导航条
 $(function() {

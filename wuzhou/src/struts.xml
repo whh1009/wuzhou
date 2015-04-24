@@ -378,6 +378,9 @@
 		
 		<!-- 把“电子书成品”移动到存量资源目录下 -->
 		<action name="moveEBooks" class="com.wz.action.EBookManAction" method="moveEBooks"></action>
+
+		<!-- 归档样章，类似于“电子书成品”归档 -->
+		<action name="moveYZEBooks" class="com.wz.action.EBookManAction" method="moveYZEBooks"></action>
 		
 		<!-- 根据给定的excel，更新图书价格 -->
 		<action name="updateBookPrice" class="com.wz.action.EBookManAction" method="updateBookPrice"></action>

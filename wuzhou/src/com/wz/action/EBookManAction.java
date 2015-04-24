@@ -17,6 +17,7 @@ import org.apache.struts2.ServletActionContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -372,8 +373,26 @@ public class EBookManAction extends ActionSupport {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
-		List<YuanDataEntity> list = eBookManService.loadYuanDataExcel();
-		out.print(eBookManService.moveEBooks(list));
+		String excelPath = ConfigInfo.EBOOK_ROOT_PATH+"\\元数据.xlsx";
+		List<YuanDataEntity> list = eBookManService.loadYuanDataExcel(excelPath);
+		if(list==null||list.isEmpty()) {
+			out.print("<p style='color:red'>Excel未找到，或Excel中没有数据</p>");
+		} else {
+			out.print(eBookManService.moveEBooks(list));
+		}
+		out.close();
+	}
+
+	public void moveYZEBooks() throws Exception{
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		File excelFile = new File(ConfigInfo.EBOOK_YZ_PATH+"\\元数据.xlsx");
+		if(excelFile.exists()) {
+			out.print(eBookManService.moveYZEBooks(excelFile));
+		} else {
+			out.print("<p style='color:red'>Excel未找到，或Excel中没有数据</p>");
+		}
 		out.close();
 	}
 	

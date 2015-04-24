@@ -131,6 +131,11 @@ public class ConfigInfo {
 	 * 把现有的epub、pdf等电子档在服务器上的存放路径
 	 */
 	public final static String EBOOK_ROOT_PATH = "e:\\电子书成品";
+
+	/**
+	 * 样章归档目录
+	 */
+	public final static String EBOOK_YZ_PATH = "e:\\样章成品";
 	
 	
 }
