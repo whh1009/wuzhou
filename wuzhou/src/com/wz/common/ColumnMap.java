@@ -33,6 +33,7 @@ public class ColumnMap {
 
 	/**
 	 * 数据库中英文映射
+	 * 用于配置显示、导出、检索字段
 	 * @return
 	 */
 	public static Map<String, String> bookTableColumnMap() {
@@ -142,6 +143,8 @@ public class ColumnMap {
 		map.put("book_editor_recommend_english", "编辑推荐（英文）");
 		map.put("book_editor_recommend_foreign", "编辑推荐（外文）");
 		map.put("book_cooperate_press", "合作出版社");
+
+		map.put("book_mark", "备注"); //2015-05-01 add
 		return map;
 	}
 

@@ -31,7 +31,7 @@ input[name='bookEntity.book_name_e'], input[name='bookEntity.book_author_e'],inp
 textarea[name='bookEntity.book_content_intr_e'],textarea[name='bookEntity.book_author_intr_e'],textarea[name='bookEntity.book_editor_recommend_e']
 {
 	direction:rtl;
-	unicode-bidi:ebmed;
+	unicode-bidi:embed;
 }
 
 </style>
@@ -287,6 +287,7 @@ dzs 电子书属性，用于切换显示
 					<li class="zzs pt"><a href="#sheji" data-toggle="tab">装帧设计</a></li>
 					<li class="zzs pt"><a href="#yinzhi" data-toggle="tab">印制发行</a></li>
 					<li class="pt"><a href="#wendang" data-toggle="tab">数据文档</a></li>
+					<li class=""><a href="#others" data-toggle="tab">其它</a></li>
 					<li></li>
 				</ul>
 			</div>
@@ -1716,6 +1717,16 @@ dzs 电子书属性，用于切换显示
 						</div>
 						<br /> <br />
 					</div> -->
+				</div>
+				<div class="tab-pane fade" id="others">
+					<div class="row">
+							<div class="col-sm-12">
+								<div class="input-group" title="备注">
+									<span class="input-group-addon"><span class="">备注</span></span>
+									<textarea class="form-control" name="bookEntity.book_mark" rows=4></textarea>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</form>

@@ -153,7 +153,17 @@ public class BookEntity {
 	public Integer book_flag; //版权到期是否处理标识，已经处理设置为1，没处理设置为0
 	public Integer book_del_flag; //删除图书标识，删除为1，未删除为0
 	public Integer user_id;
-	
+
+	public String book_mark;//图书备注 2015-05-01新增
+
+	public String getBook_mark() {
+		return book_mark;
+	}
+
+	public void setBook_mark(String book_mark) {
+		this.book_mark = book_mark;
+	}
+
 	public Integer getBook_id() {
 		return book_id;
 	}
