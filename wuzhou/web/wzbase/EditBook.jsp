@@ -278,9 +278,11 @@
 			return true;
 		}
 	}
+	var printFlag=0;
 	//验证
 	//打印为docx
 	function printDocx() {
+		printFlag=0;
 		var bId = "<s:property value="theBookId" />";
 		//必须验证 ISBN/ISSN、文种、书名
 		if(!validateForm($("input[name='bookEntity.book_isbn']"),"请填写 ISBN/ISSN"))
@@ -479,11 +481,53 @@
 				alert("图书编号（ID）有问题");
 			}
 		}
-		if(window.confirm("请先保存数据后再打印")){
-			$("input[name='printDocx']").val("print");
-	    	document.form.action="updateBook.action";
-	        document.form.submit();
-	    }
+		checkFileUpload();
+		if(printFlag==1) {
+			if(window.confirm("请先保存数据后再打印")){
+				$("input[name='printDocx']").val("print");
+				document.form.action="updateBook.action";
+				document.form.submit();
+			}
+		}
+
+	}
+
+	//打印word前线验证责编是否已经上传文件
+	function checkFileUpload() {
+		var bId = "<s:property value="theBookId" />";
+		$.ajax({
+			url:"checkFileUpload.action",
+			method:"post",
+			data:{bId:bId},
+			async:false,
+			beforeSend:function(XMLHttpRequest){
+				$("body").showLoading();
+			},
+			success:function(data) {
+				$("body").hideLoading();
+				if(data=="-1"){
+					alert("没有找到该图书ID信息");
+				} else if(data=="-2"){
+					alert("未获取到图书ID");
+				} else if(data=="1"){
+					alert("请上传内文排版文件");
+				} else if(data=="2") {
+					alert("请上传封面文件");
+				} else if(data=="3") {
+					alert("请上传分层PDF");
+				} else if(data=="4") {
+					alert("请上传合同");
+				} else if(data=="0") { //可以打印
+					printFlag=1;
+				} else {
+					alert("其它错误，不能打印");
+				}
+			},
+			error:function(XMLHttpRequest,textStatus,errorThrown){
+				$("body").hideLoading();
+				alert("<p class='text-danger'>"+textStatus+ "  " + errorThrown + "</p>");
+			}
+		});
 	}
 	
 	function createDocxByBookId(bId) {

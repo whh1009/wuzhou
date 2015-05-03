@@ -433,7 +433,9 @@
 		<action name="getSheetsByBookInfoExcel" class="com.wz.action.BookAction" method="getSheetsByBookInfoExcel"></action>
 		<!-- 通过配置excel来更新图书信息 -->
 		<action name="updateBookInfoByExcel" class="com.wz.action.BookAction" method="updateBookInfoByExcel"></action>
-		
+
+		<!-- 打印word前线验证责编是否已经上传文件 add 2015-05-03 -->
+		<action name="checkFileUpload" class="com.wz.action.BookAction" method="checkFileUpload"></action>
 	</package>
 
 </struts>

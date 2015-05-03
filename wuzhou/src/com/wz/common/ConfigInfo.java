@@ -136,6 +136,23 @@ public class ConfigInfo {
 	 * 样章归档目录
 	 */
 	public final static String EBOOK_YZ_PATH = "e:\\样章成品";
-	
+
+	/**
+	 * 限制内文文件夹大小50KB
+	 */
+	public final static long LIMIT_NEIWEN_DIRECTORY_SIZE = 50*1024;
+
+	/**
+	 * 限制封面文件夹大小50KB
+	 */
+	public final static long LIMIT_COVER_DIRECTORY_SIZE = 50*1024;
+	/**
+	 * 限制分层PDF文件夹大小100KB
+	 */
+	public final static long LIMIT_FENCENG_PDF_DIRECTORY_SIZE = 100*1024;
+	/**
+	 * 限制合同文件夹大小1KB
+	 */
+	public final static long LIMIT_CONTRACT_DIRECTORY_SIZE = 1*1024;
 	
 }

@@ -1,37 +1,26 @@
 package com.wz.action;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
-
-import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
-
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import com.wz.common.ColumnMap;
 import com.wz.common.ConfigInfo;
 import com.wz.common.PageEntity;
-import com.wz.entity.BookEntity;
-import com.wz.entity.BookResourceEntity;
-import com.wz.entity.LogEntity;
-import com.wz.entity.RoleEntity;
-import com.wz.entity.UserEntity;
+import com.wz.entity.*;
 import com.wz.service.BookService;
 import com.wz.service.ConfigService;
 import com.wz.service.LogService;
 import com.wz.util.StringUtil;
+import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BookAction extends ActionSupport {
 	public static Logger log = Logger.getLogger("wuzhou");
@@ -1451,6 +1440,37 @@ public class BookAction extends ActionSupport {
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("BookAction ## updateBookInfoByExcel 异常：" + e.getMessage());
+			throw e;
+		} finally {
+			out.close();
+		}
+	}
+
+	/**
+	 * 打印word前线验证责编是否已经上传文件 add 2015-05-03
+	 * @throws Exception
+	 */
+	public void checkFileUpload() throws Exception {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			int bookId = StringUtil.StringToInt(request.getParameter("bId"));
+			if(bookId==0){ //未获取到图书ID
+				out.print("-2");
+			} else{
+				BookEntity be = bookService.getBookEntityById(bookId);
+				if(be==null) { //根据图书ID，没有找到图书信息
+					out.print("-1");
+				} else {
+					out.print(bookService.checkFileUpload(be));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("BookAction ## checkFileUpload 异常：" + e.getMessage());
 			throw e;
 		} finally {
 			out.close();
