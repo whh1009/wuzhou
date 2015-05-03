@@ -12,6 +12,7 @@ import com.wz.util.StringUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -1331,6 +1332,44 @@ public class BookService {
 		return sb.toString();
 	}
 
+	/**
+	 *
+	 * @param be
+	 * @return
+	 * 0 通过检查，可以打印word
+	 * 1 内文大小没有通过
+	 * 2 。。。
+	 * 3 。。。
+	 * 4 。。。
+	 */
+	public String checkFileUpload(BookEntity be) {
+		String ftpRootPath = ConfigInfo.FTP_ROOT.replace("\\\\","/");
+		String neiwenPath = ftpRootPath+be.getBook_neiwen_serverpath(); //50KB
+		long neiwenSize = FileUtils.sizeOfDirectory(new File(neiwenPath));
+		log.debug(be.getBook_serial_number()+"\tneiwenSize:" + neiwenSize);
+		if(neiwenSize<ConfigInfo.LIMIT_NEIWEN_DIRECTORY_SIZE){
+			return "1";
+		}
+		String coverPath = ftpRootPath+be.getBook_cover_serverpath(); //50KB
+		long coverSize = FileUtils.sizeOfDirectory(new File(coverPath));
+		log.debug(be.getBook_serial_number()+"	coverSize:" + coverSize);
+		if(coverSize<ConfigInfo.LIMIT_COVER_DIRECTORY_SIZE) {
+			return "2";
+		}
+		String fencengPath = ftpRootPath+be.getBook_pdf_publish_serverpath(); //100KB
+		long fencengSize = FileUtils.sizeOfDirectory(new File(fencengPath));
+		log.debug(be.getBook_serial_number()+"	fencengSize:" + fencengSize);
+		if(fencengSize<ConfigInfo.LIMIT_FENCENG_PDF_DIRECTORY_SIZE) {
+			return "3";
+		}
+		String contractPath = ftpRootPath+be.getBook_contract_serverpath(); //1KB
+		long contractSize = FileUtils.sizeOfDirectory(new File(contractPath));
+		log.debug(be.getBook_serial_number()+"	contractSize:"+contractSize);
+		if (contractSize<ConfigInfo.LIMIT_CONTRACT_DIRECTORY_SIZE) {
+			return "4";
+		}
+		return "0";
+	}
 
 	public static void main(String [] args) throws Exception {
 		BookService bs = new BookService();
