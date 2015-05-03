@@ -1,16 +1,15 @@
 package com.wz.dao;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Transaction;
-import org.hibernate.Session;
+import com.wz.entity.BookEntity;
+import com.wz.entity.BookLanDoughnutChartEntity;
+import com.wz.hibernate.HibernateUtil;
+import org.hibernate.*;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 
-import com.wz.entity.BookEntity;
-import com.wz.hibernate.HibernateUtil;
+import java.math.BigInteger;
+import java.util.List;
 
 public class BookDao extends BaseDao {
 	private Session session;
@@ -208,6 +207,52 @@ public class BookDao extends BaseDao {
  			throw ex;
 		}
  		return null;
+	}
+
+	/**
+	 * 转为饼状图实体类
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookLanDoughnutChartEntity> getBookLanEntityBySql() throws Exception{
+		try {
+			session = HibernateUtil.getSession();
+			session.beginTransaction();
+			Criteria criteria = session.createCriteria(BookEntity.class)
+					.setProjection(Projections.projectionList()
+							.add(Projections.property("book_language"), "book_language")
+							.add(Projections.count("book_id"), "bookCount")
+							.add(Projections.groupProperty("book_language")))
+					.setResultTransformer(Transformers.aliasToBean(BookLanDoughnutChartEntity.class));
+
+			return criteria.list();
+		} catch(Exception ex) {
+			throw ex;
+		}
+	}
+
+	/**
+	 * 出版时间柱状图实体类
+	 * @param time
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookLanDoughnutChartEntity> getBookBarEntityBySql(String time) throws Exception{
+		try {
+			session = HibernateUtil.getSession();
+			session.beginTransaction();
+			Criteria criteria = session.createCriteria(BookEntity.class);
+			criteria.add(Restrictions.like("book_publish_time", time+"%"));
+			criteria.setProjection(Projections.projectionList()
+					.add(Projections.property("book_publish_time"), "book_language")
+					.add(Projections.count("book_id"), "bookCount")
+					.add(Projections.groupProperty("book_publish_time")))
+					.setResultTransformer(Transformers.aliasToBean(BookLanDoughnutChartEntity.class));
+
+			return criteria.list();
+		} catch(Exception ex) {
+			throw ex;
+		}
 	}
 	
 	
