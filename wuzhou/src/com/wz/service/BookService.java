@@ -4,6 +4,7 @@ import com.wz.common.ColumnMap;
 import com.wz.common.ConfigInfo;
 import com.wz.dao.BookDao;
 import com.wz.entity.BookEntity;
+import com.wz.entity.BookLanDoughnutChartEntity;
 import com.wz.entity.BookResourceEntity;
 import com.wz.entity.FTPFileEntity;
 import com.wz.ftp.FtpUtil;
@@ -1369,6 +1370,82 @@ public class BookService {
 			return "4";
 		}
 		return "0";
+	}
+
+
+	public String getBookLanDoughnutChartJson() throws Exception {
+//		String sql = "select book_language,count(book_id) from wz_book group by book_language";
+		String []color = {"#F7464A|#FF5A5E", "#46BFBD|#5AD3D1", "#FDB45C|#FFC870", "#949FB1|#A8B3C5", "#4D5360|#616774",
+							"#16A085|1ABC9C", "#27AE60|#2ECC71", "#2980B9|#3498DB", "#8E44AD|#9B59B6", "#2C3E50|#34495E",
+							"#F39C12|#F1C40F", "#D35400|#E67E22", "#C0392B|#E74C3C", "#BDC3C7|#ECF0F1", "#7F8C8D|#95A5A6",
+							"#CCCCCC|#DDDDDD"
+		};
+		List<BookLanDoughnutChartEntity> list = bookDao.getBookLanEntityBySql();
+		if(list==null||list.isEmpty()) return "";
+		String out = "";
+		int count=0;
+		for(BookLanDoughnutChartEntity bl : list) {
+			out+="{ value:\""+ bl.getBookCount() +"\" ,";
+			out+=" color:\""+color[count].split("\\|")[0]+"\" ,";
+			out+=" highlight:\""+color[count].split("\\|")[1]+"\" ,";
+			out+=" label:\""+bl.getBook_language()+"\" },";
+			count++;
+			if(count>=15) count=0;
+		}
+		out = "["+StringUtil.ignoreComma(out)+"]";
+		return out;
+	}
+
+	public String getBookPublishTimeBarChartJson(String time) throws Exception {
+//		String sql = "select book_publish_time, count(book_id) from wz_book where book_publish_time like '"+time+"%'  group by book_publish_time order by book_publish_time";
+		List<BookLanDoughnutChartEntity> list = bookDao.getBookBarEntityBySql(time);
+		if(list==null||list.isEmpty()) return "";
+		String out = "{labels : [\"一月\",\"二月\",\"三月\",\"四月\",\"五月\",\"六月\",\"七月\",\"八月\",\"九月\",\"十月\",\"十一月\",\"十二月\"],";
+		out+="datasets : [{fillColor : \"rgba(151,187,205,0.5)\"," +
+				"strokeColor : \"rgba(151,187,205,0.8)\"," +
+				"highlightFill : \"rgba(151,187,205,0.75)\"," +
+				"highlightStroke : \"rgba(151,187,205,1)\"," +
+				"data : [";
+		String data="";
+		int [] months = getCountByMonth(list, time);
+		for(int m : months){
+			data+=m+",";
+		}
+		out+=StringUtil.ignoreComma(data)+"]}]}";
+		return out;
+	}
+
+	private int [] getCountByMonth(List<BookLanDoughnutChartEntity> list, String time) {
+		int [] months = {0,0,0,0,0,0,0,0,0,0,0,0};
+		for(BookLanDoughnutChartEntity bl : list) {
+			String m = bl.getBook_language().replace(time+"-", "");
+			if("01".equals(m)){
+				months[0]= bl.getBookCount();
+			} else if("02".equals(m)){
+				months[1]= bl.getBookCount();
+			} else if("03".equals(m)){
+				months[2]= bl.getBookCount();
+			} else if("04".equals(m)){
+				months[3]= bl.getBookCount();
+			} else if("05".equals(m)){
+				months[4]= bl.getBookCount();
+			} else if("06".equals(m)){
+				months[5]= bl.getBookCount();
+			} else if("07".equals(m)){
+				months[6]= bl.getBookCount();
+			} else if("08".equals(m)){
+				months[7]= bl.getBookCount();
+			} else if("09".equals(m)){
+				months[8]= bl.getBookCount();
+			} else if("10".equals(m)){
+				months[9]= bl.getBookCount();
+			} else if("11".equals(m)){
+				months[10]= bl.getBookCount();
+			} else if("12".equals(m)){
+				months[11]= bl.getBookCount();
+			}
+		}
+		return months;
 	}
 
 	public static void main(String [] args) throws Exception {

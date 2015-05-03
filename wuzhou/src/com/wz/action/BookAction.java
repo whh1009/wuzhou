@@ -1476,4 +1476,52 @@ public class BookAction extends ActionSupport {
 			out.close();
 		}
 	}
+
+	/**
+	 * 图书语种饼状图
+	 * @throws Exception
+	 */
+	public void bookLanDoughnutChart() throws Exception{
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			String jsonPic = bookService.getBookLanDoughnutChartJson();
+			out.print(jsonPic);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("BookAction ## bookLanPic 异常：" + e.getMessage());
+			throw e;
+		} finally {
+			out.close();
+		}
+	}
+
+	/**
+	 * 图书出版时间柱形图
+	 * @throws Exception
+	 */
+	public void bookPublishTimeChart() throws Exception{
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			String time = StringUtil.ObjectToString(request.getParameter("bookPublishTime"));
+			if("".equals(time)) {
+				time = (new Date().getYear()+1900)+"";
+			}
+			String jsonPic = bookService.getBookPublishTimeBarChartJson(time);
+			out.print(jsonPic);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("BookAction ## bookPublishTimeChart 异常：" + e.getMessage());
+			throw e;
+		} finally {
+			out.close();
+		}
+	}
 }

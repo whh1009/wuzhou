@@ -436,6 +436,12 @@
 
 		<!-- 打印word前线验证责编是否已经上传文件 add 2015-05-03 -->
 		<action name="checkFileUpload" class="com.wz.action.BookAction" method="checkFileUpload"></action>
+
+		<!-- 图书语种饼状图 -->
+		<action name="bookLanDoughnutChart" class="com.wz.action.BookAction" method="bookLanDoughnutChart"></action>
+
+		<!-- 出版时间柱形图 -->
+		<action name="bookPublishTimeChart" class="com.wz.action.BookAction" method="bookPublishTimeChart"></action>
 	</package>
 
 </struts>
