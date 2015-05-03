@@ -253,6 +253,7 @@ public class BookService {
 	private void deleteExistFile(String filePath)  throws Exception{
 		// System.out.println(filePath);
 		File[] files = new File(filePath).listFiles();
+		if(files==null) return;
 		for (File file : files) {
 			file.delete();
 		}
@@ -687,6 +688,7 @@ public class BookService {
 		FileUtil.fileOutput(outDocPath, "utf-8", tempDocStr);
 		FileUtil.fileOutput(outHeadPath, "utf-8", FileUtil.fileInput(tempHeadPath, "utf-8").replace("<w:t>book_serial_number</w:t>", "<w:t>" + be.getBook_serial_number() + "</w:t>"));
 		deleteExistFile(tempPath + "word\\");
+		new File(tempPath + "word").mkdirs();
 		FileUtil.zipFiles(tempPath + "word\\" + fileName, tempPath + "out");
 	}
 
