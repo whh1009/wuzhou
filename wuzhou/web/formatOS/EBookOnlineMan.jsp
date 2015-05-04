@@ -189,21 +189,7 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 									for(var k=0;k<json.bookOnlineList.length;k++) {
 										if(json.bookList[i].book_id==json.bookOnlineList[k].book_id && json.bookOnlineList[k].os_id==$(this).attr("osId").toString()) {
 											var onlineStatus=json.bookOnlineList[k].is_online;
-											//if(onlineStatus==null||typeof(onlineStatus)=="undefined") onlineStatus=4;
 											tableStr = tableStr + "<p class=''><span class='osName "+classArr[onlineStatus]+"'>"+$(this).attr("osName") + statusName[onlineStatus] +"</span></p>";
-											/*
-											if(onlineStatus==1) { //上线
-												tableStr = tableStr + "<p class=''><span class='osName "+classArr[2]+"'>"+$(this).attr("osName") + statusName[2] +"</span></p>";
-											} else if(onlineStatus==2) { //转码完
-												tableStr = tableStr + "<p class=''><span class='osName "+classArr[1]+"'>"+$(this).attr("osName") + statusName[1] +"</span></p>";
-											} else if(onlineStatus==3) { //下线
-												tableStr = tableStr + "<p class=''><span class='osName "+classArr[3]+"'>"+$(this).attr("osName") + statusName[3] +"</span></p>";
-											} else if(onlineStatus==0) { //转码中
-												tableStr = tableStr + "<p class=''><span class='osName "+classArr[0]+"'>"+$(this).attr("osName") + statusName[0] +"</span></p>";
-											} else {
-												
-											}
-											*/
 											break;
 										}
 									}
@@ -290,8 +276,7 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 								tableStr = tableStr + "<tr id='tr_"+json.bookList[i].book_id+"'>";
 								for (var j = 0; j < items.length; j++) {
 									var ename = $(items[j]).attr("ename");
-									if (ename == "book_paper_price"
-											|| ename == "book_ebook_price") {
+									if (ename == "book_paper_price" || ename == "book_ebook_price"||ename=="book_paper_dollar_price"||ename=="book_ebook_dollar_price") {
 										tableStr = tableStr + "<td>" + json.bookList[i][ename] .toFixed(2) + "</td>";
 									} else {
 										tableStr = tableStr + "<td>" + json.bookList[i][ename] + "</td>";
@@ -303,32 +288,15 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 									if(json.bookOnlineList!=null) {
 										for(var k=0;k<json.bookOnlineList.length;k++) {
 											if(json.bookList[i].book_id==json.bookOnlineList[k].book_id && json.bookOnlineList[k].os_id==$(this).attr("osId").toString()) {
-												//checkStr=" checked='checked' ";
 												var onlineStatus=json.bookOnlineList[k].is_online;
 												tableStr = tableStr + "<p class=''><span class='osName "+classArr[onlineStatus]+"'>"+$(this).attr("osName") + statusName[onlineStatus] +"</span></p>";
-												/*
-												if(onlineStatus==1) {//Math.floor(Math.random()*(5-1)+1) //1-5随机数 
-													//上线
-													tableStr = tableStr + "<p class=''><span class='osName "+classArr[2]+"'>"+$(this).attr("osName") + statusName[2] +"</span></p>";
-												} else if(onlineStatus==2) { //转码完
-													tableStr = tableStr + "<p class=''><span class='osName "+classArr[1]+"'>"+$(this).attr("osName") + statusName[1] +"</span></p>";
-												} else if(onlineStatus==3) { //下线
-													tableStr = tableStr + "<p class=''><span class='osName "+classArr[3]+"'>"+$(this).attr("osName") + statusName[3] +"</span></p>";
-												} else if(onlineStatus==0) { //转码中
-													tableStr = tableStr + "<p class=''><span class='osName "+classArr[0]+"'>"+$(this).attr("osName") + statusName[0] +"</span></p>";
-												} else {
-													
-												}
-												*/
 												break;
 											} else {
 												checkStr="";
 											}
 										}
 									}
-									//tableStr = tableStr + " <input type='checkbox' " + checkStr + " value='"+$(this).attr("osId").toString()+"'> " + $(this).attr("osName").toString()+"<br />";
 								});
-								//tableStr = tableStr + "<button class=\"btn btn-success btn-block\" id=\"btn_"+json.bookList[i].book_id+"\" title=\"保存\" onclick=\"markOnline(this, '"+ json.bookList[i].book_id + "');\"><span class=\"glyphicon glyphicon-ok\"></span> 修改或保存</button></td><tr>";
 								tableStr = tableStr + "<a href=\"javascript:updateBookOnlineState('"+json.bookList[i].book_id+"')\"><span class=\"badge\">更新</span></a>";
 							}
 							$("#currentPageSpan").html(page);
@@ -685,12 +653,34 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 	}
 	
 	function initQuery1() {
-		var query1="<option value='0'>请选择</option>";
+		var query1="<option value='0'>--平台--</option>";
 		$(osXml).find("item").each(function() {
 			query1+="<option value='"+$(this).attr("osId")+"'>"+$(this).attr("osName")+"</option>";			
 		});
 		$("#queryOs").html(query1);
-		$("#queryOsStatus").html("<option value='-1'>请选择</option>");
+		$("#queryOsStatus").html("<option value='-1'>--状态--</option>");
+	}
+
+	function exportExcel(){
+		var bookLan = $("#bookLan").val();
+		var osId = $("#queryOs").val();
+		var osStatus=$("#queryOsStatus").val();
+		alert(osId+"=="+osStatus);
+		$.ajax({
+			url:"exportEBookOnline.action",
+			method:"post",
+			data:{bookLan:bookLan,osId:osId, osStauts:osStatus},
+			beforeSend:function(XMLHttpRequest){
+				$("body").showLoading();
+			},
+			success:function(data) {
+				$("body").hideLoading();
+			},
+			error:function(XMLHttpRequest,textStatus,errorThrown){
+				alert("<p class='text-danger'>"+textStatus+ "  " + errorThrown + "</p>");
+				$("body").hideLoading();
+			}
+		});
 	}
 	
 	</script>
@@ -717,12 +707,38 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-6">
-				<div class="col-sm-6">
+			<div class="col-sm-6 pull-right">
+				<div class="col-sm-3">
+					<select class='form-control' id='bookLan'>
+						<option value="0">--文种--</option>
+						<option value="001--英文">英文</option>
+						<option value="002--西文">西文</option>
+						<option value="003--中文">中文</option>
+						<option value="004--法文">法文</option>
+						<option value="005--德语">德语</option>
+						<option value="006--阿语">阿语</option>
+						<option value="007--俄语">俄语</option>
+						<option value="008--土文">土文</option>
+						<option value="009--日语">日语</option>
+						<option value="010--韩语">韩语</option>
+						<option value="011--意大利语">意大利语</option>
+						<option value="012--印尼文">印尼文</option>
+						<option value="013--哈萨克斯坦文">哈萨克斯坦文</option>
+						<option value="014--蒙文">蒙文</option>
+						<option value="015--藏文">藏文</option>
+						<option value="016--波斯文">波斯文</option>
+						<option value="017--柯尔克孜文">柯尔克孜文</option>
+						<option value="500--双语对应">双语对应</option>
+					</select>
+				</div>
+				<div class="col-sm-3">
 					<select class='form-control' id='queryOs'></select>
 				</div>
-				<div class="col-sm-6 ">
+				<div class="col-sm-3">
 					<select class='form-control' id='queryOsStatus'></select>
+				</div>
+				<div class="col-sm-3">
+					<button class="btn" onclick="exportExcel()">导出</button>
 				</div>
 			</div>
 		</div>

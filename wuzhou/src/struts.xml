@@ -442,6 +442,9 @@
 
 		<!-- 出版时间柱形图 -->
 		<action name="bookPublishTimeChart" class="com.wz.action.BookAction" method="bookPublishTimeChart"></action>
+
+		<!-- 图书在线状态导出 -->
+		<action name="exportEBookOnline" class="com.wz.action.EBookManAction" method="exportEBookOnline"></action>
 	</package>
 
 </struts>

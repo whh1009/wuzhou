@@ -530,6 +530,29 @@ public class EBookManAction extends ActionSupport {
 		//out.print(tt);
 		out.close();
 	}
+
+	//图书状态导出
+	public void exportEBookOnline() throws Exception {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		String bookLan = StringUtil.ObjectToString(request.getParameter("bookLan"));
+		int osId = StringUtil.StringToInt(request.getParameter("osId"));
+		int osStatus = StringUtil.StringToInt(request.getParameter("osStatus"));
+
+//		select b2.* from wz_book b1, wz_book_online b2
+//		where b1.book_del_flag=0
+//		and b2.book_id = b1.book_id
+//
+//		and b1.book_language = '002--西文'
+//		and b2.os_id = 1
+//		and b2.is_online = 1
+
+		out.print("");
+		out.close();
+	}
+
 	
 	public String getShowColumn() {
 		return showColumn;

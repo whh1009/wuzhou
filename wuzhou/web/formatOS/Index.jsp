@@ -166,8 +166,7 @@ td {
 								tableStr = tableStr + "<tr id='tr_"+json.bookList[i].book_id+"'>";
 								for (var j = 0; j < items.length; j++) {
 									var ename = $(items[j]).attr("ename");
-									if (ename == "book_paper_price"
-											|| ename == "book_ebook_price") {
+									if (ename == "book_paper_price" || ename == "book_ebook_price"||ename=="book_paper_dollar_price"||ename=="book_ebook_dollar_price") {
 										tableStr = tableStr
 												+ "<td>"
 												+ json.bookList[i][ename]
