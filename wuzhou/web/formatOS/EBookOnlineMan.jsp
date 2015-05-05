@@ -136,12 +136,12 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 
 				});
 		initQuery1();
-		$("#queryOs").change(function() {
-			var osIdSel =$(this).val();
-			if(osIdSel!=0) {
-				$("#queryOsStatus").html("<option value='-1'>请选择</option><option value='4'>"+statusName[4]+"</option><option value='0'>"+statusName[0]+"</option><option value='2'>"+statusName[2]+"</option><option value='5'>"+statusName[5]+"</option><option value='1'>"+statusName[1]+"</option><option value='3'>"+statusName[3]+"</option>");
-			}
-		});
+//		$("#queryOs").change(function() {
+//			var osIdSel =$(this).val();
+//			if(osIdSel!=0) {
+//				$("#queryOsStatus").html("<option value='-1'>请选择</option><option value='4'>"+statusName[4]+"</option><option value='0'>"+statusName[0]+"</option><option value='2'>"+statusName[2]+"</option><option value='5'>"+statusName[5]+"</option><option value='1'>"+statusName[1]+"</option><option value='3'>"+statusName[3]+"</option>");
+//			}
+//		});
 		$("#queryOsStatus").change(function() {
 			$("#tempCount").html("");
 			var statusIdSel = $(this).val();
@@ -176,9 +176,8 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 							tableStr = tableStr + "<tr id='tr_"+json.bookList[i].book_id+"'>";
 							for (var j = 0; j < items.length; j++) {
 								var ename = $(items[j]).attr("ename");
-								if (ename == "book_paper_price"
-										|| ename == "book_ebook_price") {
-									tableStr = tableStr + "<td>" + json.bookList[i][ename] .toFixed(2) + "</td>";
+								if (ename == "book_paper_price" || ename == "book_ebook_price"||ename=="book_paper_dollar_price"||ename=="book_ebook_dollar_price") {
+									tableStr = tableStr + "<td>" + json.bookList[i][ename].toFixed(2) + "</td>";
 								} else {
 									tableStr = tableStr + "<td>" + json.bookList[i][ename] + "</td>";
 								}
@@ -277,7 +276,7 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 								for (var j = 0; j < items.length; j++) {
 									var ename = $(items[j]).attr("ename");
 									if (ename == "book_paper_price" || ename == "book_ebook_price"||ename=="book_paper_dollar_price"||ename=="book_ebook_dollar_price") {
-										tableStr = tableStr + "<td>" + json.bookList[i][ename] .toFixed(2) + "</td>";
+										tableStr = tableStr + "<td>" + json.bookList[i][ename].toFixed(2) + "</td>";
 									} else {
 										tableStr = tableStr + "<td>" + json.bookList[i][ename] + "</td>";
 									}
@@ -351,7 +350,6 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 			type:'post',
 			data:{bookId:bkid},
 			success:function(data) {
-				alert(data);
 				if(data=="-1") {
 					alert("未获取到图书ID");
 				} else if(data!="") {
@@ -653,19 +651,22 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 	}
 	
 	function initQuery1() {
-		var query1="<option value='0'>--平台--</option>";
+		var query1="<option value='0'>全部平台</option>";
 		$(osXml).find("item").each(function() {
 			query1+="<option value='"+$(this).attr("osId")+"'>"+$(this).attr("osName")+"</option>";			
 		});
 		$("#queryOs").html(query1);
-		$("#queryOsStatus").html("<option value='-1'>--状态--</option>");
+//		$("#queryOsStatus").html("<option value='-1'>--状态--</option>");
 	}
 
 	function exportExcel(){
 		var bookLan = $("#bookLan").val();
 		var osId = $("#queryOs").val();
 		var osStatus=$("#queryOsStatus").val();
-		alert(osId+"=="+osStatus);
+		if(osStatus=="-1") {
+			alert("请选择状态");
+			return;
+		}
 		$.ajax({
 			url:"exportEBookOnline.action",
 			method:"post",
@@ -675,6 +676,13 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 			},
 			success:function(data) {
 				$("body").hideLoading();
+				if(data=="-1"){
+					alert("没有找到图书");
+				} else if(data=="8"){
+					alert("请重新登录");
+				} else {
+					window.location.href="downLoadexportEBookOnlineExcel.action?bookOnlineExcelName="+data;
+				}
 			},
 			error:function(XMLHttpRequest,textStatus,errorThrown){
 				alert("<p class='text-danger'>"+textStatus+ "  " + errorThrown + "</p>");
@@ -710,7 +718,7 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 			<div class="col-sm-6 pull-right">
 				<div class="col-sm-3">
 					<select class='form-control' id='bookLan'>
-						<option value="0">--文种--</option>
+						<option value="0">全部文种</option>
 						<option value="001--英文">英文</option>
 						<option value="002--西文">西文</option>
 						<option value="003--中文">中文</option>
@@ -735,7 +743,15 @@ var statusClass = new Array("progress-bar progress-bar-success","progress-bar pr
 					<select class='form-control' id='queryOs'></select>
 				</div>
 				<div class="col-sm-3">
-					<select class='form-control' id='queryOsStatus'></select>
+					<select class="form-control" id="queryOsStatus">
+						<option value="-1">状态</option>
+						<option value="4">待转码</option>
+						<option value="0">转码中</option>
+						<option value="2">转码完</option>
+						<option value="5">待上线</option>
+						<option value="1">已上线</option>
+						<option value="3">已停售</option>
+					</select>
 				</div>
 				<div class="col-sm-3">
 					<button class="btn" onclick="exportExcel()">导出</button>

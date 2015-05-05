@@ -169,8 +169,7 @@ td {
 									if (ename == "book_paper_price" || ename == "book_ebook_price"||ename=="book_paper_dollar_price"||ename=="book_ebook_dollar_price") {
 										tableStr = tableStr
 												+ "<td>"
-												+ json.bookList[i][ename]
-														.toFixed(2) + "</td>";
+												+ json.bookList[i][ename].toFixed(2) + "</td>";
 									} else {
 										tableStr = tableStr + "<td>"
 												+ json.bookList[i][ename]

@@ -18,6 +18,7 @@ import org.apache.struts2.ServletActionContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -37,6 +38,8 @@ public class EBookManAction extends ActionSupport {
 	String osXml; //在线平台的xml<os><item osId="1" osName="亚马逊（中国）" /></os>
 	BookOnlineOSEntity bookOnlineOSEntity;
 	List<BookOnlineOSEntity> osList; //电子书平台列表
+	String bookOnlineExcelName; //excel导出名
+	FileInputStream bookOnlineInputStream;
 	public EBookManAction() {
 		configService = new ConfigService();
 		eBookManService = new EBookManService();
@@ -539,18 +542,39 @@ public class EBookManAction extends ActionSupport {
 		PrintWriter out = response.getWriter();
 		String bookLan = StringUtil.ObjectToString(request.getParameter("bookLan"));
 		int osId = StringUtil.StringToInt(request.getParameter("osId"));
-		int osStatus = StringUtil.StringToInt(request.getParameter("osStatus"));
+		int osStatus = StringUtil.StringToInt(request.getParameter("osStauts"));
+		String fileName = StringUtil.dateToString("yyyyMMddhhmmss") + ".xlsx";
 
-//		select b2.* from wz_book b1, wz_book_online b2
-//		where b1.book_del_flag=0
-//		and b2.book_id = b1.book_id
-//
-//		and b1.book_language = '002--西文'
-//		and b2.os_id = 1
-//		and b2.is_online = 1
-
-		out.print("");
+		String exportExcelPath = ServletActionContext.getServletContext().getRealPath("/")+"excel\\"+fileName;
+		new File(ServletActionContext.getServletContext().getRealPath("/")+"excel").mkdirs();
+		Object o = request.getSession().getAttribute("userEntity");
+		if(o==null){ //session失效
+			out.write("8");
+			return;
+		}
+		String exportColumn = configService.getExportColumnByUserId(((UserEntity)o).getUser_id());
+		int flag = eBookManService.exportEBookOnline(bookLan, osId, osStatus, exportExcelPath, exportColumn);
+		if(flag==1){
+			out.write(fileName);
+		} else {
+			out.write("-1");
+		}
 		out.close();
+	}
+
+	/**
+	 * 下载
+	 * @return
+	 * @throws Exception
+	 */
+	public String downLoadexportEBookOnlineExcel() throws Exception {
+		if (bookOnlineInputStream != null) {
+			bookOnlineInputStream.close();
+		}
+		HttpServletRequest request = ServletActionContext.getRequest();
+		bookOnlineExcelName = request.getParameter("bookOnlineExcelName");
+		bookOnlineInputStream = new FileInputStream(new File(ServletActionContext.getServletContext().getRealPath("/") + "excel\\" + bookOnlineExcelName));
+		return SUCCESS;
 	}
 
 	
@@ -585,6 +609,20 @@ public class EBookManAction extends ActionSupport {
 	public void setOsXml(String osXml) {
 		this.osXml = osXml;
 	}
-	
-	
+
+	public String getBookOnlineExcelName() {
+		return bookOnlineExcelName;
+	}
+
+	public void setBookOnlineExcelName(String bookOnlineExcelName) {
+		this.bookOnlineExcelName = bookOnlineExcelName;
+	}
+
+	public FileInputStream getBookOnlineInputStream() {
+		return bookOnlineInputStream;
+	}
+
+	public void setBookOnlineInputStream(FileInputStream bookOnlineInputStream) {
+		this.bookOnlineInputStream = bookOnlineInputStream;
+	}
 }

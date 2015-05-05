@@ -1,5 +1,6 @@
 package com.wz.service;
 
+import com.wz.common.ColumnMap;
 import com.wz.common.ConfigInfo;
 import com.wz.dao.BookDao;
 import com.wz.dao.EBookDao;
@@ -9,7 +10,9 @@ import com.wz.service.eBookFactory.EBookFormat;
 import com.wz.service.eBookFactory.EBookFormatFactory;
 import com.wz.util.FileUtil;
 import com.wz.util.StringUtil;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -757,5 +760,130 @@ public class EBookManService {
 		}
 		return out;
 	}
-	
+
+	/**
+	 *
+	 * @param bookLan
+	 * @param osId
+	 * @param osStatus
+	 * @param exportExcelPath
+	 * @param exportColumn
+	 * @return
+	 * @throws Exception
+	 */
+	public int exportEBookOnline(String bookLan, int osId, int osStatus, String exportExcelPath, String exportColumn) throws Exception {
+		String hql = "from BookOnlineEntity where 1 = 1 ";
+		XSSFWorkbook wb = new XSSFWorkbook();
+		XSSFSheet sheet = wb.createSheet("wuzhou");
+		Row row1 = sheet.createRow(0);
+		String [] exportColumnArray = exportColumn.split(",");
+		for (int i = 0; i < exportColumnArray.length; i++) {
+			row1.createCell(i).setCellValue(ColumnMap.getBookTableCnByColumnName(exportColumnArray[i].trim()));
+		}
+		List<BookOnlineOSEntity> osList = eBookDao.getBookOnlineOS();
+		if(osList==null||osList.isEmpty()) return -1;
+		if(osId==0){ //全部平台 //标题行
+			int startColumn = exportColumnArray.length;
+			for(BookOnlineOSEntity bos : osList) {
+				row1.createCell(startColumn).setCellValue(bos.getOs_name());
+				startColumn++;
+			}
+		} else {
+			hql+=" and os_id = "+osId;
+			for(BookOnlineOSEntity bos : osList) {
+				if(bos.getOs_id()==osId) {
+					row1.createCell(exportColumnArray.length).setCellValue(bos.getOs_name());
+				}
+			}
+		}
+		if(osStatus!=-1) {
+			hql+=" and is_online = " + osStatus;
+		}
+		String conditions = " and 1 = 1";
+		if(!"0".equals(bookLan)) {
+			conditions = " and book_language = '"+ bookLan +"'";
+		}
+		log.debug("hql:"+hql);
+		List<BookOnlineEntity> bookOnlinelist = eBookDao.getOnlineBookByHql(hql);
+		if(bookOnlinelist==null||bookOnlinelist.isEmpty()) return -1;
+		List<BookEntity> bookList = bookDao.getBookListByHql("from BookEntity where book_del_flag=0 "  + conditions);
+		if(bookList==null||bookList.isEmpty()) return -1;
+		int rowCountTemp = 1;
+		Row row = null;
+		for(int i = 0; i<bookList.size();i++) {
+			BookEntity be = bookList.get(i);
+			boolean createRowFlag = false;
+			if (osId == 0) {
+				int startColumn = exportColumnArray.length;
+				for (BookOnlineOSEntity bos : osList) {
+					boolean flag = false;
+					for (BookOnlineEntity boe : bookOnlinelist) {
+						if("".equals(StringUtil.ObjectToString(boe.getOs_id()))) continue;
+						if(be.getBook_serial_number().equals("B_EP_7508510194_003_KodB0")) {
+							log.debug("=="+StringUtil.ObjectToString(boe.getOs_id())+"==");
+							log.debug("be.getBook_id():"+be.getBook_id()+"--boe.getBook_id():"+boe.getBook_id()+"--"+be.getBook_id().equals(boe.getBook_id()));
+							log.debug("bos.getOs_id():"+bos.getOs_id()+"--boe.getOs_id():"+"--"+bos.getOs_id().equals(boe.getOs_id()));
+						}
+						if(be.getBook_id().equals(boe.getBook_id())&&bos.getOs_id().equals(boe.getOs_id())) { //注意是Integer，不能用==
+							if(!createRowFlag) {
+								row = sheet.createRow(rowCountTemp);
+								rowCountTemp++;
+							}
+							createRowFlag = true;
+							row.createCell(startColumn).setCellValue(bookOnlineStatusStr(boe.getIs_online()));
+							flag = true;
+							break;
+						} else {
+							flag = false;
+						}
+					}
+					if(flag) {
+
+						for (int j = 0; j < exportColumnArray.length; j++) {
+							row.createCell(j).setCellValue(StringUtil.ObjectToString(BeanUtils.getProperty(be, exportColumnArray[j].trim())));
+						}
+
+					}else {
+						row.createCell(startColumn).setCellValue("");
+					}
+					startColumn++;
+				}
+			} else {
+				for(BookOnlineEntity boe : bookOnlinelist) {
+					if(be.getBook_id().equals(boe.getBook_id()) && boe.getOs_id().equals(osId)) {
+						row = sheet.createRow(rowCountTemp);
+
+						for (int j = 0; j < exportColumnArray.length; j++) {
+							row.createCell(j).setCellValue(StringUtil.ObjectToString(BeanUtils.getProperty(be, exportColumnArray[j].trim())));
+						}
+						row.createCell(exportColumnArray.length).setCellValue(bookOnlineStatusStr(osId));
+						rowCountTemp++;
+						break;
+					}
+				}
+			}
+		}
+		FileOutputStream os = new FileOutputStream(exportExcelPath);
+		wb.write(os);
+		os.close();
+		return 1;
+	}
+
+	/**
+	 *
+	 * @param isOnline
+	 * @return
+	 */
+	private String bookOnlineStatusStr(int isOnline) {
+		String out = "";
+		switch (isOnline) {
+			case 0: out = "转码中"; break;
+			case 1: out="已上线"; break;
+			case 2: out="转码完"; break;
+			case 3: out="已停售"; break;
+			case 4: out="待转码"; break;
+			case 5: out="待上线"; break;
+		}
+		return out;
+	}
 }

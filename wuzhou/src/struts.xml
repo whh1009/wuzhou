@@ -445,6 +445,16 @@
 
 		<!-- 图书在线状态导出 -->
 		<action name="exportEBookOnline" class="com.wz.action.EBookManAction" method="exportEBookOnline"></action>
+
+		<!-- 图书在线状态下载excel -->
+		<action name="downLoadexportEBookOnlineExcel" class="com.wz.action.EBookManAction" method="downLoadexportEBookOnlineExcel">
+			<result type="stream">
+				<param name="contentDisposition">attachment;filename=${bookOnlineExcelName}</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">bookOnlineInputStream</param>
+				<param name="bufferSize">10240</param>
+			</result>
+		</action>
 	</package>
 
 </struts>
