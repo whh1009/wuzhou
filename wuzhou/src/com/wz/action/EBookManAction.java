@@ -544,7 +544,6 @@ public class EBookManAction extends ActionSupport {
 		int osId = StringUtil.StringToInt(request.getParameter("osId"));
 		int osStatus = StringUtil.StringToInt(request.getParameter("osStauts"));
 		String fileName = StringUtil.dateToString("yyyyMMddhhmmss") + ".xlsx";
-
 		String exportExcelPath = ServletActionContext.getServletContext().getRealPath("/")+"excel\\"+fileName;
 		new File(ServletActionContext.getServletContext().getRealPath("/")+"excel").mkdirs();
 		Object o = request.getSession().getAttribute("userEntity");

@@ -809,7 +809,7 @@ public class EBookManService {
 		List<BookEntity> bookList = bookDao.getBookListByHql("from BookEntity where book_del_flag=0 "  + conditions);
 		if(bookList==null||bookList.isEmpty()) return -1;
 		int rowCountTemp = 1;
-		Row row = null;
+		Row row = sheet.createRow(rowCountTemp);
 		for(int i = 0; i<bookList.size();i++) {
 			BookEntity be = bookList.get(i);
 			boolean createRowFlag = false;
@@ -819,18 +819,9 @@ public class EBookManService {
 					boolean flag = false;
 					for (BookOnlineEntity boe : bookOnlinelist) {
 						if("".equals(StringUtil.ObjectToString(boe.getOs_id()))) continue;
-						if(be.getBook_serial_number().equals("B_EP_7508510194_003_KodB0")) {
-							log.debug("=="+StringUtil.ObjectToString(boe.getOs_id())+"==");
-							log.debug("be.getBook_id():"+be.getBook_id()+"--boe.getBook_id():"+boe.getBook_id()+"--"+be.getBook_id().equals(boe.getBook_id()));
-							log.debug("bos.getOs_id():"+bos.getOs_id()+"--boe.getOs_id():"+"--"+bos.getOs_id().equals(boe.getOs_id()));
-						}
 						if(be.getBook_id().equals(boe.getBook_id())&&bos.getOs_id().equals(boe.getOs_id())) { //注意是Integer，不能用==
-							if(!createRowFlag) {
-								row = sheet.createRow(rowCountTemp);
-								rowCountTemp++;
-							}
-							createRowFlag = true;
 							row.createCell(startColumn).setCellValue(bookOnlineStatusStr(boe.getIs_online()));
+							createRowFlag = true;
 							flag = true;
 							break;
 						} else {
@@ -838,7 +829,6 @@ public class EBookManService {
 						}
 					}
 					if(flag) {
-
 						for (int j = 0; j < exportColumnArray.length; j++) {
 							row.createCell(j).setCellValue(StringUtil.ObjectToString(BeanUtils.getProperty(be, exportColumnArray[j].trim())));
 						}
@@ -848,6 +838,11 @@ public class EBookManService {
 					}
 					startColumn++;
 				}
+				if(createRowFlag) {
+					rowCountTemp++;
+					row = sheet.createRow(rowCountTemp);
+					createRowFlag = false;
+				}
 			} else {
 				for(BookOnlineEntity boe : bookOnlinelist) {
 					if(be.getBook_id().equals(boe.getBook_id()) && boe.getOs_id().equals(osId)) {
@@ -856,7 +851,7 @@ public class EBookManService {
 						for (int j = 0; j < exportColumnArray.length; j++) {
 							row.createCell(j).setCellValue(StringUtil.ObjectToString(BeanUtils.getProperty(be, exportColumnArray[j].trim())));
 						}
-						row.createCell(exportColumnArray.length).setCellValue(bookOnlineStatusStr(osId));
+						row.createCell(exportColumnArray.length).setCellValue(bookOnlineStatusStr(boe.getIs_online()));
 						rowCountTemp++;
 						break;
 					}
