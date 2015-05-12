@@ -1,0 +1,227 @@
+body{
+    font-size:100%;
+    font-family:"Bider HanYuPinYin";
+}
+.EntryMessage , .BookWord, .Comment, .ZhiShiChuang, .ShiWen ,  .Sentences, .Image, .RelatedWord, .Cell, .YouShuo, .YeShuo, .Extra, .JinYiCi, .FanYiCi,.HuJian,.YongFa{
+    display:block;
+}
+.EntryMessage {
+    margin-top:1em;
+}
+.Entry:before{
+    content:"【";
+}
+.Entry:after{
+    content:"】";
+}
+.Entry {
+    font-weight:bold;
+}
+.Word:before{
+	content:"【";
+}
+.Word:after{
+	content:"】";
+}
+.Word{
+	margin-right:1em;
+}
+.BookWord, .WordSentence, .Explain, .Example, .JinYiCi, .fanYiCi, .FanYiCi , .Comment , .ZhuYi , .CP,.Source, .YongFa {
+    margin-left:1em;
+}
+
+.WordSentence{
+    font-family:"仿宋";
+}
+/*
+ * 拼音
+ */
+.Pron, .Pronounce, .HuJian {
+    font-family:"Bider HanYuPinYin";
+}
+.Pron{
+	margin-left:1em;
+	margin-right:1em;
+}
+/*
+ * 多音字
+ */
+.Polyphone {
+    font-family:"Bider HanYuPinYin";
+}
+/*
+ * 例句
+ */
+.Example{
+    font-family:"仿宋";
+}
+/*
+ * 补字
+ */
+.ExtCode{
+    font-family:"新宋体-商务";
+}
+/*
+ * 释义
+ */
+.Explain{
+    color:blue;
+}
+/*
+ * 出处
+ */
+.Source:before {
+	content:"[出处] ";
+}
+.YongFa:before{
+	content:"[用法] "
+}
+/*
+ * 繁体
+ */
+.FanTi { }
+/*
+ * 表格
+ */
+.T { }
+/*
+ * 表格-行
+ */
+ .R { }
+ /*
+  * 表格-列
+  */
+.D { }
+/*
+ * 上标
+ */
+.Sup { }
+/*
+ * 下标
+ */
+.Sub { }
+/*
+ * 
+ */
+.Complex { }
+.Feature:before { 
+	content:"（";
+}
+.Feature:after {
+	content:"）";
+}
+
+.LanguageColor { }
+.Introduce { }
+/*
+ * 自定义P标签样式
+ */
+.CP, .YouYin {
+    font-family:"Bider HanYuPinYin", "宋体";
+}
+.CP{
+	display:block;
+	margin-top:0.5em;
+}
+/*
+ * 知识窗
+ */
+ .ZhiShiChuang:before {
+    content:"[知识窗] ";
+}
+.ZhiShiChuang{
+    font-family:"幼圆";
+    color:green;
+}
+/*
+ * 互见，另见，参见, 又音
+ */
+.HuJian {
+    /* font-size:80%; */
+}
+/*
+ * 诗文
+ */
+.ShiWen {
+    margin-left: 2em;
+}
+/*
+ * 儿化，small
+ */
+.Small , .ErHua {
+    font-size:70%;
+}
+/*
+ * 红色
+ */
+.Red {
+    color:red;
+}
+.Sentence {
+    
+}
+.Stylistic {
+    
+}
+.English {
+    font-family:"Calibri";
+}
+.Complement {
+    font-family:"楷体";
+}
+.Common {
+    font-family:"楷体";
+}
+.Extra:before,.Comment:before{
+	content:"[拓展] ";
+}
+.Extra {
+    margin-left:1em; font-size:90%;
+    font-family:"方正舒体";
+}
+.OriginalIntention {
+    margin-left:1em;
+}
+.Sentences {
+    margin-left:1em;
+}
+.Image {
+    
+}
+.RelatedWord:before{
+	content:"[相关词] ";
+}
+.RelatedWord {
+    margin-left:1em;
+}
+.Cell:before{
+	content:"[拓展词汇] ";
+}
+.Cell {
+    margin-left:1em;
+}
+.CLink {
+    
+}
+.ExplainDetail { }
+
+.YouShuo{ }
+.YeShuo{ }
+.YouYin{ }
+
+.JinYiCi:before{
+	content:"[近义词] ";
+}
+.FanYiCi:before{
+	content:"[反义词] ";
+}
+.ZhuYi:before{
+	content:"[注意] ";
+}
+
+
+.Hidden{
+	/* display:none; */
+}
+
+
