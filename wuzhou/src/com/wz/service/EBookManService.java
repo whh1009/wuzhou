@@ -81,20 +81,20 @@ public class EBookManService {
 		if(bookList==null||bookList.size()==0) return false;
 		String time = StringUtil.dateToString("yyyyMMddhhmmss"); //都生成到当前时间的文件夹中
 		String overDrivePath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\OverDrive";
-		FileUtil.createDirs(overDrivePath, true);
-		OutputStream overDriveStream = new FileOutputStream(new File(overDrivePath+"\\Over Drive.xlsx"));
+		FileUtil.createDirs(overDrivePath+"\\元数据", true);
+		OutputStream overDriveStream = new FileOutputStream(new File(overDrivePath+"\\元数据\\Over Drive.xlsx"));
 		
 		String thatsBookPath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\That's Books on China";
-		FileUtil.createDirs(thatsBookPath, true);
-		OutputStream thatBookStream = new FileOutputStream(new File(thatsBookPath+"\\Thats Books on china.xlsx"));
+		FileUtil.createDirs(thatsBookPath+"\\元数据", true);
+		OutputStream thatBookStream = new FileOutputStream(new File(thatsBookPath+"\\元数据\\Thats Books on china.xlsx"));
 		
 		String amazonCnPath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\亚马逊（中国）";
-		FileUtil.createDirs(amazonCnPath, true);
-		OutputStream amazonCnStream = new FileOutputStream(new File(amazonCnPath+"\\亚马逊（中国）.xlsx"));
+		FileUtil.createDirs(amazonCnPath+"\\元数据", true);
+		OutputStream amazonCnStream = new FileOutputStream(new File(amazonCnPath+"\\元数据\\亚马逊（中国）.xlsx"));
 		
 		String amazonUsPath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\亚马逊（美国）";
-		FileUtil.createDirs(amazonUsPath, true);
-		OutputStream amazonUsStream = new FileOutputStream(new File(amazonUsPath+"\\亚马逊（美国）.xlsx"));
+		FileUtil.createDirs(amazonUsPath+"\\元数据", true);
+		OutputStream amazonUsStream = new FileOutputStream(new File(amazonUsPath+"\\元数据\\亚马逊（美国）.xlsx"));
 		
 		EBookFormat amazoncn = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_AMAZON_CN);
 		amazoncn.renameEBook(bookList, userList, amazonCnPath, excelPath+"\\amazoncn.xlsx");

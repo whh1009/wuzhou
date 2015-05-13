@@ -380,7 +380,7 @@
         }
 
         // 转换
-        function formatBookById(bid) {
+        function formatBookById() {
             $("#formatBookBtn").button("loading");
             $.ajax({
                 url: "formatEBookByBookId.action",
@@ -407,7 +407,6 @@
                     alert("转换失败："+textStatus+" "+errorThrown);
                 }
             });
-
         }
 
     </script>
@@ -427,7 +426,7 @@
             </button>
         </div>
         <div class="col-sm-9">
-            <div class="input-group input-group-lg">
+            <div class="input-group">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default dropdown-toggle" style="width: 9em;"
                             data-toggle="dropdown">

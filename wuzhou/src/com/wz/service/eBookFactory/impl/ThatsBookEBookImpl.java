@@ -1,11 +1,11 @@
 package com.wz.service.eBookFactory.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-
+import com.wz.common.ConfigInfo;
+import com.wz.entity.BookEntity;
+import com.wz.entity.UserEntity;
+import com.wz.service.eBookFactory.EBookFormat;
+import com.wz.service.eBookFactory.EBookTool;
+import com.wz.util.StringUtil;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -13,12 +13,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.wz.common.ConfigInfo;
-import com.wz.entity.BookEntity;
-import com.wz.entity.UserEntity;
-import com.wz.service.eBookFactory.EBookFormat;
-import com.wz.service.eBookFactory.EBookTool;
-import com.wz.util.StringUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * That's Books on China 平台
@@ -42,11 +41,16 @@ public class ThatsBookEBookImpl implements EBookFormat {
 				bookRootPath = ConfigInfo.FTP_ROOT +"\\201409之前书目\\"+ be.getBook_serial_number();
 			}
 			String epubRootPath = bookRootPath + "\\EPUB";
-			EBookTool.copy(epubRootPath, desPath, "epub", be.getBook_name_cn());
+			EBookTool.copy(epubRootPath, desPath+"\\电子文件", "epub", be.getBook_name_cn());
 			String pdfRootPath = bookRootPath + "\\阅读PDF";
-			EBookTool.copy(pdfRootPath, desPath, "pdf", be.getBook_name_cn());
-			String coverRootPath = bookRootPath + "\\封面";
-			EBookTool.copy(coverRootPath, desPath, "jpg", be.getBook_name_cn());
+			EBookTool.copy(pdfRootPath, desPath+"\\电子文件", "pdf", be.getBook_name_cn());
+			String coverRootPath = bookRootPath + "\\电子书封面";
+			EBookTool.copy(coverRootPath, desPath+"\\电子书封面", "jpg", be.getBook_name_cn());
+
+			//补充样章
+			String yzRootPath = bookRootPath + "\\样章";
+			EBookTool.copy(epubRootPath, desPath+"\\电子文件", "epub", be.getBook_name_cn());
+			EBookTool.copy(pdfRootPath, desPath+"\\电子文件", "pdf", be.getBook_name_cn());
 		}
 	}
 

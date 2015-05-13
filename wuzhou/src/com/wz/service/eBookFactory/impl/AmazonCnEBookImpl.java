@@ -1,22 +1,5 @@
 package com.wz.service.eBookFactory.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import com.wz.common.BookLanguageMap;
 import com.wz.common.ConfigInfo;
 import com.wz.entity.BookEntity;
@@ -25,6 +8,15 @@ import com.wz.service.eBookFactory.EBookFormat;
 import com.wz.service.eBookFactory.EBookTool;
 import com.wz.util.FileUtil;
 import com.wz.util.StringUtil;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 亚马逊中国 平台
@@ -55,7 +47,7 @@ public class AmazonCnEBookImpl implements EBookFormat {
 			EBookTool.getFileByExtension(mobiRootPath, "mobi", mobiList);
 			for(File mobiFile : mobiList) { 
 				try {
-					FileUtil.copyFile(mobiFile, new File(desPath+"\\CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(mobiCount)+".mobi"), true);
+					FileUtil.copyFile(mobiFile, new File(desPath+"\\电子文件\\CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(mobiCount)+".mobi"), true);
 					map.put(be.getBook_isbn(), "CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(mobiCount));//添加isbn-参考代码映射
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -63,18 +55,20 @@ public class AmazonCnEBookImpl implements EBookFormat {
 				mobiCount++;
 			}
 			
-			String coverRootPath = bookRootPath + "\\封面";
+			String coverRootPath = bookRootPath + "\\电子书封面";
 			List<File> coverList = new ArrayList<File>();
 			EBookTool.getFileByExtension(coverRootPath, "jpg", coverList);
 			
 			for(File coverFile : coverList) { 
 				try {
-					FileUtil.copyFile(coverFile, new File(desPath+"\\CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(coverCount)+".jpg"), true);
+					FileUtil.copyFile(coverFile, new File(desPath+"\\电子书封面\\CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(coverCount)+".jpg"), true);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				coverCount++;
 			}
+
+			//不需要样章
 			
 		}
 	}
@@ -117,6 +111,7 @@ public class AmazonCnEBookImpl implements EBookFormat {
 			ex.printStackTrace();
 		}
 	}
+
 
 	/**
 	 * 获取参考代码
