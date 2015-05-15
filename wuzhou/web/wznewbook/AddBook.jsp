@@ -228,7 +228,7 @@ dzs 电子书属性，用于切换显示
 								if (name == 'book_keyword_cn' || name == 'book_keyword_english' || name == 'book_keyword_foreign') { //关键字特殊处理
 									$("*[name='bookEntity." + name + "']").importTags(json[name]);
 								} else {
-									if (ename == "book_paper_price" || ename == "book_ebook_price"||ename=="book_paper_dollar_price"||ename=="book_ebook_dollar_price") {
+									if (name == "book_paper_price" || name == "book_ebook_price"||name=="book_paper_dollar_price"||name=="book_ebook_dollar_price") {
 										$("*[name='bookEntity." + name + "']").val(json[name].toFixed(2));
 									} else {
 										$("*[name='bookEntity." + name + "']").val(json[name]);
