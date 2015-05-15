@@ -1,10 +1,10 @@
 package com.wz.service.eBookFactory;
 
-import java.io.OutputStream;
-import java.util.List;
-
 import com.wz.entity.BookEntity;
 import com.wz.entity.UserEntity;
+
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * 
@@ -26,4 +26,7 @@ public interface EBookFormat {
 	 * @param out 输出流
 	 */
 	public void createExcel(OutputStream out);
+
+
+//	public void handleYZ();
 }

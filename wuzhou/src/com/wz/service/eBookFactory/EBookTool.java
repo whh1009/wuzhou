@@ -1,13 +1,12 @@
 package com.wz.service.eBookFactory;
 
+import com.wz.entity.UserEntity;
+import com.wz.util.FileUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.wz.entity.BookEntity;
-import com.wz.entity.UserEntity;
-import com.wz.util.FileUtil;
 
 public class EBookTool {
 	/**
@@ -55,12 +54,13 @@ public class EBookTool {
 	 * @param srcPath 原路径
 	 * @param desPath 目的路径
 	 * @param extension 后缀
-	 * @param be 对象
+	 * @param name 文件名
 	 */
 	public static void copy(String srcPath, String desPath, String extension, String name) {
-		List<File> mobiList = new ArrayList<File>();
-		EBookTool.getFileByExtension(srcPath, extension, mobiList);
-		for(File file : mobiList) { 
+		List<File> fileList = new ArrayList<File>();
+		EBookTool.getFileByExtension(srcPath, extension, fileList);
+		if(fileList==null||fileList.isEmpty()) return;
+		for(File file : fileList) {
 			try {
 				FileUtil.copyFile(file, new File(desPath+"\\"+name+"."+extension), true);
 			} catch (IOException e) {

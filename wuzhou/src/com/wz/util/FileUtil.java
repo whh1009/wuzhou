@@ -1,24 +1,10 @@
 package com.wz.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
-import java.io.StringReader;
-import java.io.Writer;
-
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Zip;
 import org.apache.tools.ant.types.FileSet;
+
+import java.io.*;
 
 public class FileUtil {
 
@@ -409,7 +395,7 @@ public class FileUtil {
 	 * @throws java.io.IOException
 	 */
 	public static void copyFile(File srcFile, File destFile, boolean overwrite) throws IOException {
-
+		destFile.getParentFile().mkdirs();
 		// 首先判断源文件是否存在
 		if (!srcFile.exists()) {
 			throw new FileNotFoundException("Cannot find the source file: " + srcFile.getAbsolutePath());

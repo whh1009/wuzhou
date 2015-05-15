@@ -37,11 +37,13 @@ public class OverDriveEBookImpl implements EBookFormat {
 				bookRootPath = ConfigInfo.FTP_ROOT +"\\201409之前书目\\"+ be.getBook_serial_number();
 			}
 			String epubRootPath = bookRootPath + "\\EPUB";
-			EBookTool.copy(epubRootPath, desPath, "epub", be.getBook_isbn());
+			EBookTool.copy(epubRootPath, desPath+"\\电子文件", "epub", be.getBook_isbn());
 			String pdfRootPath = bookRootPath + "\\阅读PDF";
-			EBookTool.copy(pdfRootPath, desPath, "pdf", be.getBook_isbn());
-			String coverRootPath = bookRootPath + "\\封面";
-			EBookTool.copy(coverRootPath, desPath, "jpg", be.getBook_isbn());
+			EBookTool.copy(pdfRootPath, desPath+"\\电子文件", "pdf", be.getBook_isbn());
+			String coverRootPath = bookRootPath + "\\电子书封面";
+			EBookTool.copy(coverRootPath, desPath+"\\电子书封面", "jpg", be.getBook_isbn());
+
+			//不需要样章
 		}
 	}
 	
