@@ -455,6 +455,26 @@
 				<param name="bufferSize">10240</param>
 			</result>
 		</action>
+
+		<!-- 责编录入查询图书列表 -->
+		<action name="bookListByEditor" class="com.wz.action.BookAction" method="bookListByEditor">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result name="success">BookListByEditor.jsp</result>
+		</action>
+
+		<!-- 获取所有用户，组装json -->
+		<action name="getAllUser" class="com.wz.action.UserAction" method="getAllUser">
+			<!--<result type="json">-->
+				<!--<param name="excludeProperties">last_login_time</param>-->
+				<!--<param name="excludeProperties">reg_time</param>-->
+			<!--</result>-->
+		</action>
+
+		<!-- 根据用户id检索图书 -->
+		<action name="bookListByUserId" class="com.wz.action.BookAction" method="bookListByUserId"></action>
+
+		<action name="getBookListByConditionAndUserId" class="com.wz.action.BookAction" method="getBookListByConditionAndUserId"></action>
+
 	</package>
 
 </struts>

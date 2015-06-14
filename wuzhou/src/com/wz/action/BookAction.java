@@ -1524,4 +1524,104 @@ public class BookAction extends ActionSupport {
 			out.close();
 		}
 	}
+
+	/**
+	 *根据责编查询图书列表
+	 * @return
+	 * @throws Exception
+	 */
+	public String bookListByEditor() throws Exception {
+		try {
+			// 获取用户该显示的字段，如果没有就显示默认的5个字段，否则由用户自己指定
+			HttpServletRequest request = ServletActionContext.getRequest();
+			UserEntity userEntity = (UserEntity) request.getSession().getAttribute("userEntity");
+			if (userEntity == null) { // session不存在，返回登录页面
+				return "noLogin";
+			} else {
+				showColumn = configService.getConfigColumnXmlByUserId(userEntity.getUser_id());
+			}
+			return Action.SUCCESS;
+		} catch (Exception ex) {
+			log.error("BookAction ## bookListByEditor 异常：" + ex.getMessage());
+			throw ex;
+		}
+	}
+
+	/**
+	 * 根据条件查询图书列表信息
+	 */
+	public void getBookListByConditionAndUserId() throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		out = response.getWriter();
+		int pageNum = StringUtil.StringToInt(request.getParameter("page"));
+		String searchType = StringUtil.ObjectToString(request.getParameter("searchType"));
+		String searchContent = StringUtil.ObjectToString(request.getParameter("searchContent"));
+		int userId = StringUtil.StringToInt(request.getParameter("userId"));
+
+		String hql = "";
+		String countHql = "";
+		if (pageNum == 0) {
+			pageNum = 1;
+		}
+		if ("".equals(searchType) || "".equals(searchContent)) {
+			if (userId == 0) {
+				hql = "from BookEntity where book_del_flag=0 order by book_id desc";
+				countHql = "select count(book_id) from wz_book where book_del_flag=0 order by book_id desc";
+			} else {
+				hql = "from BookEntity where user_id = " + userId + " and book_del_flag=0 order by book_id desc";
+				countHql = "select count(book_id) from wz_book where user_id = " + userId + " and book_del_flag=0 order by book_id desc";
+			}
+		} else {
+			// mysql 转义
+			searchContent = bookService.repMySqlChar(searchContent);
+			String speChar = searchContent.contains("{") ? "#}" : ""; // mysql
+			String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
+
+			if("book_publish_time".equals(columnName)) { //出版时间
+				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
+					if (userId == 0) {
+						hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 order by book_id desc ";
+						countHql = "select count(book_id) from wz_book where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 order by book_id desc";
+					} else {
+						hql = "from BookEntity where user_id = " + userId + " and book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 order by book_id desc ";
+						countHql = "select count(book_id) from wz_book where user_id = " + userId + " and book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 order by book_id desc";
+					}
+				} else { //只有起始日期
+					if (userId == 0) {
+						hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 order by book_id desc ";
+						countHql = "select count(book_id) from wz_book where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 order by book_id desc";
+					} else {
+						hql = "from BookEntity where user_id = " + userId + " and book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 order by book_id desc ";
+						countHql = "select count(book_id) from wz_book where user_id = " + userId + " and book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 order by book_id desc";
+					}
+				}
+			} else {
+				if (userId == 0) {
+					hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
+					countHql = "select count(book_id) from wz_book where " + columnName + " like '%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 order by book_id desc";
+				} else {
+					hql = "from BookEntity where user_id = " + userId + " and " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
+					countHql = "select count(book_id) from wz_book where user_id = " + userId + " and " + columnName + " like '%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 order by book_id desc";
+				}
+			}
+		}
+		System.out.println(hql);
+		List<BookEntity> bookList = bookService.findPageFromBook(pageNum, ConfigInfo.PAGE_ROW_COUNT, hql);
+		int pageCount = bookService.getPageCount(countHql, ConfigInfo.PAGE_ROW_COUNT);
+		PageEntity pageEntity = new PageEntity();
+		pageEntity.setCurrentPage(pageNum);
+		pageEntity.setPageRowCount(ConfigInfo.PAGE_ROW_COUNT);
+		pageEntity.setRowCount(0);
+		pageEntity.setPageCount(pageCount);
+		map.put("bookList", bookList);
+		map.put("pageEntity", pageEntity);
+		JSONObject json = JSONObject.fromObject(map);// 将map对象转换成json类型数据
+		out.print(json.toString());
+		out.flush();
+		out.close();
+	}
 }

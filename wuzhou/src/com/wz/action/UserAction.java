@@ -1,35 +1,30 @@
 package com.wz.action;
 
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import com.wz.common.ConfigInfo;
+import com.wz.common.PageEntity;
+import com.wz.entity.*;
+import com.wz.service.UserService;
+import com.wz.util.StringUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
-
-import org.apache.struts2.ServletActionContext;
-
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
-import com.wz.common.ColumnMap;
-import com.wz.common.ConfigInfo;
-import com.wz.common.PageEntity;
-import com.wz.entity.RoleEntity;
-import com.wz.entity.RoleMenuEntity;
-import com.wz.entity.UREntity;
-import com.wz.entity.UserEntity;
-import com.wz.entity.UserRoleEntity;
-import com.wz.service.UserService;
-import com.wz.util.StringUtil;
-
 public class UserAction extends ActionSupport{
+	public static Logger log = Logger.getLogger("wuzhou");
 	private UserService userService;
 	private List<UserEntity> userList;
 	private List<RoleEntity> roleList;
@@ -106,6 +101,8 @@ public class UserAction extends ActionSupport{
 		pageEntity.setRowCount(list==null?0:list.size());
 		return Action.SUCCESS;
 	}
+
+
 	
 	/**
 	 * 用户信息分页
@@ -155,7 +152,27 @@ public class UserAction extends ActionSupport{
 		out.flush();
 		out.close();
 	}
-	
+
+	public void getAllUser() throws Exception {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = null;
+		try {
+			List<UserEntity> userList = userService.getUserListByHql("from UserEntity order by user_id desc");
+			//Hibernate 懒加载
+			JsonConfig cfg = new JsonConfig();
+			cfg.setExcludes(new String[]{"handler","hibernateLazyInitializer"});
+			JSONArray json = JSONArray.fromObject(userList.toArray(), cfg);
+			out = response.getWriter();
+			out.print(json.toString());
+		}catch(Exception ex) {
+			log.error("UserAction ## getAllUser 异常：" + ex.getMessage());
+			throw ex;
+		}
+		out.close();
+	}
+
 	/**
 	 * 返回创建用户界面
 	 * @return

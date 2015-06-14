@@ -320,5 +320,9 @@ public class UserService {
 	public List<UserEntity> getUserList() throws Exception {
 		return userDao.getUserList();
 	}
+
+	public List<UserEntity> getUserListByHql(String hql) throws Exception {
+		return userDao.getUserListByHql(hql);
+	}
 	
 }

@@ -456,6 +456,15 @@ public class UserDao extends BaseDao {
 		}
 	}
 
-	
 
+	public List<UserEntity> getUserListByHql(String hql) {
+		try {
+			session = HibernateUtil.getSession();
+			session.beginTransaction();
+			query = session.createQuery(hql);
+			return query.list();
+		} catch (HibernateException ex) {
+			throw ex;
+		}
+	}
 }
