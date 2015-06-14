@@ -59,7 +59,11 @@
                                 radioStr += "<p>";
                             }
                         }
-                        radioStr += "<label class='radio-inline'><input type='radio' name='radioOptions' value='" + $(this).attr("ename") + "' > <span>" + $(this).attr("cname") + "</span></label>";
+                        if($(this).attr("ename")=="book_ebook_price"||$(this).attr("ename")=="book_ebook_dollar_price"||$(this).attr("ename")=="book_name_cn"||$(this).attr("ename")=="book_author"||$(this).attr("ename")=="book_content_intr_cn"||$(this).attr("ename")=="book_keyword_cn"||$(this).attr("ename")=="book_category1"||$(this).attr("ename")=="book_mark") {
+                            radioStr += "<label class='radio-inline'><input type='radio' name='radioOptions' value='" + $(this).attr("ename") + "' > <span style='color:red'>" + $(this).attr("cname") + "</span></label>";
+                        } else {
+                            radioStr += "<label class='radio-inline'><input type='radio' name='radioOptions' value='" + $(this).attr("ename") + "' > <span>" + $(this).attr("cname") + "</span></label>";
+                        }
                         i++;
                     });
                     radioStr += "</p>";

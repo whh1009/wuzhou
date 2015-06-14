@@ -3,11 +3,9 @@ package com.wz.service;
 import com.wz.common.ColumnMap;
 import com.wz.common.ConfigInfo;
 import com.wz.dao.BookDao;
-import com.wz.entity.BookEntity;
-import com.wz.entity.BookLanDoughnutChartEntity;
-import com.wz.entity.BookResourceEntity;
-import com.wz.entity.FTPFileEntity;
+import com.wz.entity.*;
 import com.wz.ftp.FtpUtil;
+import com.wz.service.eBookFactory.EBookTool;
 import com.wz.util.FileUtil;
 import com.wz.util.StringUtil;
 import net.sf.json.JSONArray;
@@ -1446,6 +1444,51 @@ public class BookService {
 			}
 		}
 		return months;
+	}
+
+	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList) {
+		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>();
+		if(bookList==null||bookList.isEmpty()) return null;
+		for(BookEntity be : bookList) {
+			String path = be.getBook_mobi_serverpath().replace("/", "\\");
+			String bookRootPath = ConfigInfo.FTP_ROOT +"\\" + EBookTool.getUserNameByUserId(be.getUser_id(), userList) +"\\"+ be.getBook_serial_number();
+			if(path.startsWith("\\201409之前书目\\")) {
+				bookRootPath = ConfigInfo.FTP_ROOT +"\\201409之前书目\\"+ be.getBook_serial_number();
+			}
+			String neiwenPath = bookRootPath+"\\排版";
+			double neiwenSize = FileUtil.getDirSize(new File(neiwenPath))*1024; //MB转KB
+			boolean neiwen = false;
+			String fengmianPath = bookRootPath+"\\封面";
+			double fengmianSize = FileUtil.getDirSize(new File(fengmianPath))*1024;
+			boolean fengmian = false;
+			String fencengPdfPath = bookRootPath+"\\分层PDF";
+			double fencengPdfSize = FileUtil.getDirSize(new File(fencengPdfPath))*1024;
+			boolean fenceng = false;
+			String contractPath = bookRootPath + "\\合同";
+			double contractSize = FileUtil.getDirSize(new File(contractPath))*1024;
+			boolean contract = false;
+
+			if(be.getBook_serial_number().equals("B_EP_978712345678_003_ZehiV")) {
+				System.out.println(neiwenSize+"="+Double.valueOf(ConfigInfo.LIMIT_NEIWEN_DIRECTORY_SIZE)/1024);
+				System.out.println(fengmianSize+"="+Double.valueOf(ConfigInfo.LIMIT_COVER_DIRECTORY_SIZE)/1024);
+				System.out.println(fencengPdfSize+"="+Double.valueOf(ConfigInfo.LIMIT_FENCENG_PDF_DIRECTORY_SIZE)/1024);
+				System.out.println(contractSize+"="+Double.valueOf(ConfigInfo.LIMIT_CONTRACT_DIRECTORY_SIZE)/1024);
+			}
+			if(neiwenSize>=Double.valueOf(ConfigInfo.LIMIT_NEIWEN_DIRECTORY_SIZE)/1024) neiwen = true;
+			if(fengmianSize>=Double.valueOf(ConfigInfo.LIMIT_COVER_DIRECTORY_SIZE)/1024) fengmian = true;
+			if(fencengPdfSize>=Double.valueOf(ConfigInfo.LIMIT_FENCENG_PDF_DIRECTORY_SIZE)/1024) fenceng = true;
+			if(contractSize>=Double.valueOf(ConfigInfo.LIMIT_CONTRACT_DIRECTORY_SIZE)/1024) contract = true;
+			if(!(neiwen&fengmian&fenceng&contract)) {
+				BookEntityFileSize befs = new BookEntityFileSize();
+				befs.setBe(be);
+				befs.setNeiwen(neiwen);
+				befs.setFengmian(fengmian);
+				befs.setFencengpdf(fenceng);
+				befs.setContract(contract);
+				list.add(befs);
+			}
+		}
+		return list;
 	}
 
 	public static void main(String [] args) throws Exception {

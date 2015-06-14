@@ -473,8 +473,16 @@
 		<!-- 根据用户id检索图书 -->
 		<action name="bookListByUserId" class="com.wz.action.BookAction" method="bookListByUserId"></action>
 
+		<!-- 根据录入者id和其它条件检索图书 -->
 		<action name="getBookListByConditionAndUserId" class="com.wz.action.BookAction" method="getBookListByConditionAndUserId"></action>
 
+		<!-- 检索出不符合文件大小的图书列表 -->
+		<action name="bookListByFileSize" class="com.wz.action.BookAction" method="bookListByFileSize">
+			<result name="noLogin" type="redirectAction">toLogin</result>
+			<result name="success">BookListByFileSize.jsp</result>
+		</action>
+
+		<action name="getBookListByConditionAndFileSize" class="com.wz.action.BookAction" method="getBookListByConditionAndFileSize"></action>
 	</package>
 
 </struts>

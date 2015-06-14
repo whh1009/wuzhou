@@ -9,7 +9,9 @@ import com.wz.entity.*;
 import com.wz.service.BookService;
 import com.wz.service.ConfigService;
 import com.wz.service.LogService;
+import com.wz.service.UserService;
 import com.wz.util.StringUtil;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -27,6 +29,7 @@ public class BookAction extends ActionSupport {
 	private BookService bookService;
 	private LogService logService;
 	private ConfigService configService;
+	private UserService userService;
 	private BookEntity bookEntity;
 	private String downloadName;
 	private String FTPUploadConfig;
@@ -159,6 +162,7 @@ public class BookAction extends ActionSupport {
 		bookService = new BookService();
 		logService = new LogService();
 		configService = new ConfigService();
+		userService = new UserService();
 	}
 
 	/**
@@ -1620,6 +1624,69 @@ public class BookAction extends ActionSupport {
 		map.put("bookList", bookList);
 		map.put("pageEntity", pageEntity);
 		JSONObject json = JSONObject.fromObject(map);// 将map对象转换成json类型数据
+		out.print(json.toString());
+		out.flush();
+		out.close();
+	}
+	/**
+	 * 检索出文件大小
+	 * @return
+	 * @throws Exception
+	 */
+	public String bookListByFileSize() throws Exception {
+		try {
+			// 获取用户该显示的字段，如果没有就显示默认的5个字段，否则由用户自己指定
+			HttpServletRequest request = ServletActionContext.getRequest();
+			UserEntity userEntity = (UserEntity) request.getSession().getAttribute("userEntity");
+			if (userEntity == null) { // session不存在，返回登录页面
+				return "noLogin";
+			} else {
+				showColumn = configService.getConfigColumnXmlByUserId(userEntity.getUser_id());
+			}
+			return Action.SUCCESS;
+		} catch (Exception ex) {
+			log.error("BookAction ## BookListByFileSize 异常：" + ex.getMessage());
+			throw ex;
+		}
+	}
+
+	/**
+	 * 根据条件查询图书列表信息
+	 */
+	public void getBookListByConditionAndFileSize() throws Exception {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		out = response.getWriter();
+//		int pageNum = StringUtil.StringToInt(request.getParameter("page"));
+		String searchType = StringUtil.ObjectToString(request.getParameter("searchType"));
+		String searchContent = StringUtil.ObjectToString(request.getParameter("searchContent"));
+		String hql = "";
+		if ("".equals(searchType) || "".equals(searchContent)) {
+			hql = "from BookEntity where book_del_flag=0 order by book_id desc";
+		} else {
+			// mysql 转义
+			searchContent = bookService.repMySqlChar(searchContent);
+			String speChar = searchContent.contains("{") ? "#}" : ""; // mysql
+			String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
+
+			if("book_publish_time".equals(columnName)) { //出版时间
+				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
+					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 order by book_id desc ";
+				} else { //只有起始日期
+						hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 order by book_id desc ";
+
+				}
+			} else {
+				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
+
+			}
+		}
+		List<BookEntity> bookList = bookService.getBookListByHql(hql);
+		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList());
+//		JSONObject json = JSONObject.fromObject(map);// 将map对象转换成json类型数据
+		JSONArray json = JSONArray.fromObject(list);
 		out.print(json.toString());
 		out.flush();
 		out.close();

@@ -249,7 +249,7 @@ public class ColumnMap {
         map.put("book_news_distribute_count", "发行印数");
         map.put("book_news_count", "总印数");
         map.put("book_news_shangjiao_count", "上缴样书册数");
-
+		map.put("book_mark", "备注"); //2015-06-14 add
         return map;
     }
 

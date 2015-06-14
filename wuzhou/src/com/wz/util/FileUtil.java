@@ -622,7 +622,7 @@ public class FileUtil {
                 return size;
             }
         } else {
-            System.out.println("文件或者文件夹不存在，请检查路径是否正确！");
+//            System.out.println("文件或者文件夹不存在，请检查路径是否正确！");
             return 0.0;
         }
     }
