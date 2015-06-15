@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -1496,4 +1497,56 @@ public class BookService {
 		bs.createFtpFold3();
 	}
 
+	public void createExcelByFileSize(String filePath, String fileName, List<BookEntityFileSize> list, String exportColumn) throws Exception{
+		// 删除已有的excel
+		deleteExistFile(filePath);
+		Workbook wb = new XSSFWorkbook();
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(filePath + fileName);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		Sheet helloSheet = wb.createSheet("Sheet1");
+		Row row1 = helloSheet.createRow(0);
+		row1.setRowStyle(setTitleStyle(wb));
+		String[] exportColumnArray = exportColumn.split(",");
+		for (int i = 0; i < exportColumnArray.length; i++) {
+			row1.createCell(i).setCellValue(ColumnMap.getBookTableCnByColumnName(exportColumnArray[i].trim()));
+		}
+		for (int i = 0; i < list.size(); i++) {
+			BookEntity be = list.get(i).getBe();
+			Field[] fields = be.getClass().getFields();
+			Row row = helloSheet.createRow(i + 1);
+			for (int j = 0; j < exportColumnArray.length; j++) {
+				for (Field f : fields) {
+					if (exportColumnArray[j].equals(f.getName())) {
+						row.createCell(j).setCellValue(StringUtil.ObjectToString(f.get(be)));
+						break;
+					}
+				}
+			}
+			String flag = "";
+			if(!list.get(i).isNeiwen()){
+				flag+="排版 ";
+			}
+			if(!list.get(i).isFengmian()) {
+				flag+="封面 ";
+			}
+			if(!list.get(i).isFencengpdf()) {
+				flag+="分层PDF ";
+			}
+			if(!list.get(i).isContract()) {
+				flag+="合同";
+			}
+			Cell cell = row.createCell(exportColumnArray.length+1);
+			CellStyle cs = wb.createCellStyle();
+			cs.setFillBackgroundColor(HSSFColor.LIME.index);
+			cell.setCellStyle(cs);
+			cell.setCellValue(flag);
+		}
+		wb.write(fos);
+		fos.flush();
+		fos.close();
+	}
 }

@@ -483,6 +483,7 @@
 		</action>
 
 		<action name="getBookListByConditionAndFileSize" class="com.wz.action.BookAction" method="getBookListByConditionAndFileSize"></action>
+		<action name="createExcelByFileSize" class="com.wz.action.BookAction" method="createExcelByFileSize"></action>
 	</package>
 
 </struts>

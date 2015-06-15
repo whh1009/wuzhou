@@ -1691,4 +1691,56 @@ public class BookAction extends ActionSupport {
 		out.flush();
 		out.close();
 	}
+
+
+	public void createExcelByFileSize() throws Exception {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		out = response.getWriter();
+		String searchType = StringUtil.ObjectToString(request.getParameter("searchType"));
+		String searchContent = StringUtil.ObjectToString(request.getParameter("searchContent"));
+//		int userId = StringUtil.StringToInt(request.getParameter("userId"));
+		String hql = "";
+		if ("".equals(searchType) || "".equals(searchContent)) {
+			hql = "from BookEntity where book_del_flag=0 order by book_id desc";
+		} else {
+			// mysql 转义
+			searchContent = bookService.repMySqlChar(searchContent);
+			String speChar = searchContent.contains("{") ? "#}" : ""; // mysql
+			String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
+
+			if("book_publish_time".equals(columnName)) { //出版时间
+				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
+					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 order by book_id desc ";
+				} else { //只有起始日期
+					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 order by book_id desc ";
+
+				}
+			} else {
+				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
+
+			}
+		}
+		System.out.println(hql);
+		Object obj = request.getSession().getAttribute("userEntity");
+		String exportColumn = ConfigInfo.DEFAULT_EXPORT_COLUMN;
+		if (obj != null) {
+			int uId = ((UserEntity) obj).getUser_id();
+			exportColumn = configService.getExportColumnByUserId(uId);
+		}
+		List<BookEntity> bookList = bookService.getBookListByHql(hql);
+		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList());
+		String fileName = StringUtil.dateToString("yyyyMMddhhmmss") + ".xlsx";
+		try {
+			bookService.createExcelByFileSize(request.getRealPath("/") + "excel\\", fileName, list, exportColumn);
+			out.write(fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("0");
+		}
+		out.flush();
+		out.close();
+	}
 }

@@ -36,7 +36,8 @@
 	.jinggao {
 		margin-right: 1em;
 	}
-    
+	.aa{align:center;}
+	.aa img {display:block; margin:auto;}
     </style>
 <script>
 //检索类型
@@ -62,6 +63,39 @@ $(function () {
 
 	//隐藏“出版时间”输入框
 	$(".form_date").hide();
+	$(".ptime_start").change(function() {
+		var startDate = $(this).val();
+		var endDate = $(".ptime_end").val();
+		if(endDate=="") {
+			$(".searchContent").val($(this).val());
+		} else {
+			if(startDate>endDate) {
+				$(".ptime_end").val("");
+				$(".searchContent").val(startDate);
+			} else {
+				$(".searchContent").val(startDate+" 到 "+endDate);
+			}
+		}
+	});
+	$(".ptime_end").change(function() {
+		var startDate = $(".ptime_start").val();
+		var endDate = $(this).val();
+		if(endDate!="") {
+			if(startDate=="") {
+				alert("请选择起始日期");
+				$(".ptime_end").val("");
+			} else {
+				if(startDate>endDate) {
+					alert("起始日期不能超过结束日期");
+					$(".ptime_end").val("");
+					$(".searchContent").val($(".ptime_start").val());
+				} else {
+					$(".searchContent").val($(".ptime_start").val()+" 到 "+endDate);
+				}
+			}
+		}
+
+	});
 	
 });
 
@@ -158,24 +192,23 @@ function searchTypeBtn(searchType) {
 	$(".searchTypeSpan").html(searchType);
 	if(searchType=="出版时间") {
 		$(".form_date").show();
-		$(".searchContent").hide();
+		$(".searchContent").prop("disabled",true);
+		$(".searchContent").val("");
 	} else {
 		$(".form_date").hide();
-		$(".searchContent").show();
+		$(".searchContent").prop("disabled",false);
+		$(".ptime_start").val("");
+		$(".ptime_end").val("");
 	}
 }
 
 //检索
 function search() {
+
+
+
+
 	searchType = $(".searchTypeSpan").html();
-	if(searchType=="出版时间"){
-		$(".searchContent").val("");
-		$(".searchContent").val($(".ptime").val());
-	} else {
-		$(".ptime").val("");
-	}
-	$("#currentPageSpan").html(1);
-	$("#pageCountSpan").html(1);
 	searchContent = $(".searchContent").val();
 	if(searchType=="检索类别") {
 		alert("请选择检索类别!");
@@ -186,35 +219,35 @@ function search() {
 	} else {
 		getAllBookList(searchType, searchContent);
 	}
+
 }
 
 
 //导出excel
 function exportExcel(){
 	$.ajax({
-		url:'createExcel.action',
+		url:'createExcelByFileSize.action',
 		type:'post',
 		async: false,
 		data: {searchType:searchType,searchContent:searchContent},
+		beforeSend: function (XMLHttpRequest) {
+			$("body").showLoading();
+		},
 		success: function(data) {
+			$("body").hideLoading();
 			if(data!="0") {
-				//document.form.action="excelDownload.action?fileName="+data;
-				//document.form.submit();
 				window.location.href="excelDownload.action?fileName="+data;
 			} else {
 				alert("生成excel错误");
 			}
 		},
 		error:function(XMLHttpRequest, textStatus, errorThrown) {
-			//alert("生成excel错误:"+XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+			$("body").hideLoading();
 			if(XMLHttpRequest.readyState==4&&XMLHttpRequest.status==200) {
-				//document.form.action="excelDownload.action?fileName="+XMLHttpRequest.responseText;
-				//document.form.submit();
 				window.location.href="excelDownload.action?fileName="+data;
 			} else {
 				alert("生成excel错误:"+XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
 			}
-			//$("#exportExcel").button('reset');
 		}
 	});
 }
@@ -238,38 +271,57 @@ function exportExcel(){
 
 			        </div>
 				    <input type="text" class="form-control searchContent" value="" placeholder="输入关键词"/>
-				    
-				    <div class="input-group date form_date" data-date="" data-date-format="yyyy-MM">
-                        <input class="form-control ptime" size="16" placeholder="出版时间" type="text" value="" readonly>
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </span>
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
+
 				    <div class="input-group-btn">
 				    	<button class="btn btn-default dropdown-toggle" onclick="search()" type="button"><span class="glyphicon glyphicon-search"></span>&nbsp;检索</button>
 				    </div>
 				   
 			    </div>
     		</div>
-    		<%--<div class="col-sm-3">--%>
-    			<%--<div class="pull-right">--%>
-	    			<%--<div class="input-group-btn">--%>
-						<%--<button type="button" class="btn btn-default dropdown-toggle"--%>
-							<%--data-toggle="dropdown">--%>
-							<%--导出 <span class="caret"></span>--%>
-						<%--</button>--%>
-						<%--<ul class="dropdown-menu">--%>
-							<%--<li><a href="javascript:exportExcel();"--%>
-								<%--data-loading-text="正在导出..." id="exportExcel">导出图书列表</a></li>--%>
-							<%--<!-- <li><a href="javascript:exportXml();" data-loading-text="正在导出..." id="exportXml" data-toggle="modal" data-target="#myModal">导出资源文件</a></li> -->--%>
-						<%--</ul>--%>
-					<%--</div>--%>
-				<%--</div>--%>
-    		<%--</div>--%>
+    		<div class="col-sm-3">
+    			<div class="pull-right">
+	    			<div class="input-group-btn">
+						<button type="button" class="btn btn-default dropdown-toggle"
+							data-toggle="dropdown">
+							导出 <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li><a href="javascript:exportExcel();"
+								data-loading-text="正在导出..." id="exportExcel">导出图书列表</a></li>
+							<!-- <li><a href="javascript:exportXml();" data-loading-text="正在导出..." id="exportXml" data-toggle="modal" data-target="#myModal">导出资源文件</a></li> -->
+						</ul>
+					</div>
+				</div>
+    		</div>
     	</div>
+
+		<div class="row" id="sdate">
+			<div class="col-sm-8">
+				<div class="col-sm-5">
+					<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM">
+						<input class="form-control ptime_start" size="16" placeholder="出版时间--起始" type="text" value="" readonly>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+					</div>
+				</div>
+				<div class="col-sm-5">
+					<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM">
+						<input class="form-control ptime_end" size="16" placeholder="出版时间--结束" type="text" value="" readonly>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+					</div>
+				</div>
+			</div>
+		</div>
+
     	<div class="row">
 			<table class="table table-bordered table-hover table-condensed">
 				<thead>
