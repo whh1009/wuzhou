@@ -481,9 +481,14 @@
 			<result name="noLogin" type="redirectAction">toLogin</result>
 			<result name="success">BookListByFileSize.jsp</result>
 		</action>
-
+		<!-- 条件筛选，文件大小 -->
 		<action name="getBookListByConditionAndFileSize" class="com.wz.action.BookAction" method="getBookListByConditionAndFileSize"></action>
+		<!-- 条件筛选 文件大小 导出excel -->
 		<action name="createExcelByFileSize" class="com.wz.action.BookAction" method="createExcelByFileSize"></action>
+
+		<!-- 条件筛选 图书用途，本社，其他 -->
+		<action name="getBookListByConditionAndBookUse" class="com.wz.action.BookAction" method="getBookListByConditionAndBookUse"></action>
+		<action name="createExcelByBookUse" class="com.wz.action.BookAction" method="createExcelByBookUse"></action>
 	</package>
 
 </struts>

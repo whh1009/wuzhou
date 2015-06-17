@@ -347,6 +347,7 @@ public class EBookManService {
 					} else {
 						boolean flag = false;
 						for(File ff: files) {
+							if(ff.isDirectory()) continue;
 							String fullName = ff.getName().toLowerCase().trim();
 							String fileName = fullName.substring(0, fullName.lastIndexOf("."));
 							String extension = fullName.substring(fullName.lastIndexOf(".")+1);

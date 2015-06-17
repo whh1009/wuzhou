@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <title>五洲传播--书目信息</title>
+    <title>五洲传播--图书列表操作</title>
     <!-- Bootstrap framework -->
     <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css">
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -56,6 +56,11 @@ var rowCount = 1;
 var searchType="";
 //检索内容
 var searchContent="";
+//标记本社或其他社的复选框
+var bookUse="";
+//记录选中的用户id
+var selUserId="";
+
 var column="";
 $(function () {
 	column = "<s:property value="showColumn" />";
@@ -63,12 +68,14 @@ $(function () {
 	if(!column){
 		document.getElementById("container").style.display='none';
 	}
+	//初始化用户
+	initAllUserName();
 	//初始化显示字段
 	intShowColumn();
 	//初始化检索字段
 	initSearchColumn();
 	//初始化图书信息
-	getAllBookList(1,"","");
+	getAllBookList(1,"","", "BQ", "0");
 	//初始化分页按钮
 	initPageNum();
 	//隐藏“出版时间”输入框
@@ -106,6 +113,8 @@ $(function () {
 		}
 		
 	});
+
+	initBookUseCheckBox();
 });
 
 //初始化显示的表头字段
@@ -136,12 +145,12 @@ function initSearchColumn() {
 /**
  * 获取图书信息
  */
-function getAllBookList(page, searchType, searchContent) {
+function getAllBookList(page, searchType, searchContent, bookUse, uId) {
 	$.ajax({
-		url:'getBookListByCondition.action',
+		url:'getBookListByConditionAndBookUse.action',
 		type:'post',
 		async: false,
-		data:{page:page,searchType:searchType,searchContent:searchContent},
+		data:{page:page,searchType:searchType,searchContent:searchContent, bookUse:bookUse, selUserId:uId},
 		success: function(data) {
 			var json = eval('('+data+')');
 			if(json.bookList.length==0) {
@@ -201,15 +210,6 @@ function search() {
 	currentPage=1;
 	pageCount=1;
 	searchType = $(".searchTypeSpan").html();
-	/*
-	if(searchType=="出版时间"){
-		$(".searchContent").val("");
-		$(".searchContent").val($(".ptime_start").val());
-	} else {
-		$(".ptime_start").val("");
-		$(".ptime_end").val("");
-	}
-	*/
 	searchContent = $(".searchContent").val();
 	if(searchType=="检索类别") {
 		alert("请选择检索类别!");
@@ -218,7 +218,11 @@ function search() {
 		$(".searchContent").val("");
 		$(".searchContent").focus();
 	} else {
-		getAllBookList(1, searchType, searchContent);
+		bookUse="";
+		$("input[name='bookuseCb']").each(function() {
+			if($(this).is(":checked")) bookUse += $(this).val();
+		})
+		getAllBookList(1, searchType, searchContent, bookUse, selUserId);
 	}
 }
 
@@ -248,7 +252,7 @@ function initPageNum() {
  */
 function prePage() {
 	currentPage = currentPage - 1;
-	getAllBookList(currentPage, searchType, searchContent);
+	getAllBookList(currentPage, searchType, searchContent, bookUse, selUserId);
 }
 
 /**
@@ -256,7 +260,7 @@ function prePage() {
  */
 function nextPage() {
 	currentPage = currentPage + 1;
-	getAllBookList(currentPage, searchType, searchContent);
+	getAllBookList(currentPage, searchType, searchContent, bookUse, selUserId);
 }
 
 /**
@@ -273,7 +277,7 @@ function jumpPage() {
 		var pageInt = parseInt(toPage);
 		if(pageInt>=1&&pageInt<=pageCount) {
 			currentPage=pageInt;
-			getAllBookList(currentPage, searchType, searchContent);
+			getAllBookList(currentPage, searchType, searchContent, bookUse, selUserId);
 			initPageNum();
 		} else {
 			alert("超出页码范围了，亲，请输入[1-"+pageCount+"]之间数字 !");
@@ -285,11 +289,11 @@ function jumpPage() {
 }
 
 function firstPage() {
-	getAllBookList(1, searchType, searchContent);
+	getAllBookList(1, searchType, searchContent, bookUse, selUserId);
 }
 
 function endPage() {
-	getAllBookList(pageCount, searchType, searchContent);
+	getAllBookList(pageCount, searchType, searchContent, bookUse, selUserId);
 }
 
 //获取书目详细信息
@@ -299,19 +303,7 @@ function detail(bookId) {
 	document.form.action="../wzbase/detailBook.action";
 	document.form.submit();
 }
-/*
-function detail(bookId) {
-	$.post("getBookEntityByBookId.action",{bookId: bookId}, function(data) {
-		if(data=="0") {
-			alert("未获取到服务器数据，请重新登录!");
-		} else {
-			var json = eval('('+data+')');
-			var bookInfo = "<p>"+json.book_name_cn+"</p>";
-			$("#modalBody").html(bookInfo);
-			$('#myModal').modal({show:true});
-		}
-	})
-}*/
+
 
 function edit(bookId) {
 	$("#theBookId").val(bookId);
@@ -346,10 +338,10 @@ function remove(bookId) {
 //导出excel
 function exportExcel(){
 	$.ajax({
-		url:'createExcel.action',
+		url:'createExcelByBookUse.action',
 		type:'post',
 		async: false,
-		data: {searchType:searchType,searchContent:searchContent},
+		data: {searchType:searchType,searchContent:searchContent, bookUse:bookUse},
 		success: function(data) {
 			if(data!="0") {
 				window.location.href="excelDownload.action?fileName="+data;
@@ -409,6 +401,62 @@ function downFtpXml() {
 		});
 	}
 }
+//初始化本社和其他社的复选框，默认全选，至少选一个
+function initBookUseCheckBox() {
+	$("input[name='bookuseCb']").click(function() {
+		$(".searchContent").val("");
+		searchType = "";
+		searchContent = "";
+		$("#userSel").val("0");
+		var tem = "";
+		var flag = false;
+		$("input[name='bookuseCb']").each(function() {
+			flag = flag | $(this).is(":checked");
+			if($(this).is(":checked")) tem += $(this).val();
+		});
+		if(!flag){
+			alert("请至少选择一个");
+			$("input[name='bookuseCb']").each(function() {
+				$(this).prop("checked", true);
+			});
+			bookUse = "";
+		} else {
+			bookUse = tem;
+			getAllBookList(1, "", "", tem, "0");
+		}
+	});
+}
+
+//获取所有的用户，并组装一个select
+function initAllUserName() {
+	$.ajax({
+		url:'getAllUser.action',
+		type:'post',
+		beforeSend:function(XMLHttpRequest){
+			$("#userSel").html("<div class='aa'><img src='<%=basePath %>images/loading.gif' /></div>");
+		},
+		success: function(data) {
+			$("#userSel").empty();
+			var userSel = "<option value='0'>全部录入者</option>";
+			var userInfo = eval("("+data+")");
+			for(var i=0; i<userInfo.length; i++) {
+				userSel+="<option value='"+userInfo[i].user_id+"'>"+userInfo[i].user_id +"--"+userInfo[i].nick_name+"</option>";
+			}
+			$("#userSel").append(userSel);
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+			$("#userSel").empty();
+			alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+		}
+	});
+}
+//根据责编检索
+function userChange() {
+	var userId = $("#userSel").val();
+	selUserId = userId;
+	$(".searchContent").val("");
+	getAllBookList(1, "", "", bookUse, userId);
+}
 
 </script>
   </head>
@@ -418,6 +466,18 @@ function downFtpXml() {
   	<input type="hidden" value="0" name="theBookId" id="theBookId" />
     <div class="container" id="container">
     	<div class="row">
+			<div class="col-sm-2">
+				<div>
+					<!-- 图书用处 -->
+					<label class="checkbox-inline"><input type="checkbox" name="bookuseCb" value="B" checked> 本社</label>
+					<label class="checkbox-inline"><input type="checkbox" name="bookuseCb" value="Q" checked> 其他</label>
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<select id="userSel" class="form-control" onchange='userChange()'>
+					<option value="0">全部录入者</option>
+				</select>
+			</div>
     		<div class="col-sm-6">
     			<div class="input-group">
     				<div class="input-group-btn">
@@ -429,23 +489,13 @@ function downFtpXml() {
 		                 </ul>
 			        </div>
 				    <input type="text" class="form-control searchContent" value="" placeholder="输入关键词"/>
-				    
-				    <!-- <div class="input-group date form_date" data-date="" data-date-format="yyyy-MM">
-                        <input class="form-control ptime_start" size="16" placeholder="出版时间--起始" type="text" value="" readonly>
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </span>
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div> -->
 				    <div class="input-group-btn">
 				    	<button class="btn btn-default dropdown-toggle" onclick="search()" type="button"><span class="glyphicon glyphicon-search"></span>&nbsp;检索</button>
 				    </div>
 				   
 			    </div>
     		</div>
-    		<div class="col-sm-6">
+    		<div class="col-sm-2">
     			<!-- <div class="pull-right"> -->
 	    			<div class="btn-group">
 						<button type="button" class="btn btn-default dropdown-toggle"

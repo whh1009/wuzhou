@@ -329,6 +329,8 @@
 				return;
 			if(!validateForm($("input[name='bookEntity.book_name_english']"),"请填写 书名（英文）"))
 				return;
+			if(!validateForm($("input[name='bookEntity.book_clcc']"),"请填写 中图分类号"))
+				return;
 			if(!validateForm($("input[name='bookEntity.book_author']"),"请填写 著者（中文）"))
 				return;
 			if(!validateForm($("input[name='bookEntity.book_author_english']"),"请填写 著者（英文）"))

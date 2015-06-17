@@ -347,37 +347,7 @@ dzs 电子书属性，用于切换显示
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group">
-								<!-- <div class="input-group-btn">
-									<button type="button" class="btn btn-default dropdown-toggle input-group-myaddon" data-toggle="dropdown">
-										中图分类号<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu">
-										<li><a href="javascript:;">A-马克思主义、列宁主义、毛泽东思想、邓小平理论</a></li>
-										<li><a href="javascript:;">B-哲学、宗教</a></li>
-										<li><a href="javascript:;">C-社会科学总论</a></li>
-										<li><a href="javascript:;">D-政治、法律</a></li>
-										<li><a href="javascript:;">E-军事</a></li>
-										<li><a href="javascript:;">F-经济</a></li>
-										<li><a href="javascript:;">G-文化、科学、教育、体育</a></li>
-										<li><a href="javascript:;">H-语言、文字</a></li>
-										<li><a href="javascript:;">I-文学</a></li>
-										<li><a href="javascript:;">J-艺术</a></li>
-										<li><a href="javascript:;">K-历史、地理</a></li>
-										<li><a href="javascript:;">N-自然科学总论</a></li>
-										<li><a href="javascript:;">O-数理科学和化学</a></li>
-										<li><a href="javascript:;">P-天文学、地球科学</a></li>
-										<li><a href="javascript:;">Q-生物科学</a></li>
-										<li><a href="javascript:;">R-医药、卫生</a></li>
-										<li><a href="javascript:;">S-农业科学</a></li>
-										<li><a href="javascript:;">T-工业技术</a></li>
-										<li><a href="javascript:;">U-交通运输</a></li>
-										<li><a href="javascript:;">V-航空、航天</a></li>
-										<li><a href="javascript:;">X-环境科学、安全科学</a></li>
-										<li><a href="javascript:;">Z-综合性图书</a></li>
-									</ul>
-								</div>
-								<input type="text" class="form-control" name="bookEntity.book_clcc" placeholder="填写或请选择">-->
-								<span class="input-group-addon">中图分类号</span>
+								<span class="input-group-addon"><span class="bitian">中图分类号</span></span>
 								<input class="form-control" name="bookEntity.book_clcc" onblur="limitLength(this, 20)" type="text">
 							</div>
 						</div>
