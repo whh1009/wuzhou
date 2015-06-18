@@ -126,7 +126,33 @@ public class ConfigInfo {
 	 * That's Books on China元数据路径
 	 */
 	public final static String THATSBOOK_EXCEL_PATH = "";
-	
+
+	/**
+	 * China Book Store
+	 */
+	public final static String EBOOK_OS_CHINABOOKSTORE = "chinabookstore";
+
+	/**
+	 * 汉办华图
+	 */
+	public final static String EBOOK_OS_HANBANHUATU = "hanbanhuatu";
+
+	/**
+	 * iBooks
+	 */
+	public final static String EBOOK_OS_IBOOKS = "ibooks";
+
+	/**
+	 * 搜狐畅游
+	 */
+	public final static String EBOOK_OS_SOHUCHANGYOU = "sohuchangyou";
+
+	/**
+	 * 中图易越
+	 */
+	public final static String EBOOK_OS_ZHONGTUYIYUE = "zhongtuyiyue";
+
+
 	/**
 	 * 把现有的epub、pdf等电子档在服务器上的存放路径
 	 */

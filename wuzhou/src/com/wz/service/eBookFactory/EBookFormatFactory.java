@@ -1,14 +1,7 @@
 package com.wz.service.eBookFactory;
 
-import java.util.List;
-
 import com.wz.common.ConfigInfo;
-import com.wz.entity.BookEntity;
-import com.wz.entity.UserEntity;
-import com.wz.service.eBookFactory.impl.AmazonCnEBookImpl;
-import com.wz.service.eBookFactory.impl.AmazonUsEBookImpl;
-import com.wz.service.eBookFactory.impl.OverDriveEBookImpl;
-import com.wz.service.eBookFactory.impl.ThatsBookEBookImpl;
+import com.wz.service.eBookFactory.impl.*;
 
 /**
  * 电子书工厂
@@ -30,8 +23,18 @@ public class EBookFormatFactory {
 			ebook = new OverDriveEBookImpl();
 		} else if(ConfigInfo.EBOOK_OS_THATSBOOK.equals(eBookOs)) {
 			ebook = new ThatsBookEBookImpl();
+		} else if(ConfigInfo.EBOOK_OS_CHINABOOKSTORE.equals(eBookOs)){
+			ebook = new ChinaBookStoreEBookImpl();
+		} else if(ConfigInfo.EBOOK_OS_HANBANHUATU.equals(eBookOs)) {
+			ebook = new HanBanHuaTuEBookImpl();
+		} else if(ConfigInfo.EBOOK_OS_IBOOKS.equals(eBookOs)) {
+			ebook = new IBooksEBookImpl();
+		} else if(ConfigInfo.EBOOK_OS_SOHUCHANGYOU.equals(eBookOs)) {
+			ebook = new SoHuChangYouEBookImpl();
+		} else if(ConfigInfo.EBOOK_OS_ZHONGTUYIYUE.equals(eBookOs)) {
+			ebook = new ZhongTuYiYueTongEBookImpl();
 		} else {
-			
+			System.out.println("其他平台："+eBookOs);
 		}
 		return ebook;
 	}

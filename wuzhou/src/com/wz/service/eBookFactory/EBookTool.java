@@ -2,6 +2,11 @@ package com.wz.service.eBookFactory;
 
 import com.wz.entity.UserEntity;
 import com.wz.util.FileUtil;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,5 +72,27 @@ public class EBookTool {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * 基本单元格，样式四周边框
+	 * @param wb
+	 * @param row
+	 * @param cellNum
+	 * @param cellValue
+	 * @param flag 标记是否需要右对齐 1 右对齐
+	 */
+	public static void createBaseCell(XSSFWorkbook wb,XSSFRow row, int cellNum, String cellValue, int flag) {
+		XSSFCell cell = row.createCell(cellNum);
+		cell.setCellValue(cellValue);
+		CellStyle style = wb.createCellStyle();
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBorderLeft(CellStyle.BORDER_THIN);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		if(flag==1) {
+			style.setVerticalAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		}
+		cell.setCellStyle(style);
 	}
 }

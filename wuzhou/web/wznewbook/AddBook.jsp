@@ -396,9 +396,10 @@ dzs 电子书属性，用于切换显示
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="">
-						<label class="radio-inline"> <input type="radio" name="publishType" value="1" checked="checked"> 本社
-						</label> <label class="radio-inline"> <input type="radio" name="publishType" value="2"> 其他
-						</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="1" checked="checked"> 本社</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="3"> 中国出版社</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="4"> 国外出版社</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="2"> 其他</label>
 					</div>
 				</div>
 				<div class="col-sm-8">
