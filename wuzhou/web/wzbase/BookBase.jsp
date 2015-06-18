@@ -296,14 +296,14 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon"><span class="bitian">ISBN/ISSN</span></span> <input class="form-control" id="book_isbn" name="bookEntity.book_isbn" onblur="myLimit(this)" type="text">
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">ISBN/ISSN</span></span> <input class="form-control" id="book_isbn" name="bookEntity.book_isbn" onblur="myLimit(this)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group">
 								<div class="input-group-btn">
 									<button type="button" class="btn btn-default dropdown-toggle input-group-myaddon twz" data-toggle="dropdown">
-										<span class="bitian">文种 <span class="caret"></span></span>
+										<span class="bitian zbitian wbitian">文种 <span class="caret"></span></span>
 									</button>
 									<ul class="dropdown-menu">
 										<li><a href="javascript:closesydy();initWenzhong('yw','001');">001--英文</a></li>
@@ -340,14 +340,14 @@ dzs 电子书属性，用于切换显示
 						<div class="col-sm-4">
 							<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM">
 								<input class="form-control" size="16" name="bookEntity.book_publish_time" placeholder="出版时间" type="text" value="" readonly> <span class="input-group-addon">
-									<span class="bitian"><span class="glyphicon glyphicon-remove"></span></span>
-								</span> <span class="input-group-addon"> <span class="bitian"><span class="glyphicon glyphicon-calendar"></span></span>
+									<span class="bitian zbitian wbitian"><span class="glyphicon glyphicon-remove"></span></span>
+								</span> <span class="input-group-addon"> <span class="bitian zbitian wbitian"><span class="glyphicon glyphicon-calendar"></span></span>
 								</span>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon"><span class="bitian">中图分类号</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian">中图分类号</span></span>
 								<input class="form-control" name="bookEntity.book_clcc" onblur="limitLength(this, 20)" type="text">
 							</div>
 						</div>
@@ -361,13 +361,13 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-4">
 							<div class="input-group zw">
-								<span class="input-group-addon"><span class="bitian">责编</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">责编</span></span>
 								<input class="form-control formch" name="bookEntity.book_editor" onblur="limitLength(this, 50)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-8">
 							<div class="input-group">
-								<span class="input-group-addon">合作出版社</span>
+								<span class="input-group-addon"><span class="zbitian wbitian">合作出版社</span></span>
 								<input class="form-control" name="bookEntity.book_cooperate_press" onblur="limitLength(this, 200)" type="text">
 							</div>
 						</div>
@@ -375,19 +375,19 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-4">
 							<div class="input-group zw">
-								<span class="input-group-addon"><span class="bitian">书名（中文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">书名（中文）</span></span>
 								<input class="form-control formch" name="bookEntity.book_name_cn" id="bookNameCN" onblur="limitLength(this, 200)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group yw has-success">
-								<span class="input-group-addon"><span class="bitian">书名（英文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian">书名（英文）</span></span>
 								<input class="form-control formen" name="bookEntity.book_name_english" onblur="limitLength(this, 200)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group ww has-warning">
-								<span class="input-group-addon"><span class="bitian">书名（外文）</span></span>
+								<span class="input-group-addon"><span class="bitian wbitian">书名（外文）</span></span>
 								<input class="form-control formfo" name="bookEntity.book_name_foreign" onblur="limitLength(this, 200)" type="text">
 							</div>
 						</div>
@@ -395,19 +395,19 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-4">
 							<div class="input-group zw">
-								<span class="input-group-addon"><span class="bitian">著者（中文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">著者（中文）</span></span>
 								<input class="form-control formch" name="bookEntity.book_author" onblur="limitLength(this, 50)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group yw has-success">
-								<span class="input-group-addon"><span class="bitian">著者（英文）</span></span>
+								<span class="input-group-addon"><span class="bitian  zbitian">著者（英文）</span></span>
 								<input class="form-control formen" name="bookEntity.book_author_english" onblur="limitLength(this, 100)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group ww has-warning">
-								<span class="input-group-addon"><span class="bitian">著者（外文）</span></span>
+								<span class="input-group-addon"><span class="bitian wbitian">著者（外文）</span></span>
 								<input class="form-control formfo" name="bookEntity.book_author_foreign" onblur="limitLength(this, 100)" type="text">
 							</div>
 						</div>
@@ -456,19 +456,19 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon">书名（法文）</span>
+								<span class="input-group-addon"><span class="zbitian">书名（法文）</span></span>
 								<input class="form-control" name="bookEntity.book_name_fa" onblur="limitLength(this, 200)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon">书名（西文）</span>
+								<span class="input-group-addon"><span class="zbitian">书名（西文）</span></span>
 								<input class="form-control" name="bookEntity.book_name_xi" onblur="limitLength(this, 200)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon">书名（阿文）</span>
+								<span class="input-group-addon"><span class="zbitian">书名（阿文）</span></span>
 								<input class="form-control" name="bookEntity.book_name_e" onblur="limitLength(this, 200)" type="text">
 							</div>
 						</div>
@@ -476,19 +476,19 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon">著者（法文）</span>
+								<span class="input-group-addon"><span class="zbitian">著者（法文）</span></span>
 								<input class="form-control" name="bookEntity.book_author_fa" onblur="limitLength(this, 100)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon">著者（西文）</span>
+								<span class="input-group-addon"><span class="zbitian">著者（西文）</span></span>
 								<input class="form-control" name="bookEntity.book_author_xi" onblur="limitLength(this, 100)" type="text">
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="input-group">
-								<span class="input-group-addon">著者（阿文）</span>
+								<span class="input-group-addon"><span class="zbitian">著者（阿文）</span></span>
 								<input class="form-control" name="bookEntity.book_author_e" onblur="limitLength(this, 100)" type="text">
 							</div>
 						</div>
@@ -538,7 +538,7 @@ dzs 电子书属性，用于切换显示
 							<div class="input-group">
 								<div class="input-group-btn">
 									<button type="button" class="btn btn-default dropdown-toggle input-group-myaddon" data-toggle="dropdown">
-										<span class="bitian">建议分类 1 <span class="caret"></span></span>
+										<span class="bitian zbitian wbitian">建议分类 1 <span class="caret"></span></span>
 									</button>
 									<ul class="dropdown-menu">
 										<li><a href="javascript:;">01-艺术(ART)</a></li>
@@ -626,25 +626,6 @@ dzs 电子书属性，用于切换显示
 										<li><a href="javascript:;">19-旅游(TRAVEL)</a></li>
 										<li><a href="javascript:;">99-其他(OTHERS)</a></li>
 									</ul>
-									<!-- <ul class="dropdown-menu">
-										<li><a href="javascript:;">01-国学/国粹</a></li>
-										<li><a href="javascript:;">02-金融/投资</a></li>
-										<li><a href="javascript:;">03-经济</a></li>
-										<li><a href="javascript:;">04-科学/自然</a></li>
-										<li><a href="javascript:;">05-历史/传记</a></li>
-										<li><a href="javascript:;">06-旅游/地图</a></li>
-										<li><a href="javascript:;">07-烹饪/美食</a></li>
-										<li><a href="javascript:;">08-期刊</a></li>
-										<li><a href="javascript:;">09-社会</a></li>
-										<li><a href="javascript:;">10-体育/运动</a></li>
-										<li><a href="javascript:;">11-童话/少儿</a></li>
-										<li><a href="javascript:;">12-文化/民俗</a></li>
-										<li><a href="javascript:;">13-文学艺术</a></li>
-										<li><a href="javascript:;">14-小说</a></li>
-										<li><a href="javascript:;">15-娱乐/休闲</a></li>
-										<li><a href="javascript:;">16-政治/军事</a></li>
-										<li><a href="javascript:;">99-其他</a></li>
-									</ul> -->
 								</div>
 								<input type="text" class="form-control" name="bookEntity.book_category3" onblur="limitLength(this, 50)" placeholder="填写或请选择">
 							</div>
@@ -847,16 +828,16 @@ dzs 电子书属性，用于切换显示
 						</div>
 						<div class="col-sm-4 dzs">
 							<div class="input-group">
-								<span class="input-group-addon" title="人民币">电子书定价</span>
+								<span class="input-group-addon" title="人民币"><span class="bitian zbitian">电子书定价</span></span>
 								<input class="form-control" name="bookEntity.book_ebook_price" onkeyup="inFloat(this)" onblur="limitLength(this, 8)" type="text">
-								<span class="input-group-addon">RMB</span>
+								<span class="input-group-addon"><span class="bitian zbitian">RMB</span></span>
 							</div>
 						</div>
 						<div class="col-sm-4 dzs">
 							<div class="input-group">
-								<span class="input-group-addon" title="美元">电子书定价</span>
+								<span class="input-group-addon" title="美元"><span class="bitian zbitian wbitian">电子书定价</span></span>
 								<input class="form-control" name="bookEntity.book_ebook_dollar_price" onkeyup="inFloat(this)" onblur="limitLength(this, 8)" type="text">
-								<span class="input-group-addon">USD</span>
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">USD</span></span>
 							</div>
 						</div>
 					</div>
@@ -889,7 +870,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group zw">
-								<span class="input-group-addon"><span class="bitian">内容简介（中文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">内容简介（中文）</span></span>
 								<textarea class="form-control formch" name="bookEntity.book_content_intr_cn" rows=4></textarea>
 							</div>
 						</div>
@@ -897,7 +878,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group yw has-success" title="内容简介（英文）">
-								<span class="input-group-addon"><span class="bitian">内容简介（英文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian">内容简介（英文）</span></span>
 								<textarea class="form-control formen" name="bookEntity.book_content_intr_english" rows=4></textarea>
 							</div>
 						</div>
@@ -913,7 +894,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group zw" title="作者简介（中文）">
-								<span class="input-group-addon"><span class="bitian">作者简介（中文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">作者简介（中文）</span></span>
 								<textarea class="form-control formch" name="bookEntity.book_author_intr_cn" rows=4></textarea>
 							</div>
 						</div>
@@ -921,7 +902,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group yw has-success">
-								<span class="input-group-addon"><span class="bitian">作者简介（英文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian">作者简介（英文）</span></span>
 								<textarea class="form-control formen" name="bookEntity.book_author_intr_english" rows=4></textarea>
 							</div>
 						</div>
@@ -938,7 +919,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group zw">
-								<span class="input-group-addon"><span class="bitian">编辑推荐（中文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian wbitian">编辑推荐（中文）</span></span>
 								<textarea class="form-control formch" name="bookEntity.book_editor_recommend_cn" rows=4></textarea>
 							</div>
 						</div>
@@ -946,7 +927,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group yw has-success">
-								<span class="input-group-addon"><span class="bitian">编辑推荐（英文）</span></span>
+								<span class="input-group-addon"><span class="bitian zbitian">编辑推荐（英文）</span></span>
 								<textarea class="form-control formen" name="bookEntity.book_editor_recommend_english" rows=4></textarea>
 							</div>
 						</div>
@@ -986,7 +967,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group" title="内容简介（法文）">
-								<span class="input-group-addon">内容简介（法文）</span>
+								<span class="input-group-addon"><span class="zbitian">内容简介（法文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_content_intr_fa" rows=4></textarea>
 							</div>
 						</div>
@@ -994,7 +975,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group" title="内容简介（西文）">
-								<span class="input-group-addon">内容简介（西文）</span>
+								<span class="input-group-addon"><span class="zbitian">内容简介（西文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_content_intr_xi" rows=4></textarea>
 							</div>
 						</div>
@@ -1002,7 +983,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group" title="内容简介（阿文）">
-								<span class="input-group-addon">内容简介（阿文）</span>
+								<span class="input-group-addon"><span class="zbitian">内容简介（阿文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_content_intr_e" rows=4></textarea>
 							</div>
 						</div>
@@ -1010,7 +991,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group">
-								<span class="input-group-addon">作者简介（法文）</span>
+								<span class="input-group-addon"><span class="zbitian">作者简介（法文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_author_intr_fa" rows=4></textarea>
 							</div>
 						</div>
@@ -1018,7 +999,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group">
-								<span class="input-group-addon">作者简介（西文）</span>
+								<span class="input-group-addon"><span class="zbitian">作者简介（西文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_author_intr_xi" rows=4></textarea>
 							</div>
 						</div>
@@ -1026,7 +1007,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group">
-								<span class="input-group-addon">作者简介（阿文）</span>
+								<span class="input-group-addon"><span class="zbitian">作者简介（阿文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_author_intr_e" rows=4></textarea>
 							</div>
 						</div>
@@ -1034,7 +1015,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group">
-								<span class="input-group-addon">编辑推荐（法文）</span>
+								<span class="input-group-addon"><span class="zbitian">编辑推荐（法文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_editor_recommend_fa" rows=4></textarea>
 							</div>
 						</div>
@@ -1042,7 +1023,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group">
-								<span class="input-group-addon">编辑推荐（西文）</span>
+								<span class="input-group-addon"><span class="zbitian">编辑推荐（西文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_editor_recommend_xi" rows=4></textarea>
 							</div>
 						</div>
@@ -1050,7 +1031,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group">
-								<span class="input-group-addon">编辑推荐（阿文）</span>
+								<span class="input-group-addon"><span class="zbitian">编辑推荐（阿文）</span></span>
 								<textarea class="form-control" name="bookEntity.book_editor_recommend_e" rows=4></textarea>
 							</div>
 						</div>
@@ -1058,22 +1039,6 @@ dzs 电子书属性，用于切换显示
 				</div>
 				<div class="tab-pane fade" id="sheji">
 					<div class="row zzs pt">
-						<%-- <div class="col-sm-4">
-							<div class="input-group">
-								<div class="input-group-btn">
-									<button type="button" class="btn btn-default dropdown-toggle input-group-myaddon peipanSel1" data-toggle="dropdown">
-										封面-用纸 <span class="caret"></span>
-										<!-- 插图-用纸 -->
-									</button>
-									<ul class="dropdown-menu">
-										<li><a href="javascript:;">铜版纸(200,230,250,300g)</a></li>
-										<li><a href="javascript:;">哑粉纸(200,230,250,300g)</a></li>
-										<li><a href="javascript:;">特种纸(200,210,230,250g)</a></li>
-									</ul>
-								</div>
-								<input class="form-control" name="bookEntity.book_cover_paper" type="text" onblur="limitLength(this, 45)" placeholder="填写或请选择">
-							</div>
-						</div> --%>
 						<div class="col-sm-3">
 							<div class="input-group">
 								<span class="input-group-addon"><span class="bitian">封面-用纸</span></span>

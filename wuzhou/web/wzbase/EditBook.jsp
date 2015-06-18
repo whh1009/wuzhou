@@ -185,7 +185,7 @@
     }
     
   	//出版社类型，本社图书或者其他
-	//属性pt用于标识本社或其他
+	//属性pt用于标识本社或其他 中国内出版社  国外出版社
 	function publishType() {
 		$("input[name='publishType']").click(function() {
 			var pt = $(this).val();
@@ -481,6 +481,83 @@
 					return;
 			} else {
 				alert("图书编号（ID）有问题");
+			}
+		} else {
+			if(!validateForm($("input[name='bookEntity.book_publish_time']"),"请填写 出版时间"))
+				return;
+			if(!validateForm($("input[name='bookEntity.book_editor"),"请填写 责编"))
+				return;
+			if(!validateForm($("input[name='bookEntity.book_cooperate_press"),"请填写 合作出版社"))
+				return;
+			if(!validateForm($("input[name='bookEntity.book_author']"),"请填写 著者（中文）"))
+				return;
+			if(!validateForm($("*[name='bookEntity.book_content_intr_cn']"),"请填写 内容简介（中文）"))
+				return;
+			if(!validateForm($("*[name='bookEntity.book_author_intr_cn']"),"请填写 作者简介（中文）"))
+				return;
+			if(!validateForm($("*[name='bookEntity.book_editor_recommend_cn']"),"请填写 编辑推荐（中文）"))
+				return;
+			if(!validateForm($("input[name='bookEntity.book_ebook_dollar_price']"),"请填写 电子书定价（USD）"))
+				return;
+			if(!validateForm($("input[name='bookEntity.book_category1']"),"请填写 建议分类1"))
+				return;
+
+			if(bq=="Z") { //中国国内出版社
+				if(!validateForm($("input[name='bookEntity.book_clcc']"),"请填写 中图分类号"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_name_english']"),"请填写 书名（英文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_author_english']"),"请填写 著者（英文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_content_intr_english']"),"请填写 内容简介（英文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_author_intr_english']"),"请填写 作者简介（英文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_editor_recommend_english']"),"请填写 编辑推荐（英文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_name_fa']"),"请填写 书名（法文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_author_fa']"),"请填写 著者（法文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_content_intr_fa']"),"请填写 内容简介（法文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_author_intr_fa']"),"请填写 作者简介（法文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_editor_recommend_fa']"),"请填写 编辑推荐（法文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_name_xi']"),"请填写 书名（西文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_author_xi']"),"请填写 著者（西文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_content_intr_xi']"),"请填写 内容简介（西文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_author_intr_xi']"),"请填写 作者简介（西文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_editor_recommend_xi']"),"请填写 编辑推荐（西文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_name_e']"),"请填写 书名（阿文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_author_e']"),"请填写 著者（阿文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_content_intr_e']"),"请填写 内容简介（阿文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_author_intr_e']"),"请填写 作者简介（阿文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_editor_recommend_e']"),"请填写 编辑推荐（阿文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_ebook_price']"),"请填写 电子书定价（RMB）"))
+					return;
+			} else if(bq=="W") {
+				if(!validateForm($("input[name='bookEntity.book_name_foreign']"),"请填写 书名（外文）"))
+					return;
+				if(!validateForm($("input[name='bookEntity.book_author_foreign']"),"请填写 著者（外文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_content_intr_foreign']"),"请填写 内容简介（外文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_author_intr_foreign']"),"请填写 作者简介（外文）"))
+					return;
+				if(!validateForm($("*[name='bookEntity.book_editor_recommend_foreign']"),"请填写 编辑推荐（外文）"))
+					return;
 			}
 		}
 		checkFileUpload();

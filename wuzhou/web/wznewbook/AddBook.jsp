@@ -165,7 +165,13 @@ dzs 电子书属性，用于切换显示
 				$(".bitian").each(function() {
 					$(this).css("color", "#555555");
 				});
-			} else {
+				$(".zbitian").each(function() {//中国必填添加颜色
+					$(this).css("color", "#555555");
+				});
+				$(".wbitian").each(function() {//中国必填添加颜色
+					$(this).css("color", "#555555");
+				});
+			} else if(pt=="1") {
 				$("#bsn0").val("B");
 				//设置图书编号
 				$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
@@ -178,27 +184,36 @@ dzs 电子书属性，用于切换显示
 				} else {
 					$(".sydybt").css("color","#555555");
 				}
+			} else if(pt=="3") {//中国
+				$("#bsn0").val("Z");
+				//设置图书编号
+				$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+				$(".bitian").each(function() {//本社必填还原颜色
+					$(this).css("color", "#555555");
+				});
+				$(".wbitian").each(function() {//国外出版社必填还原颜色
+					$(this).css("color", "#555555");
+				});
+				$(".zbitian").each(function() {//中国必填添加颜色
+					$(this).css("color", "#CC0033");
+				});
+
+			} else if(pt=="4") {//国外
+				$("#bsn0").val("W");
+				//设置图书编号
+				$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+				$(".bitian").each(function() {//本社必填还原颜色
+					$(this).css("color", "#555555");
+				});
+				$(".zbitian").each(function() {//中国出版社必填还原颜色
+					$(this).css("color", "#555555");
+				});
+				$(".wbitian").each(function() {//国外出版社必填添加颜色
+					$(this).css("color", "#CC0033");
+				});
+
 			}
 		});
-		/*
-		不用
-		$("input[name='publishType']").click(function() {
-			var pt = $(this).val();
-			if (pt == "2") {
-				$(".pt").each(function() {
-					$(this).hide();
-				});
-				$("#book_serial_number").prop("readonly", false);
-				$("#refBtn").prop("disabled", true);
-			} else {
-				$(".pt").each(function() {
-					$(this).show();
-				});
-				$("#book_serial_number").prop("readonly", true);
-				$("#refBtn").prop("disabled", false);
-			}
-		});
-		*/
 	}
 
 	//根据填充的编号获取isbn号
@@ -397,8 +412,8 @@ dzs 电子书属性，用于切换显示
 				<div class="col-sm-4">
 					<div class="">
 						<label class="radio-inline"> <input type="radio" name="publishType" value="1" checked="checked"> 本社</label>
-						<label class="radio-inline"> <input type="radio" name="publishType" value="3"> 中国出版社</label>
-						<label class="radio-inline"> <input type="radio" name="publishType" value="4"> 国外出版社</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="3"> 中国</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="4"> 国外</label>
 						<label class="radio-inline"> <input type="radio" name="publishType" value="2"> 其他</label>
 					</div>
 				</div>

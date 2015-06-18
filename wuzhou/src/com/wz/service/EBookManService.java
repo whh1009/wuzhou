@@ -95,6 +95,26 @@ public class EBookManService {
 		String amazonUsPath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\亚马逊（美国）";
 		FileUtil.createDirs(amazonUsPath+"\\元数据", true);
 		OutputStream amazonUsStream = new FileOutputStream(new File(amazonUsPath+"\\元数据\\亚马逊（美国）.xlsx"));
+
+		String chinaBookStorePath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\chinabookstore";
+		FileUtil.createDirs(chinaBookStorePath+"\\元数据", true);
+		OutputStream chinaBookStoreStream = new FileOutputStream(new File(chinaBookStorePath+"\\元数据\\chinabookstore.xlsx"));
+
+		String hanBanHuaTuPath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\hanbanhuatu";
+		FileUtil.createDirs(hanBanHuaTuPath+"\\元数据", true);
+		OutputStream hanBanHuaTuStream = new FileOutputStream(new File(hanBanHuaTuPath+"\\元数据\\hanbanhuatu.xlsx"));
+
+		String iBooksPath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\iBooks";
+		FileUtil.createDirs(iBooksPath+"\\元数据", true);
+		OutputStream iBooksStream = new FileOutputStream(new File(iBooksPath+"\\元数据\\ibooks.xlsx"));
+
+		String soHuChangYouPath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\sohuchangyou";
+		FileUtil.createDirs(soHuChangYouPath+"\\元数据", true);
+		OutputStream soHuChangYouStream = new FileOutputStream(new File(soHuChangYouPath+"\\元数据\\sohuchangyou.xlsx"));
+
+		String zhongTuYiYuePath = ConfigInfo.COMMON_ROOT+"\\"+time+"\\zhongtuyiyue";
+		FileUtil.createDirs(zhongTuYiYuePath+"\\元数据", true);
+		OutputStream zhongTuYiYueStream = new FileOutputStream(new File(zhongTuYiYuePath+"\\元数据\\zhongtuyiyue.xlsx"));
 		
 		EBookFormat amazoncn = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_AMAZON_CN);
 		amazoncn.renameEBook(bookList, userList, amazonCnPath, excelPath+"\\amazoncn.xlsx");
@@ -111,6 +131,27 @@ public class EBookManService {
 		EBookFormat thatsbook = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_THATSBOOK);
 		thatsbook.renameEBook(bookList, userList, thatsBookPath, excelPath+"\\thatsbook.xlsx");
 		thatsbook.createExcel(thatBookStream);
+
+		EBookFormat chinaBookStore = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_CHINABOOKSTORE);
+		chinaBookStore.renameEBook(bookList, userList, chinaBookStorePath, excelPath+"\\chinabookstore.xlsx");
+		chinaBookStore.createExcel(chinaBookStoreStream);
+
+		EBookFormat hanBanHuaTu = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_HANBANHUATU);
+		hanBanHuaTu.renameEBook(bookList, userList, hanBanHuaTuPath, excelPath+"\\hanbanhuatu.xlsx");
+		hanBanHuaTu.createExcel(hanBanHuaTuStream);
+
+		EBookFormat iBooks = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_IBOOKS);
+		iBooks.renameEBook(bookList, userList, iBooksPath, excelPath+"\\ibooks.xlsx");
+		iBooks.createExcel(iBooksStream);
+
+		EBookFormat soHuChangYou = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_SOHUCHANGYOU);
+		soHuChangYou.renameEBook(bookList, userList, soHuChangYouPath, excelPath+"\\sohuchangyou.xlsx");
+		soHuChangYou.createExcel(soHuChangYouStream);
+
+		EBookFormat zhongTuYiYue = EBookFormatFactory.getInstence(ConfigInfo.EBOOK_OS_ZHONGTUYIYUE);
+		zhongTuYiYue.renameEBook(bookList, userList, zhongTuYiYuePath, excelPath+"\\zhongtuyiyue.xlsx");
+		zhongTuYiYue.createExcel(zhongTuYiYueStream);
+
 		return true;
 	}
 	
