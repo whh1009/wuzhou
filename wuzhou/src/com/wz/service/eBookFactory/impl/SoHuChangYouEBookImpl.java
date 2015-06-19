@@ -43,8 +43,8 @@ public class SoHuChangYouEBookImpl implements EBookFormat{
 
             //补充样章
             String yzRootPath = bookRootPath + "\\样章";
-            EBookTool.copy(epubRootPath, desPath+"\\电子文件", "epub", be.getBook_name_cn());
-            EBookTool.copy(pdfRootPath, desPath+"\\电子文件", "pdf", be.getBook_name_cn());
+            EBookTool.copy(yzRootPath, desPath+"\\样章", "epub", be.getBook_name_cn());
+            EBookTool.copy(yzRootPath, desPath+"\\样章", "pdf", be.getBook_name_cn());
         }
     }
 
@@ -64,7 +64,7 @@ public class SoHuChangYouEBookImpl implements EBookFormat{
                 EBookTool.createBaseCell(wb, row, 3, StringUtil.ObjectToString(be.getBook_author()), 0);
                 EBookTool.createBaseCell(wb, row, 4, StringUtil.ObjectToString(be.getBook_author_xi()), 0);
                 EBookTool.createBaseCell(wb, row, 5, "", 1);//类型（分类）？？
-                EBookTool.createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_language().replaceAll("[0-9]{3}\\-", "")), 0);
+                EBookTool.createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_language().replaceAll("[0-9]{3}[\\-]{2}", "")), 0);
                 EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_content_intr_xi()), 0);
                 EBookTool.createBaseCell(wb, row, 8, "有", 0);
                 rowNum++;

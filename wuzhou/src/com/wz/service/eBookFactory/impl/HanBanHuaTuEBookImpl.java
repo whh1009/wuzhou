@@ -43,8 +43,9 @@ public class HanBanHuaTuEBookImpl implements EBookFormat{
 
             //补充样章
             String yzRootPath = bookRootPath + "\\样章";
-            EBookTool.copy(epubRootPath, desPath+"\\电子文件", "epub", be.getBook_name_cn());
-            EBookTool.copy(pdfRootPath, desPath+"\\电子文件", "pdf", be.getBook_name_cn());
+            EBookTool.copy(yzRootPath, desPath+"\\样章", "epub", be.getBook_name_cn());
+            EBookTool.copy(yzRootPath, desPath+"\\样章", "pdf", be.getBook_name_cn());
+//            EBookTool.copy(pdfRootPath, desPath+"\\样章", "jpg", be.getBook_name_cn());
         }
     }
 
@@ -67,7 +68,7 @@ public class HanBanHuaTuEBookImpl implements EBookFormat{
                 EBookTool.createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_publish_time()), 0);
                 EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_isbn()), 0);
                 EBookTool.createBaseCell(wb, row, 8, StringUtil.ObjectToString(be.getBook_ebook_price()), 0);
-                EBookTool.createBaseCell(wb, row, 9, StringUtil.ObjectToString(be.getBook_language().replaceAll("[0-9]{3}\\-", "")), 0);
+                EBookTool.createBaseCell(wb, row, 9, StringUtil.ObjectToString(be.getBook_language().replaceAll("[0-9]{3}[\\-]{2}", "")), 0);
                 EBookTool.createBaseCell(wb, row, 10, "读物", 0);
                 EBookTool.createBaseCell(wb, row, 11, "读物指普通外国读者", 0);
                 EBookTool.createBaseCell(wb, row, 14, StringUtil.ObjectToString(be.getBook_content_intr_cn()), 0);

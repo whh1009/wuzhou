@@ -43,8 +43,8 @@ public class ChinaBookStoreEBookImpl implements EBookFormat{
 
             //补充样章
             String yzRootPath = bookRootPath + "\\样章";
-            EBookTool.copy(epubRootPath, desPath+"\\电子文件", "epub", be.getBook_name_cn());
-            EBookTool.copy(pdfRootPath, desPath+"\\电子文件", "pdf", be.getBook_name_cn());
+            EBookTool.copy(epubRootPath, desPath+"\\样章", "epub", be.getBook_name_cn());
+            EBookTool.copy(pdfRootPath, desPath+"\\样章", "pdf", be.getBook_name_cn());
         }
     }
 

@@ -42,8 +42,8 @@ public class IBooksEBookImpl implements EBookFormat {
 
             //补充样章
             String yzRootPath = bookRootPath + "\\样章";
-            EBookTool.copy(epubRootPath, desPath+"\\电子文件", "epub", be.getBook_name_cn());
-            EBookTool.copy(pdfRootPath, desPath+"\\电子文件", "pdf", be.getBook_name_cn());
+            EBookTool.copy(yzRootPath, desPath+"\\样章", "epub", be.getBook_name_cn());
+//            EBookTool.copy(pdfRootPath, desPath+"\\样章", "pdf", be.getBook_name_cn());
         }
     }
 
@@ -65,7 +65,7 @@ public class IBooksEBookImpl implements EBookFormat {
                 EBookTool.createBaseCell(wb, row, 4, StringUtil.ObjectToString(be.getBook_name_xi()), 0);
                 EBookTool.createBaseCell(wb, row, 5, StringUtil.ObjectToString(be.getBook_name_fa()), 0);
                 EBookTool.createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_name_e()), 1);
-                EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_language().replaceAll("[0-9]{3}\\-", "")), 0);
+                EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_language().replaceAll("[0-9]{3}[\\-]{2}", "")), 0);
                 EBookTool.createBaseCell(wb, row, 8, StringUtil.ObjectToString(be.getBook_author()), 0);
                 EBookTool.createBaseCell(wb, row, 9, StringUtil.ObjectToString(be.getBook_author_english()), 0);
                 EBookTool.createBaseCell(wb, row, 10, StringUtil.ObjectToString(be.getBook_author_xi()), 0);
