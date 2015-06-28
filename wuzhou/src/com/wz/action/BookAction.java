@@ -6,10 +6,7 @@ import com.wz.common.ColumnMap;
 import com.wz.common.ConfigInfo;
 import com.wz.common.PageEntity;
 import com.wz.entity.*;
-import com.wz.service.BookService;
-import com.wz.service.ConfigService;
-import com.wz.service.LogService;
-import com.wz.service.UserService;
+import com.wz.service.*;
 import com.wz.util.StringUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -30,6 +27,7 @@ public class BookAction extends ActionSupport {
 	private LogService logService;
 	private ConfigService configService;
 	private UserService userService;
+	private BookExtendService bookExtendService;
 	private BookEntity bookEntity;
 	private String downloadName;
 	private String FTPUploadConfig;
@@ -163,6 +161,7 @@ public class BookAction extends ActionSupport {
 		logService = new LogService();
 		configService = new ConfigService();
 		userService = new UserService();
+		bookExtendService = new BookExtendService();
 	}
 
 	/**
@@ -322,7 +321,10 @@ public class BookAction extends ActionSupport {
 					 * bookService.createFtpFold(bookEntity, ftpConfigXmlPath);
 					 * if(success!=1) { return "ftpError"; }
 					 */
-					System.out.println("bookId='" + flag + "'");
+					BookExtendEntity bee = new BookExtendEntity();
+					bee.setBook_id(bookEntity.book_id);
+					bee.setBook_create_time(new Date());
+					bookExtendService.saveBookExtend(bee);
 					out.write("<script type=\"text/javascript\">alert('保存成功!');</script>");
 				} else {
 					out.write("<script type=\"text/javascript\">alert('保存失败!');</script>");
@@ -871,8 +873,7 @@ public class BookAction extends ActionSupport {
 				}
 			}
 			List<BookEntity> list = bookService.getBookListByHql(hql);
-			System.out.println(list.size());
-			bookService.createFtpXml(list, exportXmlCol, xmlPath, xmlName, localpath);
+			bookService.createFtpXmlBak(list, exportXmlCol, xmlPath, xmlName, localpath);
 			out.write(xmlName);
 		}
 		out.close();
@@ -1074,7 +1075,6 @@ public class BookAction extends ActionSupport {
 	 */
 	public void createDocxByBookId() throws Exception {
 		try {
-
 			HttpServletRequest request = ServletActionContext.getRequest();
 			HttpServletResponse response = ServletActionContext.getResponse();
 			response.setContentType("text/html;charset=UTF-8");
@@ -1096,6 +1096,13 @@ public class BookAction extends ActionSupport {
 			String fileName = StringUtil.dateToString("yyyyMMddhhmmss") + ".docx";
 			try {
 				bookService.createWord(tempPath, tempDocPath, tempHeadPath, fileName, be);
+				BookExtendEntity bee = bookExtendService.findBookExtendByBookId(bookId);
+//				if(bee==null) {
+//
+//				} else {
+					bee.setBook_print_time(new Date());
+					bookExtendService.updateBookExtend(bee);
+//				}
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (FileNotFoundException e) {
@@ -1652,6 +1659,7 @@ public class BookAction extends ActionSupport {
 
 	/**
 	 * 根据条件查询图书列表信息
+	 * 资源上传不完整，或元数据录入不完整的显示出来
 	 */
 	public void getBookListByConditionAndFileSize() throws Exception {
 		HttpServletResponse response = ServletActionContext.getResponse();
@@ -1689,7 +1697,7 @@ public class BookAction extends ActionSupport {
 		}
 		System.out.println(hql);
 		List<BookEntity> bookList = bookService.getBookListByHql(hql);
-		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList());
+		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), false);
 		JSONArray json = JSONArray.fromObject(list);
 		out.print(json.toString());
 		out.flush();
@@ -1731,7 +1739,6 @@ public class BookAction extends ActionSupport {
 
 			}
 		}
-		System.out.println(hql);
 		Object obj = request.getSession().getAttribute("userEntity");
 		String exportColumn = ConfigInfo.DEFAULT_EXPORT_COLUMN;
 		if (obj != null) {
@@ -1739,7 +1746,7 @@ public class BookAction extends ActionSupport {
 			exportColumn = configService.getExportColumnByUserId(uId);
 		}
 		List<BookEntity> bookList = bookService.getBookListByHql(hql);
-		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList());
+		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), false);
 		String fileName = StringUtil.dateToString("yyyyMMddhhmmss") + ".xlsx";
 		try {
 			bookService.createExcelByFileSize(request.getRealPath("/") + "excel\\", fileName, list, exportColumn);
@@ -1769,10 +1776,17 @@ public class BookAction extends ActionSupport {
 		int userId = StringUtil.StringToInt(request.getParameter("selUserId"));
 		String bookUse = StringUtil.ignoreComma(StringUtil.ObjectToString(request.getParameter("bookUse")));
 		String condition = "";
-		if("".equals(bookUse)||"BQ".equals(bookUse)) {
+		if("".equals(bookUse)||"BZWQ".equals(bookUse)) {
 			condition = " and 1=1 ";
 		} else {
-			condition = " and book_serial_number like '"+bookUse+"%' ";
+			condition += " and ( ";
+			for(char c : bookUse.toCharArray()) {
+				condition += " book_serial_number like '"+c+"%'  or ";
+			}
+			if(condition.endsWith("or ")) {
+				condition = condition.substring(0, condition.length()-3);
+			}
+			condition += " ) ";
 		}
 		if(userId==0) {
 			condition+=" and 1=1 ";
@@ -1802,20 +1816,13 @@ public class BookAction extends ActionSupport {
 					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
 					countHql = "select count(book_id) from wz_book where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc";
 				}
-			} else if("book_serial_number".equals(columnName)){
-				if("".equals(bookUse)||"BQ".equals(bookUse)) {
-					hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
-					countHql = "select count(book_id) from wz_book where " + columnName + " like '%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 order by book_id desc";
-				} else {
-					hql = "from BookEntity where " + columnName + " like '"+bookUse+"%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
-					countHql = "select count(book_id) from wz_book where " + columnName + " like '" + bookUse + "%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 order by book_id desc";
-				}
 			} else {
 				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
 				countHql = "select count(book_id) from wz_book where " + columnName + " like '%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 "+condition+" order by book_id desc";
 			}
 		}
 		List<BookEntity> bookList = bookService.findPageFromBook(pageNum, ConfigInfo.PAGE_ROW_COUNT, hql);
+//		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList());
 		int pageCount = bookService.getPageCount(countHql, ConfigInfo.PAGE_ROW_COUNT);
 		PageEntity pageEntity = new PageEntity();
 		pageEntity.setCurrentPage(pageNum);
@@ -1841,10 +1848,17 @@ public class BookAction extends ActionSupport {
 		int userId = StringUtil.StringToInt(request.getParameter("selUserId"));
 		String bookUse = StringUtil.ignoreComma(StringUtil.ObjectToString(request.getParameter("bookUse")));
 		String condition = "";
-		if("".equals(bookUse)||"BQ".equals(bookUse)) {
+		if("".equals(bookUse)||"BZWQ".equals(bookUse)) {
 			condition = " and 1=1 ";
 		} else {
-			condition = " and book_serial_number like '"+bookUse+"%' ";
+			condition += " and ( ";
+			for(char c : bookUse.toCharArray()) {
+				condition += " book_serial_number like '"+c+"%'  or ";
+			}
+			if(condition.endsWith("or ")) {
+				condition = condition.substring(0, condition.length()-3);
+			}
+			condition += " ) ";
 		}
 		if(userId==0) {
 			condition+=" and 1=1 ";
@@ -1852,10 +1866,8 @@ public class BookAction extends ActionSupport {
 			condition+= " and user_id = "+userId+" ";
 		}
 		String hql = "";
-		String countHql = "";
 		if ("".equals(searchType) || "".equals(searchContent)) {
 			hql = "from BookEntity where book_del_flag=0 "+condition+" order by book_id desc";
-			countHql = "select count(book_id) from wz_book where book_del_flag=0 "+condition+" order by book_id desc";
 		} else {
 			// mysql 转义
 			searchContent = bookService.repMySqlChar(searchContent);
@@ -1865,25 +1877,13 @@ public class BookAction extends ActionSupport {
 			if("book_publish_time".equals(columnName)) { //出版时间
 				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
 					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc ";
-					countHql = "select count(book_id) from wz_book where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc";
 				} else { //只有起始日期
 					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
-					countHql = "select count(book_id) from wz_book where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc";
 				}
-			} else if("book_serial_number".equals(columnName)){
-				if("".equals(bookUse)||"BQ".equals(bookUse)) {
-					hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
-					countHql = "select count(book_id) from wz_book where " + columnName + " like '%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 order by book_id desc";
-				} else {
-					hql = "from BookEntity where " + columnName + " like '"+bookUse+"%" + searchContent.trim() + "%' and book_del_flag = 0 order by book_id desc ";
-					countHql = "select count(book_id) from wz_book where " + columnName + " like '" + bookUse + "%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 order by book_id desc";
-				}
-			} else {
-				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
-				countHql = "select count(book_id) from wz_book where " + columnName + " like '%" + searchContent.trim() + "%' " + speChar + " and book_del_flag = 0 "+condition+" order by book_id desc";
+			}  else {
+				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 " + condition + " order by book_id desc ";
 			}
 		}
-		System.out.println(hql);
 		Object obj = request.getSession().getAttribute("userEntity");
 		String exportColumn = ConfigInfo.DEFAULT_EXPORT_COLUMN;
 		if (obj != null) {
@@ -1902,4 +1902,198 @@ public class BookAction extends ActionSupport {
 		out.flush();
 		out.close();
 	}
+	/**
+	 * 根据条件查询图书列表信息
+	 * 只显示合格的图书列表
+	 */
+	public void getBookListByCheckRes() throws Exception {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		out = response.getWriter();
+		String searchType = StringUtil.ObjectToString(request.getParameter("searchType"));
+		String searchContent = StringUtil.ObjectToString(request.getParameter("searchContent"));
+		int userId = StringUtil.StringToInt(request.getParameter("selUserId"));
+		String bookUse = StringUtil.ignoreComma(StringUtil.ObjectToString(request.getParameter("bookUse")));
+		String condition = "";
+		if("".equals(bookUse)||"BZWQ".equals(bookUse)) {
+			condition = " and 1=1 ";
+		} else {
+			condition += " and ( ";
+			for(char c : bookUse.toCharArray()) {
+				condition += " book_serial_number like '"+c+"%'  or ";
+			}
+			if(condition.endsWith("or ")) {
+				condition = condition.substring(0, condition.length()-3);
+			}
+			condition += " ) ";
+		}
+		if(userId==0) {
+			condition+=" and 1=1 ";
+		} else {
+			condition+= " and user_id = "+userId+" ";
+		}
+
+		String hql = "";
+		if ("".equals(searchType) || "".equals(searchContent)) {
+			hql = "from BookEntity where book_del_flag=0 "+condition+" order by book_id desc";
+		} else {
+			// mysql 转义
+			searchContent = bookService.repMySqlChar(searchContent);
+			String speChar = searchContent.contains("{") ? "#}" : ""; // mysql
+			String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
+			if("book_publish_time".equals(columnName)) { //出版时间
+				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
+					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc ";
+				} else { //只有起始日期
+					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
+				}
+			} else {
+				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
+			}
+		}
+		List<BookEntity> bookList = bookService.getBookListByHql(hql);
+		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), true);
+		JSONArray json = JSONArray.fromObject(list);
+		out.print(json.toString());
+		out.flush();
+		out.close();
+	}
+
+	public void createExcelByCheckRes() throws Exception {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		out = response.getWriter();
+		String searchType = StringUtil.ObjectToString(request.getParameter("searchType"));
+		String searchContent = StringUtil.ObjectToString(request.getParameter("searchContent"));
+		int userId = StringUtil.StringToInt(request.getParameter("selUserId"));
+		String bookUse = StringUtil.ignoreComma(StringUtil.ObjectToString(request.getParameter("bookUse")));
+		String condition = "";
+		if("".equals(bookUse)||"BZWQ".equals(bookUse)) {
+			condition = " and 1=1 ";
+		} else {
+			condition += " and ( ";
+			for(char c : bookUse.toCharArray()) {
+				condition += " book_serial_number like '"+c+"%'  or ";
+			}
+			if(condition.endsWith("or ")) {
+				condition = condition.substring(0, condition.length()-3);
+			}
+			condition += " ) ";
+		}
+		if(userId==0) {
+			condition+=" and 1=1 ";
+		} else {
+			condition+= " and user_id = "+userId+" ";
+		}
+
+		String hql = "";
+		if ("".equals(searchType) || "".equals(searchContent)) {
+			hql = "from BookEntity where book_del_flag=0 "+condition+" order by book_id desc";
+		} else {
+			// mysql 转义
+			searchContent = bookService.repMySqlChar(searchContent);
+			String speChar = searchContent.contains("{") ? "#}" : ""; // mysql
+			String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
+			if("book_publish_time".equals(columnName)) { //出版时间
+				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
+					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc ";
+				} else { //只有起始日期
+					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
+				}
+			} else {
+				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
+			}
+		}
+		List<BookEntity> bookList = bookService.getBookListByHql(hql);
+		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), true);
+
+
+		Object obj = request.getSession().getAttribute("userEntity");
+		String exportColumn = ConfigInfo.DEFAULT_EXPORT_COLUMN;
+		if (obj != null) {
+			int uId = ((UserEntity) obj).getUser_id();
+			exportColumn = configService.getExportColumnByUserId(uId);
+		}
+		String fileName = StringUtil.dateToString("yyyyMMddhhmmss") + ".xlsx";
+		try {
+			bookService.createExcelByCheckRes(request.getRealPath("/") + "excel\\", fileName, list, exportColumn);
+			out.write(fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("0");
+		}
+		out.flush();
+		out.close();
+	}
+	/**
+	 * 组装ftp服务器上的文件列表，根据目录，遍历文件并生成xml
+	 */
+	public void getFtpFilesByConditions() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		out = response.getWriter();
+		String xmlPath = request.getRealPath("/") + "xml\\";
+		String xmlName = "FTPDownload" + (new Date().getTime()) + ".xml";
+
+		String searchType = StringUtil.ObjectToString(request.getParameter("searchType"));
+		String searchContent = StringUtil.ObjectToString(request.getParameter("searchContent"));
+		String localpath = StringUtil.ObjectToString(request.getParameter("localpath"));
+		String exportXmlCol = StringUtil.ObjectToString(request.getParameter("exportXmlCol"));
+
+		int userId = StringUtil.StringToInt(request.getParameter("selUserId"));
+		String bookUse = StringUtil.ignoreComma(StringUtil.ObjectToString(request.getParameter("bookUse")));
+		String condition = "";
+		if("".equals(bookUse)||"BZWQ".equals(bookUse)) {
+			condition = " and 1=1 ";
+		} else {
+			condition += " and ( ";
+			for(char c : bookUse.toCharArray()) {
+				condition += " book_serial_number like '"+c+"%'  or ";
+			}
+			if(condition.endsWith("or ")) {
+				condition = condition.substring(0, condition.length()-3);
+			}
+			condition += " ) ";
+		}
+		if(userId==0) {
+			condition+=" and 1=1 ";
+		} else {
+			condition+= " and user_id = "+userId+" ";
+		}
+
+		if ("".equals(exportXmlCol) || "".equals(localpath)) {
+			out.write("-1");
+		} else {
+			String hql = "";
+			if ("".equals(searchType) || "".equals(searchContent)) {
+				hql = "from BookEntity where book_del_flag=0 "+condition+" order by book_id desc";
+			} else {
+				// mysql 转义
+				searchContent = bookService.repMySqlChar(searchContent);
+				String speChar = searchContent.contains("{") ? "#}" : ""; // mysql
+				String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
+				if("book_publish_time".equals(columnName)) { //出版时间
+					if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
+						hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc ";
+					} else { //只有起始日期
+						hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
+					}
+				} else {
+					hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
+				}
+			}
+			List<BookEntity> bookList = bookService.getBookListByHql(hql);
+			List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), true);
+			bookService.createFtpXml(list, exportXmlCol, xmlPath, xmlName, localpath);
+			out.write(xmlName);
+		}
+		out.close();
+	}
+
 }

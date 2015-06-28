@@ -50,5 +50,7 @@
 		<mapping resource="com/wz/entity/BookOnlineEntity.hbm.xml" />
 		<mapping resource="com/wz/entity/BookOnlineOSEntity.hbm.xml" />
 		<mapping resource="com/wz/entity/BookFormatEntity.hbm.xml" />
+
+		<mapping resource="com/wz/entity/BookExtendEntityEntity.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

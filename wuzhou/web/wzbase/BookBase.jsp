@@ -268,6 +268,64 @@ dzs 电子书属性，用于切换显示
 			
 		}
 	}
+
+	function initColor(pt) {
+		if(pt=="2") { //合作出版
+			$("#bsn0").val("Q");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			$(".bitian").each(function() {
+				$(this).css("color", "#555555");
+			});
+			$(".zbitian").each(function() {//中国必填添加颜色
+				$(this).css("color", "#555555");
+			});
+			$(".wbitian").each(function() {//中国必填添加颜色
+				$(this).css("color", "#555555");
+			});
+		} else if(pt=="1") { //五洲
+			$("#bsn0").val("B");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			//选择本社，修改“必填”颜色
+			$(".bitian").each(function() {
+				$(this).css("color", "#CC0033");
+			});
+			if($(".bilingual").val().indexOf("500")!=-1) { //双语对应
+				$(".sydybt").css("color","#CC0033");
+			} else {
+				$(".sydybt").css("color","#555555");
+			}
+		} else if(pt=="3") {//国内
+			$("#bsn0").val("Z");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			$(".bitian").each(function() {//本社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".wbitian").each(function() {//国外出版社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".zbitian").each(function() {//中国必填添加颜色
+				$(this).css("color", "#CC0033");
+			});
+
+		} else if(pt=="4") {//国际
+			$("#bsn0").val("W");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			$(".bitian").each(function() {//本社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".zbitian").each(function() {//中国出版社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".wbitian").each(function() {//国外出版社必填添加颜色
+				$(this).css("color", "#CC0033");
+			});
+
+		}
+	}
 	
 </script>
 
@@ -886,7 +944,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group ww has-warning" title="内容简介（外文）">
-								<span class="input-group-addon"><span class="bitian">内容简介（外文）</span></span>
+								<span class="input-group-addon"><span class="bitian wbitian">内容简介（外文）</span></span>
 								<textarea class="form-control formfo" name="bookEntity.book_content_intr_foreign" rows=4></textarea>
 							</div>
 						</div>
@@ -910,7 +968,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group ww has-warning">
-								<span class="input-group-addon"><span class="bitian">作者简介（外文）</span></span>
+								<span class="input-group-addon"><span class="bitian wbitian">作者简介（外文）</span></span>
 								<textarea class="form-control formfo" name="bookEntity.book_author_intr_foreign" rows=4></textarea>
 							</div>
 						</div>
@@ -935,7 +993,7 @@ dzs 电子书属性，用于切换显示
 					<div class="row pt">
 						<div class="col-sm-12">
 							<div class="input-group ww has-warning">
-								<span class="input-group-addon"><span class="bitian">编辑推荐（外文）</span></span>
+								<span class="input-group-addon"><span class="bitian wbitian">编辑推荐（外文）</span></span>
 								<textarea class="form-control formfo" name="bookEntity.book_editor_recommend_foreign" rows=4></textarea>
 							</div>
 						</div>

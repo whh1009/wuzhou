@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <title>五洲传播--图书列表操作</title>
+    <title>五洲传播--图书列表查询</title>
     <!-- Bootstrap framework -->
     <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css">
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -126,9 +126,9 @@ function intShowColumn() {
 			tHead = tHead + "<th>"+$(this).attr("cname")+"</th>";
 			count++;
 		});
-		tHead = tHead + "<th align='center' style='width:80px'>操作</th></tr>";
+		tHead = tHead + "</tr>";
 		$(".row table thead").html(tHead);
-		$("#colspanAttr").prop("colspan", count+1);
+		$("#colspanAttr").prop("colspan", count);
 	}catch(e) {
 		alert(e.message);
 	}
@@ -208,7 +208,7 @@ function getAllBookList(searchType, searchContent, bookUse, uId) {
 							tableStr = tableStr + "<td>"+json[i].be[ename]+"</td>";
 						}
 					}
-					tableStr = tableStr + "<td align='center' style='width:80px'><a class=\"text-success\" title=\"编辑\" href=\"javascript:edit('"+json[i].be.book_id+"');\"><span class=\"glyphicon glyphicon-edit\"></span></a>&nbsp;&nbsp;<a class=\"text-danger\" title=\"删除\" href=\"javascript:remove('"+json[i].be.book_id+"');\"><span class=\"glyphicon glyphicon-remove\"></span></a></td></tr>";
+					tableStr = tableStr + "</tr>";
 				}
 				$(".row table tbody").html(tableStr);
 			}
@@ -581,9 +581,7 @@ function userChange() {
 						<ul class="dropdown-menu">
 							<li><a href="javascript:exportExcel();"
 								data-loading-text="正在导出..." id="exportExcel">导出图书列表</a></li>
-							<li><a href="javascript:exportXml();"
-								data-loading-text="正在导出..." id="exportXml" data-toggle="modal"
-								data-target="#myModal">导出资源文件</a></li>
+
 						</ul>
 					</div>
 				<!-- </div> -->

@@ -109,7 +109,7 @@ function intShowColumn() {
 		$(column).find("item").each(function() {
 			tHead = tHead + "<th>"+$(this).attr("cname")+"</th>";
 		});
-		tHead = tHead + "<th align='center' style='width:150px'>电子档警告</th><th align='center' style='width:150px'>元数据警告</th></tr>";
+		tHead = tHead + "<th align='center' style='width:80px'>操作</th><th align='center' style='width:150px'>电子档警告</th><th align='center' style='width:150px'>元数据警告</th></tr>";
 		tHead = tHead + "</tr>";
 		$(".row table thead").html(tHead);
 	}catch(e) {
@@ -158,7 +158,7 @@ function getAllBookList(searchType, searchContent, uid) {
 							tableStr = tableStr + "<td>"+json[i].be[ename]+"</td>";
 						}
 					}
-					tableStr = tableStr + "<td>";
+					tableStr = tableStr + "<td align='center'><a class=\"text-success\" title=\"编辑\" href=\"javascript:edit('"+json[i].be.book_id+"');\"><span class=\"glyphicon glyphicon-edit\"></span></a>&nbsp;&nbsp;<a class=\"text-danger\" title=\"删除\" href=\"javascript:remove('"+json[i].be.book_id+"');\"><span class=\"glyphicon glyphicon-remove\"></span></a></td><td>";
 					if(json[i].fengmian) {
 						tableStr+="<span class='jinggao jinggaosuc'><span class='glyphicon glyphicon-tree-deciduous'></span>封面</span>";
 					} else {
@@ -197,6 +197,33 @@ function getAllBookList(searchType, searchContent, uid) {
 			alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
 		}
 	});
+}
+
+
+function edit(bookId) {
+	$("#theBookId").val(bookId);
+	document.form.action="../wzbase/editBook.action";
+	document.form.submit();
+}
+
+/**
+ * 删除
+ */
+function remove(bookId) {
+	if(window.confirm("你确定要删除吗？")){
+		$.post("deleteBook.action",{bookId: bookId}, function(data) {
+			if(data=="1") {//删除成功
+				alert("删除成功");
+				window.location.href = window.location.href;
+			} else if(data=="2") {
+				alert("对不起，删除失败!");
+			} else if(data=="0") {
+				alert("对不起，为获取到bookID.");
+			} else {
+				alert("删除失败！");
+			}
+		})
+	}
 }
 
 //搜索方式
@@ -299,6 +326,7 @@ function initAllUserName() {
   
   <body>
   <form name="form" method="post">
+	  <input type="hidden" value="0" name="theBookId" id="theBookId" />
     <div class="container" id='container'>
     	<div class="row">
 			<div class="col-sm-2">

@@ -37,6 +37,16 @@
     	if($("#wenzhong").val()=="001--英文") {
     		initWenzhong('yw','001');
     	}
+		if(booksn.split("_")[0]=="B"){
+			initColor("1");
+		} else if(booksn.split("_")[0]=="Z"){
+			initColor("3");
+		}  else if(booksn.split("_")[0]=="W"){
+			initColor("4");
+		} else {
+			initColor("2");
+		}
+		$("#book_serial_number").val(booksn);
    		//图书编号第四部分随机数
    		$("#bsn0").val(booksn.split("_")[0]);
    		$("#bsn1").val(booksn.split("_")[1]);
@@ -71,7 +81,7 @@
     		url:"wzbase/getBookEntityByBookId.action",
     		type : 'POST',
 			data : {bookId:bookId},
-			async : true,
+			async : false,
 			success : function(data) {
 				if(data=="0") {
 					document.getElementById("container").style.display='none';

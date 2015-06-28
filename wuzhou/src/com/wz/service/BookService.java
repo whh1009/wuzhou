@@ -517,7 +517,7 @@ public class BookService {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	public void createFtpXml(List<BookEntity> bookList, String exportXmlCol, String xmlPath, String xmlName, String localpath) throws Exception{
+	public void createFtpXmlBak(List<BookEntity> bookList, String exportXmlCol, String xmlPath, String xmlName, String localpath) throws Exception{
 //		FtpUtil ftp = new FtpUtil();
 //		boolean isLogin = ftp.connectFtp(xmlPath + "FTPConfig.xml");
 //		if (!isLogin)
@@ -547,6 +547,47 @@ public class BookService {
 //								addFileEle(serverEle, localpath, fee);
 //							}
 //						}
+						//本地目录替换FTP目录
+						String filePath = ConfigInfo.FTP_ROOT+serverpath.replace("/","\\");
+						List<FTPFileEntity> list = new ArrayList<FTPFileEntity>();
+						subFile(filePath, list);
+						if (list != null) {
+							for (FTPFileEntity fee : list) {
+								addFileEle(serverEle, localpath, fee);
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		FileUtil.writeFile(doc.asXML(), xmlPath + xmlName, "utf-8");
+//		ftp.ftpLogout();
+	}
+
+	public void createFtpXml(List<BookEntityFileSize> bookList, String exportXmlCol, String xmlPath, String xmlName, String localpath) throws Exception{
+//		FtpUtil ftp = new FtpUtil();
+//		boolean isLogin = ftp.connectFtp(xmlPath + "FTPConfig.xml");
+//		if (!isLogin)
+//			return;
+		localpath = localpath.replace("：",":").replace("/", "\\");
+		if (!localpath.endsWith("\\")) {
+			localpath = localpath + "\\";
+		}
+		delFile(xmlPath);
+		SAXReader read = new SAXReader();
+		Document doc = null;
+		doc = read.read(new File(xmlPath + "FTPConfig.xml"));
+		Element serverEle = (Element) doc.selectSingleNode("//Server");
+		exportXmlCol = StringUtil.ignoreComma(exportXmlCol);
+		String[] exportColumnArray = exportXmlCol.split(",");
+		for (int i = 0; i < bookList.size(); i++) {
+			BookEntity be = bookList.get(i).getBe();
+			Field[] fields = be.getClass().getDeclaredFields();
+			for (String col : exportColumnArray) {
+				for (Field f : fields) {
+					if (col.equals(f.getName())) {
+						String serverpath = StringUtil.ObjectToString(f.get(be));
 						//本地目录替换FTP目录
 						String filePath = ConfigInfo.FTP_ROOT+serverpath.replace("/","\\");
 						List<FTPFileEntity> list = new ArrayList<FTPFileEntity>();
@@ -1446,8 +1487,17 @@ public class BookService {
 		return months;
 	}
 
-	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList) throws Exception{
+	/**
+	 * 根据图书列表检查文件大小，以及元数据是否填写完整
+	 * @param bookList
+	 * @param userList
+	 * @param flag true 合格的返回，false 不合格的返回，
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList, boolean flag) throws Exception{
 		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>();
+		List<BookEntityFileSize> list2 = new ArrayList<BookEntityFileSize>();
 		if(bookList==null||bookList.isEmpty()) return null;
 		for(BookEntity be : bookList) {
 			String path = be.getBook_mobi_serverpath().replace("/", "\\");
@@ -1475,7 +1525,7 @@ public class BookService {
 			if(fencengPdfSize>=Double.valueOf(ConfigInfo.LIMIT_FENCENG_PDF_DIRECTORY_SIZE)/1024) fenceng = true;
 			if(contractSize>=Double.valueOf(ConfigInfo.LIMIT_CONTRACT_DIRECTORY_SIZE)/1024) contract = true;
 			bookInfo = checkBookInfo(be);
-			if(!(neiwen&fengmian&fenceng&contract&bookInfo)) {
+			if(neiwen&fengmian&fenceng&contract&bookInfo) { //全部检查合格
 				BookEntityFileSize befs = new BookEntityFileSize();
 				befs.setBe(be);
 				befs.setNeiwen(neiwen);
@@ -1484,9 +1534,22 @@ public class BookService {
 				befs.setContract(contract);
 				befs.setBookInfo(bookInfo);
 				list.add(befs);
+			} else { //有不合格的
+				BookEntityFileSize befs = new BookEntityFileSize();
+				befs.setBe(be);
+				befs.setNeiwen(neiwen);
+				befs.setFengmian(fengmian);
+				befs.setFencengpdf(fenceng);
+				befs.setContract(contract);
+				befs.setBookInfo(bookInfo);
+				list2.add(befs);
 			}
 		}
-		return list;
+		if(flag) {
+			return list;
+		} else {
+			return list2;
+		}
 	}
 
 	/**
@@ -1613,5 +1676,40 @@ public class BookService {
 		cs.setFont(font);
 		cell.setCellStyle(cs);
 		cell.setCellValue(val);
+	}
+
+	public void createExcelByCheckRes(String filePath, String fileName, List<BookEntityFileSize> list, String exportColumn) throws Exception{
+		// 删除已有的excel
+		deleteExistFile(filePath);
+		Workbook wb = new XSSFWorkbook();
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(filePath + fileName);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		Sheet helloSheet = wb.createSheet("Sheet1");
+		Row row1 = helloSheet.createRow(0);
+		row1.setRowStyle(setTitleStyle(wb));
+		String[] exportColumnArray = exportColumn.split(",");
+		for (int i = 0; i < exportColumnArray.length; i++) {
+			row1.createCell(i).setCellValue(ColumnMap.getBookTableCnByColumnName(exportColumnArray[i].trim()));
+		}
+		for (int i = 0; i < list.size(); i++) {
+			BookEntity be = list.get(i).getBe();
+			Field[] fields = be.getClass().getFields();
+			Row row = helloSheet.createRow(i + 1);
+			for (int j = 0; j < exportColumnArray.length; j++) {
+				for (Field f : fields) {
+					if (exportColumnArray[j].equals(f.getName())) {
+						row.createCell(j).setCellValue(StringUtil.ObjectToString(f.get(be)));
+						break;
+					}
+				}
+			}
+		}
+		wb.write(fos);
+		fos.flush();
+		fos.close();
 	}
 }

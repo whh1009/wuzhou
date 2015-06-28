@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.wz.entity">
+	
+	<class name="BookExtendEntity" table="wz_book_extend">
+		<id name="book_id" type="java.lang.Integer" column="book_id">
+			<generator class="assigned" />
+		</id>
+		<property name="book_create_time" type="java.util.Date" column="book_create_time" />
+		<property name="book_print_time" type="java.util.Date" column="book_print_time" />
+		<property name="book_file_flag" type="java.lang.String" column="book_file_flag" />
+		<property name="book_info_flag" type="java.lang.String" column="book_info_flag" />
+	</class>
+</hibernate-mapping>

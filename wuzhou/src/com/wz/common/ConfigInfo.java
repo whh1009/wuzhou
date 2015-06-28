@@ -194,7 +194,7 @@ public class ConfigInfo {
 	/**
 	 * 国际 限制必须输入的字段
 	 */
-	public final static String LIMIT_BOOKINFO_GUOJI = "book_isbn,book_language,book_name_cn,book_publish_time,book_cooperate_press,book_editor,book_author,book_name_foreign,book_author_foreign,book_category1,book_ebook_dollar_price,book_content_intr_cn,book_author_intr_cn,book_editor_recommend_cn";
+	public final static String LIMIT_BOOKINFO_GUOJI = "book_isbn,book_language,book_name_cn,book_publish_time,book_cooperate_press,book_editor,book_author,book_name_foreign,book_author_foreign,book_category1,book_ebook_dollar_price,book_content_intr_cn,book_author_intr_cn,book_editor_recommend_cn,book_content_intr_foreign,book_author_intr_foreign,book_editor_recommend_foreign";
 
 	/**
 	 * 合作社 限制必须输入的字段

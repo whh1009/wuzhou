@@ -110,7 +110,7 @@
 
 		<!-- ##图书列表查询 -->
 		<action name="allBookList" class="com.wz.action.BookAction" method="allBookList">
-			<result>AllBookList.jsp</result>
+			<result>UpdateAllBookList.jsp</result>
 			<result name="noLogin" type="redirectAction">toLogin</result>
 			<interceptor-ref name="authorityStack" />
 		</action>
@@ -486,9 +486,15 @@
 		<!-- 条件筛选 文件大小 导出excel -->
 		<action name="createExcelByFileSize" class="com.wz.action.BookAction" method="createExcelByFileSize"></action>
 
-		<!-- 条件筛选 图书用途，本社，其他 -->
+		<!-- 条件筛选 图书用途，五洲、国内、国际、合作出版社 -->
 		<action name="getBookListByConditionAndBookUse" class="com.wz.action.BookAction" method="getBookListByConditionAndBookUse"></action>
 		<action name="createExcelByBookUse" class="com.wz.action.BookAction" method="createExcelByBookUse"></action>
+
+		<!-- 条件筛选 图书用途，五洲、国内、国际、合作出版社  显示全部合格 -->
+		<action name="getBookListByCheckRes" class="com.wz.action.BookAction" method="getBookListByCheckRes"></action>
+		<action name="createExcelByCheckRes" class="com.wz.action.BookAction" method="createExcelByCheckRes"></action>
+		<action name="getFtpFilesByConditions" class="com.wz.action.BookAction" method="getFtpFilesByConditions"></action>
+
 	</package>
 
 </struts>
