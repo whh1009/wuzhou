@@ -25,10 +25,10 @@ import java.util.List;
  *
  */
 public class ThatsBookEBookImpl implements EBookFormat {
-	
+
 	private List<BookEntity> bookList;
 	private String excelPath;
-	
+
 	@Override
 	public void renameEBook(List<BookEntity> bookList, List<UserEntity> userList, String desPath, String excelPath) { //中文书名
 		if(bookList==null||bookList.isEmpty()) return;
@@ -75,7 +75,7 @@ public class ThatsBookEBookImpl implements EBookFormat {
 				} else {
 					createBaseCell(wb, row, 1, (StringUtil.ObjectToString(be.getBook_name_cn())+"（"+StringUtil.ObjectToString(be.getBook_series_foreign())+"）（"+StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}--","")+"）").replace("（无）", "").replace("（）", ""), 0);
 				}
-				
+
 				createBaseCell(wb, row, 2, StringUtil.ObjectToString(be.getBook_name_english()), 0);
 				createBaseCell(wb, row, 3, StringUtil.ObjectToString(be.getBook_name_xi()), 0);
 				createBaseCell(wb, row, 4, StringUtil.ObjectToString(be.getBook_name_e()), 1);
@@ -86,8 +86,8 @@ public class ThatsBookEBookImpl implements EBookFormat {
 				createBaseCell(wb, row, 9, StringUtil.ObjectToString(be.getBook_author_e()), 1);
 				createBaseCell(wb, row, 10, StringUtil.ObjectToString(be.getBook_publish_time()), 0);
 				createBaseCell(wb, row, 11, StringUtil.ObjectToString(be.getBook_series_cn()), 0);
-				createBaseCell(wb, row, 12, StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}--",""), 0);
-				createBaseCell(wb, row, 13, StringUtil.ObjectToString(be.getBook_category1()).replaceAll("[0-9]{2}-",""), 0);
+				createBaseCell(wb, row, 12, StringUtil.ObjectToString(be.getBook_language()).replaceAll("[0-9]{3}[\\-]{2}",""), 0);
+				createBaseCell(wb, row, 13, StringUtil.ObjectToString(be.getBook_category1()).replaceAll("[0-9]{2}\\-",""), 0);
 				createBaseCell(wb, row, 14, "0", 0); //库存数量，默认0
 				createBaseCell(wb, row, 15, StringUtil.ObjectToString(be.getBook_content_intr_cn()), 0);
 				createBaseCell(wb, row, 16, StringUtil.ObjectToString(be.getBook_content_intr_english()), 0);
@@ -116,7 +116,7 @@ public class ThatsBookEBookImpl implements EBookFormat {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 基本单元格，样式四周边框
 	 * @param wb

@@ -828,16 +828,16 @@ dzs 电子书属性，用于切换显示
 						</div>
 						<div class="col-sm-4 dzs">
 							<div class="input-group">
-								<span class="input-group-addon" title="人民币"><span class="bitian zbitian">电子书定价</span></span>
+								<span class="input-group-addon" title="人民币"><span class="zbitian">电子书定价</span></span>
 								<input class="form-control" name="bookEntity.book_ebook_price" onkeyup="inFloat(this)" onblur="limitLength(this, 8)" type="text">
-								<span class="input-group-addon"><span class="bitian zbitian">RMB</span></span>
+								<span class="input-group-addon"><span class="zbitian">RMB</span></span>
 							</div>
 						</div>
 						<div class="col-sm-4 dzs">
 							<div class="input-group">
-								<span class="input-group-addon" title="美元"><span class="bitian zbitian wbitian">电子书定价</span></span>
+								<span class="input-group-addon" title="美元"><span class="zbitian wbitian">电子书定价</span></span>
 								<input class="form-control" name="bookEntity.book_ebook_dollar_price" onkeyup="inFloat(this)" onblur="limitLength(this, 8)" type="text">
-								<span class="input-group-addon"><span class="bitian zbitian wbitian">USD</span></span>
+								<span class="input-group-addon"><span class="zbitian wbitian">USD</span></span>
 							</div>
 						</div>
 					</div>

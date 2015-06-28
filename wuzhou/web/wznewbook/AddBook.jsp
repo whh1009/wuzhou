@@ -38,7 +38,8 @@ dzs 电子书属性，用于切换显示
 		if(!fromflag){
 			document.getElementById("container").style.display = 'none';
 		}
-		
+		//限制用户显示（限制隋钺），仅用来显示国内和国际
+		limitUser();
 		//初始化出版社类型，本社或者其他
 		publishType();
 		//初始化图书类别事件，纸书或电子书
@@ -84,6 +85,19 @@ dzs 电子书属性，用于切换显示
 				$(arg).focus();
 				return;
 			}
+		}
+	}
+	/**
+	 *  限制用户显示
+	 *  当用户ID是6 （用户名是隋钺）时 ，仅显示国内和国际
+	 *
+	 */
+	function limitUser() {
+		var userId = "<s:property value='#session.userEntity.user_id'></s:property>";
+		if(userId==6) {
+			$('input:radio[name="publishType"][value="3"]').attr('checked', 'checked');
+			$(".limitUser").hide();
+			initColor(3); //直接定位国内
 		}
 	}
 
@@ -158,62 +172,66 @@ dzs 电子书属性，用于切换显示
 	function publishType() {
 		$("input[name='publishType']").click(function() {
 			var pt = $(this).val();
-			if(pt=="2") { //其他
-				$("#bsn0").val("Q");
-				//设置图书编号
-				$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
-				$(".bitian").each(function() {
-					$(this).css("color", "#555555");
-				});
-				$(".zbitian").each(function() {//中国必填添加颜色
-					$(this).css("color", "#555555");
-				});
-				$(".wbitian").each(function() {//中国必填添加颜色
-					$(this).css("color", "#555555");
-				});
-			} else if(pt=="1") {
-				$("#bsn0").val("B");
-				//设置图书编号
-				$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
-				//选择本社，修改“必填”颜色
-				$(".bitian").each(function() {
-					$(this).css("color", "#CC0033");
-				});
-				if($(".bilingual").val().indexOf("500")!=-1) { //双语对应
-					$(".sydybt").css("color","#CC0033");
-				} else {
-					$(".sydybt").css("color","#555555");
-				}
-			} else if(pt=="3") {//中国
-				$("#bsn0").val("Z");
-				//设置图书编号
-				$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
-				$(".bitian").each(function() {//本社必填还原颜色
-					$(this).css("color", "#555555");
-				});
-				$(".wbitian").each(function() {//国外出版社必填还原颜色
-					$(this).css("color", "#555555");
-				});
-				$(".zbitian").each(function() {//中国必填添加颜色
-					$(this).css("color", "#CC0033");
-				});
-
-			} else if(pt=="4") {//国外
-				$("#bsn0").val("W");
-				//设置图书编号
-				$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
-				$(".bitian").each(function() {//本社必填还原颜色
-					$(this).css("color", "#555555");
-				});
-				$(".zbitian").each(function() {//中国出版社必填还原颜色
-					$(this).css("color", "#555555");
-				});
-				$(".wbitian").each(function() {//国外出版社必填添加颜色
-					$(this).css("color", "#CC0033");
-				});
-
-			}
+			initColor(pt);
 		});
+	}
+
+	function initColor(pt) {
+		if(pt=="2") { //合作出版
+			$("#bsn0").val("Q");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			$(".bitian").each(function() {
+				$(this).css("color", "#555555");
+			});
+			$(".zbitian").each(function() {//中国必填添加颜色
+				$(this).css("color", "#555555");
+			});
+			$(".wbitian").each(function() {//中国必填添加颜色
+				$(this).css("color", "#555555");
+			});
+		} else if(pt=="1") { //五洲
+			$("#bsn0").val("B");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			//选择本社，修改“必填”颜色
+			$(".bitian").each(function() {
+				$(this).css("color", "#CC0033");
+			});
+			if($(".bilingual").val().indexOf("500")!=-1) { //双语对应
+				$(".sydybt").css("color","#CC0033");
+			} else {
+				$(".sydybt").css("color","#555555");
+			}
+		} else if(pt=="3") {//国内
+			$("#bsn0").val("Z");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			$(".bitian").each(function() {//本社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".wbitian").each(function() {//国外出版社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".zbitian").each(function() {//中国必填添加颜色
+				$(this).css("color", "#CC0033");
+			});
+
+		} else if(pt=="4") {//国际
+			$("#bsn0").val("W");
+			//设置图书编号
+			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
+			$(".bitian").each(function() {//本社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".zbitian").each(function() {//中国出版社必填还原颜色
+				$(this).css("color", "#555555");
+			});
+			$(".wbitian").each(function() {//国外出版社必填添加颜色
+				$(this).css("color", "#CC0033");
+			});
+
+		}
 	}
 
 	//根据填充的编号获取isbn号
@@ -411,10 +429,10 @@ dzs 电子书属性，用于切换显示
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="">
-						<label class="radio-inline"> <input type="radio" name="publishType" value="1" checked="checked"> 本社</label>
-						<label class="radio-inline"> <input type="radio" name="publishType" value="3"> 中国</label>
-						<label class="radio-inline"> <input type="radio" name="publishType" value="4"> 国外</label>
-						<label class="radio-inline"> <input type="radio" name="publishType" value="2"> 其他</label>
+						<label class="radio-inline limitUser"> <input type="radio" name="publishType" value="1" checked="checked"> 五洲</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="3"> 国内</label>
+						<label class="radio-inline"> <input type="radio" name="publishType" value="4"> 国际</label>
+						<label class="radio-inline limitUser"> <input type="radio" name="publishType" value="2"> 合作出版</label>
 					</div>
 				</div>
 				<div class="col-sm-8">

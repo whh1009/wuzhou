@@ -42,7 +42,7 @@ public class AmazonUsEBookImpl implements EBookFormat {
 			String mobiRootPath = bookRootPath + "\\MOBI";
 			List<File> mobiList = new ArrayList<File>();
 			EBookTool.getFileByExtension(mobiRootPath, "mobi", mobiList);
-			for(File mobiFile : mobiList) { 
+			for(File mobiFile : mobiList) {
 				try {
 					FileUtil.copyFile(mobiFile, new File(desPath+"\\电子文件\\CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(mobiCount)+".mobi"), true);
 					map.put(be.getBook_isbn(), "CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(mobiCount));//添加isbn-参考代码映射
@@ -51,12 +51,12 @@ public class AmazonUsEBookImpl implements EBookFormat {
 				}
 				mobiCount++;
 			}
-			
+
 			String coverRootPath = bookRootPath + "\\电子书封面";
 			List<File> coverList = new ArrayList<File>();
 			EBookTool.getFileByExtension(coverRootPath, "jpg", coverList);
-			
-			for(File coverFile : coverList) { 
+
+			for(File coverFile : coverList) {
 				try {
 					FileUtil.copyFile(coverFile, new File(desPath+"\\电子书封面\\CNICN_"+be.getBook_isbn()+"_"+StringUtil.dateToString("yyyyMMdd")+"_"+StringUtil.formatNum(coverCount)+".jpg"), true);
 				} catch (IOException e) {
@@ -66,7 +66,7 @@ public class AmazonUsEBookImpl implements EBookFormat {
 			}
 
 			//不需要样章
-			
+
 		}
 	}
 
@@ -94,11 +94,13 @@ public class AmazonUsEBookImpl implements EBookFormat {
 				row.createCell(11).setCellValue("");
 				row.createCell(12).setCellValue("");
 				row.createCell(13).setCellValue(BookLanguageMap.getAmazonLanguage(be.getBook_language()));
-//				row.createCell(14).setCellValue(getTime(be.getBook_publish_time()));
 				row.createCell(14).setCellValue(StringUtil.dateToString("yyyyMMdd"));
 				row.createCell(15).setCellValue(getTime(be.getBook_publish_time()));
 				row.createCell(16).setCellValue(StringUtil.ObjectToString(be.getBook_content_intr_english()));
-				
+
+				//美图分类号
+				row.createCell(18).setCellValue(StringUtil.ObjectToString(be.getBook_alcc()));
+
 				row.createCell(25).setCellValue(StringUtil.ObjectToString(be.getBook_keyword_english()));
 				row.createCell(26).setCellValue(StringUtil.ObjectToString(be.getBook_ebook_dollar_price()));
 				row.createCell(27).setCellValue("USD");
@@ -120,7 +122,7 @@ public class AmazonUsEBookImpl implements EBookFormat {
 		if(map.get(isbn)==null) return "";
 		else return map.get(isbn).toString();
 	}
-	
+
 	private String getTime(String time) {
 		time = StringUtil.ObjectToString(time);
 		return time.length()==0?"":time.replace("-", "")+"01";

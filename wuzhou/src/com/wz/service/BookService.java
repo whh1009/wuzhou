@@ -13,7 +13,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -1447,7 +1446,7 @@ public class BookService {
 		return months;
 	}
 
-	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList) {
+	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList) throws Exception{
 		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>();
 		if(bookList==null||bookList.isEmpty()) return null;
 		for(BookEntity be : bookList) {
@@ -1469,27 +1468,71 @@ public class BookService {
 			double contractSize = FileUtil.getDirSize(new File(contractPath))*1024;
 			boolean contract = false;
 
-			if(be.getBook_serial_number().equals("B_EP_978712345678_003_ZehiV")) {
-				System.out.println(neiwenSize+"="+Double.valueOf(ConfigInfo.LIMIT_NEIWEN_DIRECTORY_SIZE)/1024);
-				System.out.println(fengmianSize+"="+Double.valueOf(ConfigInfo.LIMIT_COVER_DIRECTORY_SIZE)/1024);
-				System.out.println(fencengPdfSize+"="+Double.valueOf(ConfigInfo.LIMIT_FENCENG_PDF_DIRECTORY_SIZE)/1024);
-				System.out.println(contractSize+"="+Double.valueOf(ConfigInfo.LIMIT_CONTRACT_DIRECTORY_SIZE)/1024);
-			}
+			boolean bookInfo = false;
+
 			if(neiwenSize>=Double.valueOf(ConfigInfo.LIMIT_NEIWEN_DIRECTORY_SIZE)/1024) neiwen = true;
 			if(fengmianSize>=Double.valueOf(ConfigInfo.LIMIT_COVER_DIRECTORY_SIZE)/1024) fengmian = true;
 			if(fencengPdfSize>=Double.valueOf(ConfigInfo.LIMIT_FENCENG_PDF_DIRECTORY_SIZE)/1024) fenceng = true;
 			if(contractSize>=Double.valueOf(ConfigInfo.LIMIT_CONTRACT_DIRECTORY_SIZE)/1024) contract = true;
-			if(!(neiwen&fengmian&fenceng&contract)) {
+			bookInfo = checkBookInfo(be);
+			if(!(neiwen&fengmian&fenceng&contract&bookInfo)) {
 				BookEntityFileSize befs = new BookEntityFileSize();
 				befs.setBe(be);
 				befs.setNeiwen(neiwen);
 				befs.setFengmian(fengmian);
 				befs.setFencengpdf(fenceng);
 				befs.setContract(contract);
+				befs.setBookInfo(bookInfo);
 				list.add(befs);
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 检查图书元数据是否录入完整
+	 * @param be
+	 * @return
+	 */
+	public boolean checkBookInfo(BookEntity be) throws Exception{
+		String bookSerialNumber = be.getBook_serial_number();
+		if(bookSerialNumber.startsWith("B_")) {
+			if(StringUtil.ObjectToString(be.getBook_language()).startsWith("500")) { //判断双语对应
+				if("".equals(StringUtil.ObjectToString(be.getBook_bilingual()))) {
+					return false;
+				}
+			}
+			if(!"001--英文".equals(StringUtil.ObjectToString(be.getBook_language()))){ //除英文外，需要检查外文
+				String checkBeanNames = "book_name_foreign,book_author_foreign,book_translator_foreign,book_series_foreign,book_keyword_foreign,book_content_intr_foreign,book_author_intr_foreign,book_editor_recommend_foreign";
+				boolean flag = getValByBean(be, checkBeanNames);
+				if(!flag) {
+					return false;
+				}
+			}
+			return getValByBean(be, ConfigInfo.LIMIT_BOOKINFO_WUZHOU);
+		} else if(bookSerialNumber.startsWith("Z_")) {
+			return getValByBean(be, ConfigInfo.LIMIT_BOOKINFO_GUONEI);
+		} else if(bookSerialNumber.startsWith("W_")) {
+			return getValByBean(be, ConfigInfo.LIMIT_BOOKINFO_GUOJI);
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 *
+	 * @param be
+	 * @param beanNames
+	 * @return
+	 */
+	private boolean getValByBean(BookEntity be, String beanNames) throws Exception{
+		for(String name : beanNames.split(",")) {
+			String val = StringUtil.ObjectToString(BeanUtils.getProperty(be, name));
+			if("".equals(val)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static void main(String [] args) throws Exception {
@@ -1526,27 +1569,49 @@ public class BookService {
 					}
 				}
 			}
-			String flag = "";
-			if(!list.get(i).isNeiwen()){
-				flag+="排版 ";
+			Cell cell1 = row.createCell(exportColumnArray.length+1);
+			if(list.get(i).isNeiwen()) {
+				addCellValue(cell1, wb, IndexedColors.BLACK.getIndex(), "排版");
+			} else {
+				addCellValue(cell1, wb, IndexedColors.RED.getIndex(), "排版");
 			}
-			if(!list.get(i).isFengmian()) {
-				flag+="封面 ";
+			Cell cell2 = row.createCell(exportColumnArray.length+2);
+			if(list.get(i).isFengmian()) {
+				addCellValue(cell2, wb, IndexedColors.BLACK.getIndex(), "封面");
+			} else {
+				addCellValue(cell2, wb, IndexedColors.RED.getIndex(), "封面");
 			}
-			if(!list.get(i).isFencengpdf()) {
-				flag+="分层PDF ";
+			Cell cell3 = row.createCell(exportColumnArray.length+3);
+			if(list.get(i).isFencengpdf()) {
+				addCellValue(cell3, wb, IndexedColors.BLACK.getIndex(), "分层PDF");
+			} else {
+				addCellValue(cell3, wb, IndexedColors.RED.getIndex(), "分层PDF");
 			}
-			if(!list.get(i).isContract()) {
-				flag+="合同";
+			Cell cell4 = row.createCell(exportColumnArray.length+4);
+			if(list.get(i).isContract()) {
+				addCellValue(cell4, wb, IndexedColors.BLACK.getIndex(), "合同");
+			} else {
+				addCellValue(cell4, wb, IndexedColors.RED.getIndex(), "合同");
 			}
-			Cell cell = row.createCell(exportColumnArray.length+1);
-			CellStyle cs = wb.createCellStyle();
-			cs.setFillBackgroundColor(HSSFColor.LIME.index);
-			cell.setCellStyle(cs);
-			cell.setCellValue(flag);
+			Cell cell5 = row.createCell(exportColumnArray.length+5);
+			if(list.get(i).isBookInfo()) {
+				addCellValue(cell5, wb, IndexedColors.BLACK.getIndex(), "完整");
+			} else {
+				addCellValue(cell5, wb, IndexedColors.RED.getIndex(), "缺少");
+			}
+
 		}
 		wb.write(fos);
 		fos.flush();
 		fos.close();
+	}
+
+	private void addCellValue(Cell cell, Workbook wb, short color, String val) {
+		CellStyle cs = wb.createCellStyle();
+		Font font = wb.createFont();
+		font.setColor(color);
+		cs.setFont(font);
+		cell.setCellStyle(cs);
+		cell.setCellValue(val);
 	}
 }

@@ -78,9 +78,9 @@ public class IBooksEBookImpl implements EBookFormat {
                 EBookTool.createBaseCell(wb, row, 17, StringUtil.ObjectToString(be.getBook_content_intr_fa()), 0);
                 EBookTool.createBaseCell(wb, row, 18, "China Intercontinental Press", 0);
                 EBookTool.createBaseCell(wb, row, 19, StringUtil.ObjectToString(be.getBook_publish_time()), 0);
-                EBookTool.createBaseCell(wb, row, 20, StringUtil.ObjectToString(be.getBook_neiwen_page_count()), 0);
+                EBookTool.createBaseCell(wb, row, 20, "", 0);
                 EBookTool.createBaseCell(wb, row, 21, "图书", 0);
-                EBookTool.createBaseCell(wb, row, 22, "", 0);
+                EBookTool.createBaseCell(wb, row, 22, StringUtil.ObjectToString(be.getBook_category1()).replaceAll("[0-9]{2}\\-", ""), 0);
                 EBookTool.createBaseCell(wb, row, 23, StringUtil.dateToString("yyyy/MM/dd"), 0);
                 EBookTool.createBaseCell(wb, row, 24, "全球（全选）", 0);
                 EBookTool.createBaseCell(wb, row, 25, StringUtil.ObjectToString(be.getBook_ebook_dollar_price()), 0);

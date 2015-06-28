@@ -46,7 +46,7 @@ public class OverDriveEBookImpl implements EBookFormat {
 			//不需要样章
 		}
 	}
-	
+
 	@Override
 	public void createExcel(OutputStream out) {
 		if(bookList==null||bookList.isEmpty()) return;
@@ -73,7 +73,7 @@ public class OverDriveEBookImpl implements EBookFormat {
 				}
 				row.createCell(1).setCellValue("");
 				row.createCell(2).setCellValue("1"); //Edition??
-				
+
 				String authors = be.getBook_author();
 				if(StringUtil.ObjectToString(authors).length()!=0) {
 					String author [] = authors.replaceAll("[；，、,]", ";").split(";");
@@ -106,9 +106,9 @@ public class OverDriveEBookImpl implements EBookFormat {
 				row.createCell(34).setCellValue("");//BIC
 				row.createCell(35).setCellValue(StringUtil.ObjectToString(be.getBook_keyword_english()));//keyWords
 				row.createCell(36).setCellValue((StringUtil.ObjectToString(be.getBook_content_intr_cn())+"（"+StringUtil.ObjectToString(be.getBook_content_intr_english()+"）")).replace("（null）","").replace("（无）",""));
-				
+
 				row.createCell(39).setCellValue(be.getBook_isbn()+".jpg");//cover
-				
+
 				row.createCell(49).setCellValue("N");
 				row.createCell(50).setCellValue("N");
 				row.createCell(51).setCellValue("N");
@@ -123,6 +123,6 @@ public class OverDriveEBookImpl implements EBookFormat {
 			ex.printStackTrace();
 		}
 	}
-	
-	
+
+
 }

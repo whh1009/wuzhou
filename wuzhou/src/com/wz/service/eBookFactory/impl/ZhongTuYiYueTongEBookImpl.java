@@ -68,7 +68,12 @@ public class ZhongTuYiYueTongEBookImpl implements EBookFormat {
                 EBookTool.createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_paper_price()), 0);
                 EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_ebook_price()), 0);
                 EBookTool.createBaseCell(wb, row, 8, "五洲传播出版社", 0);
-
+                EBookTool.createBaseCell(wb, row, 9, "否", 0);
+                EBookTool.createBaseCell(wb, row, 10, "否", 0);
+                EBookTool.createBaseCell(wb, row, 11, "除中国大陆以外的地区", 0);
+                EBookTool.createBaseCell(wb, row, 12, "仅限易阅通", 0);
+                EBookTool.createBaseCell(wb, row, 13, StringUtil.dateToString("yyyy/MM/dd"), 0);
+                EBookTool.createBaseCell(wb, row, 14, "", 0);
 
                 rowNum++;
                 num++;

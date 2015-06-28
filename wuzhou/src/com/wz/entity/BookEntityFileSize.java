@@ -6,10 +6,20 @@ package com.wz.entity;
  */
 public class BookEntityFileSize {
     private BookEntity be;
-    private boolean neiwen;
-    private boolean fengmian;
-    private boolean fencengpdf;
-    private boolean contract;
+    private boolean neiwen; //检查内文
+    private boolean fengmian; //检查封面
+    private boolean fencengpdf; // 检查分层PDF
+    private boolean contract; //检查合同
+    private boolean bookInfo; //检查图书元数据是否填写完整
+    public boolean isBookInfo() {
+        return bookInfo;
+    }
+
+    public void setBookInfo(boolean bookInfo) {
+        this.bookInfo = bookInfo;
+    }
+
+
 
     public BookEntity getBe() {
         return be;

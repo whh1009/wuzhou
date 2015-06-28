@@ -65,24 +65,25 @@ public class ChinaBookStoreEBookImpl implements EBookFormat{
                 EBookTool.createBaseCell(wb, row, 1, StringUtil.ObjectToString(be.getBook_publish_count()), 0);
                 EBookTool.createBaseCell(wb, row, 2, StringUtil.ObjectToString(be.getBook_ebook_dollar_price()), 0);
                 EBookTool.createBaseCell(wb, row, 3, "5", 0);
-                EBookTool.createBaseCell(wb, row, 4, "", 0); //图书ID ???
-                EBookTool.createBaseCell(wb, row, 5, getEnglishLanByBookLan(be.getBook_language()), 0);
-                EBookTool.createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_name_cn()), 0);
-                EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_name_english()), 0);
-                EBookTool.createBaseCell(wb, row, 8, StringUtil.ObjectToString(be.getBook_name_xi()), 0);
-                EBookTool.createBaseCell(wb, row, 9, StringUtil.ObjectToString(be.getBook_name_e()), 1);
-                EBookTool.createBaseCell(wb, row, 10, StringUtil.ObjectToString(be.getBook_author()), 0);
-                EBookTool.createBaseCell(wb, row, 11, StringUtil.ObjectToString(be.getBook_author_english()), 0);
-                EBookTool.createBaseCell(wb, row, 12, StringUtil.ObjectToString(be.getBook_author_xi()), 0);
-                EBookTool.createBaseCell(wb, row, 13, StringUtil.ObjectToString(be.getBook_author_e()), 1);
-                EBookTool.createBaseCell(wb, row, 14, StringUtil.ObjectToString(be.getBook_content_intr_cn()), 0);
-                EBookTool.createBaseCell(wb, row, 15, StringUtil.ObjectToString(be.getBook_content_intr_english()), 0);
-                EBookTool.createBaseCell(wb, row, 16, StringUtil.ObjectToString(be.getBook_content_intr_xi()), 0);
-                EBookTool.createBaseCell(wb, row, 17, StringUtil.ObjectToString(be.getBook_content_intr_e()), 1);
-                EBookTool.createBaseCell(wb, row, 18, StringUtil.ObjectToString(be.getBook_keyword_cn()), 0);
-                EBookTool.createBaseCell(wb, row, 19, StringUtil.ObjectToString(be.getBook_keyword_english()), 0);
-                EBookTool.createBaseCell(wb, row, 20, StringUtil.ObjectToString(be.getBook_keyword_xi()), 0);
-                EBookTool.createBaseCell(wb, row, 21, StringUtil.ObjectToString(be.getBook_keyword_e()), 1);
+                EBookTool.createBaseCell(wb, row, 4, "", 0);
+                EBookTool.createBaseCell(wb, row, 5, StringUtil.ObjectToString(be.getBook_isbn()), 0);
+                EBookTool.createBaseCell(wb, row, 6, getEnglishLanByBookLan(be.getBook_language()), 0);
+                EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_name_cn()), 0);
+                EBookTool.createBaseCell(wb, row, 8, StringUtil.ObjectToString(be.getBook_name_english()), 0);
+                EBookTool.createBaseCell(wb, row, 9, StringUtil.ObjectToString(be.getBook_name_xi()), 0);
+                EBookTool.createBaseCell(wb, row, 10, StringUtil.ObjectToString(be.getBook_name_e()), 1);
+                EBookTool.createBaseCell(wb, row, 11, StringUtil.ObjectToString(be.getBook_author()), 0);
+                EBookTool.createBaseCell(wb, row, 12, StringUtil.ObjectToString(be.getBook_author_english()), 0);
+                EBookTool.createBaseCell(wb, row, 13, StringUtil.ObjectToString(be.getBook_author_xi()), 0);
+                EBookTool.createBaseCell(wb, row, 14, StringUtil.ObjectToString(be.getBook_author_e()), 1);
+                EBookTool.createBaseCell(wb, row, 15, StringUtil.ObjectToString(be.getBook_content_intr_cn()), 0);
+                EBookTool.createBaseCell(wb, row, 16, StringUtil.ObjectToString(be.getBook_content_intr_english()), 0);
+                EBookTool.createBaseCell(wb, row, 17, StringUtil.ObjectToString(be.getBook_content_intr_xi()), 0);
+                EBookTool.createBaseCell(wb, row, 18, StringUtil.ObjectToString(be.getBook_content_intr_e()), 1);
+                EBookTool.createBaseCell(wb, row, 19, StringUtil.ObjectToString(be.getBook_keyword_cn()), 0);
+                EBookTool.createBaseCell(wb, row, 20, StringUtil.ObjectToString(be.getBook_keyword_english()), 0);
+                EBookTool.createBaseCell(wb, row, 21, StringUtil.ObjectToString(be.getBook_keyword_xi()), 0);
+                EBookTool.createBaseCell(wb, row, 22, StringUtil.ObjectToString(be.getBook_keyword_e()), 1);
                 rowNum++;
             }
             wb.write(out);
@@ -108,7 +109,7 @@ public class ChinaBookStoreEBookImpl implements EBookFormat{
         } else if("007--俄语".equals(bookLan)) {
             return "Russian";
         } else if("008--土文".equals(bookLan)) {
-            return "";
+            return "Turkish";
         } else if("009--日语".equals(bookLan)) {
             return "Japanese";
         } else if("010--韩语".equals(bookLan)) {
@@ -118,7 +119,7 @@ public class ChinaBookStoreEBookImpl implements EBookFormat{
         } else if("012--印尼文".equals(bookLan)) {
             return "Indonesian";
         } else if("013--哈萨克斯坦文".equals(bookLan)) {
-            return "";
+            return "Kazakh";
         } else if("014--蒙文".equals(bookLan)) {
             return "Mongolian";
         } else if("015--藏文".equals(bookLan)) {
@@ -126,7 +127,7 @@ public class ChinaBookStoreEBookImpl implements EBookFormat{
         } else if("016--波斯文".equals(bookLan)) {
             return "Persian";
         } else if("017--柯尔克孜文".equals(bookLan)) {
-            return "";
+            return "Kirghiz";
         } else  {
             return "";
         }

@@ -44,22 +44,25 @@
 var searchType="";
 //检索内容
 var searchContent="";
+//初始化用户id
+var selUserId = 0;
 
 var column="";
 $(function () {
+
 	column = "<s:property value="showColumn" />";
 	column = column.replace(/&lt;/ig,"<").replace(/&gt;/ig,">");
 	if(!column){
 		document.getElementById("container").style.display='none';
 	}
 	//初始化用户
-	//initAllUserName();
+	initAllUserName();
 	//初始化显示字段
 	intShowColumn();
 	//初始化检索字段
 	initSearchColumn();
 	//初始化图书信息
-	getAllBookList("","");
+	getAllBookList("","", "0");
 
 	//隐藏“出版时间”输入框
 	$(".form_date").hide();
@@ -106,7 +109,7 @@ function intShowColumn() {
 		$(column).find("item").each(function() {
 			tHead = tHead + "<th>"+$(this).attr("cname")+"</th>";
 		});
-		tHead = tHead + "<th align='center' style='width:150px'>警告</th></tr>";
+		tHead = tHead + "<th align='center' style='width:150px'>电子档警告</th><th align='center' style='width:150px'>元数据警告</th></tr>";
 		tHead = tHead + "</tr>";
 		$(".row table thead").html(tHead);
 	}catch(e) {
@@ -126,20 +129,22 @@ function initSearchColumn() {
 /**
  * 获取图书信息
  */
-function getAllBookList(searchType, searchContent) {
+function getAllBookList(searchType, searchContent, uid) {
 	$.ajax({
 		url:'getBookListByConditionAndFileSize.action',
 		type:'post',
 		async: true,
-		data:{searchType:searchType,searchContent:searchContent},
+		data:{searchType:searchType,searchContent:searchContent, userId:uid},
 		beforeSend: function (XMLHttpRequest) {
 			//alert('远程调用开始...');
-			$(".row table tbody").html("<div class='aa'><img src='<%=basePath %>images/loading.gif' /></div>");
+			//$(".row table tbody").html("<tr><td style='align:center'><span class='aa'><img src='<%=basePath %>images/loading.gif' /></span></td></tr>");
+			$("#container").showLoading();
 		},
 		success: function(data) {
+			$("#container").hideLoading();
 			var json = eval('('+data+')');
 			if(json.length==0||json=="") {
-				$(".row table tbody").html("<span style='color:red'>没有找到图书！</span>");
+				$(".row table tbody").html("<tr><td style='align:center'><span style='color:red'>没有找到图书！</span></td></tr>");
 			} else {
 				var items = $(column).find("item");
 				var tableStr="";
@@ -174,6 +179,12 @@ function getAllBookList(searchType, searchContent) {
 					} else {
 						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>合同</span>";
 					}
+					tableStr = tableStr + "</td><td align='center'>";
+					if(json[i].bookInfo) {
+						tableStr+="<span class='jinggao jinggaosuc'><span class='glyphicon glyphicon-tree-deciduous'></span>完整</span>";
+					} else {
+						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>缺少</span>";
+					}
 
 					tableStr = tableStr + "</td></tr>";
 				}
@@ -182,6 +193,7 @@ function getAllBookList(searchType, searchContent) {
 			}
 		},
 		error:function(XMLHttpRequest, textStatus, errorThrown) {
+			$("#container").hideLoading();
 			alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
 		}
 	});
@@ -204,10 +216,6 @@ function searchTypeBtn(searchType) {
 
 //检索
 function search() {
-
-
-
-
 	searchType = $(".searchTypeSpan").html();
 	searchContent = $(".searchContent").val();
 	if(searchType=="检索类别") {
@@ -217,7 +225,8 @@ function search() {
 		$(".searchContent").val("");
 		$(".searchContent").focus();
 	} else {
-		getAllBookList(searchType, searchContent);
+		var uId = $("#userSel").val();
+		getAllBookList(searchType, searchContent, uId);
 	}
 
 }
@@ -225,16 +234,17 @@ function search() {
 
 //导出excel
 function exportExcel(){
+	$("#container").showLoading();
 	$.ajax({
 		url:'createExcelByFileSize.action',
 		type:'post',
 		async: false,
-		data: {searchType:searchType,searchContent:searchContent},
+		data: {searchType:searchType,searchContent:searchContent, userId:selUserId},
 		beforeSend: function (XMLHttpRequest) {
-			$("body").showLoading();
+			//$("#container").showLoading();
 		},
 		success: function(data) {
-			$("body").hideLoading();
+			$("#container").hideLoading();
 			if(data!="0") {
 				window.location.href="excelDownload.action?fileName="+data;
 			} else {
@@ -242,7 +252,7 @@ function exportExcel(){
 			}
 		},
 		error:function(XMLHttpRequest, textStatus, errorThrown) {
-			$("body").hideLoading();
+			$("#container").hideLoading();
 			if(XMLHttpRequest.readyState==4&&XMLHttpRequest.status==200) {
 				window.location.href="excelDownload.action?fileName="+data;
 			} else {
@@ -250,7 +260,39 @@ function exportExcel(){
 			}
 		}
 	});
+	$("#container").hideLoading();
 }
+
+//获取所有的用户，并组装一个select
+function initAllUserName() {
+	$.ajax({
+		url:'getAllUser.action',
+		type:'post',
+		beforeSend:function(XMLHttpRequest){
+			$("#userSel").html("<div class='aa'><img src='<%=basePath %>images/loading.gif' /></div>");
+		},
+		success: function(data) {
+			$("#userSel").empty();
+			var userSel = "<option value='0'>全部录入者</option>";
+			var userInfo = eval("("+data+")");
+			for(var i=0; i<userInfo.length; i++) {
+				userSel+="<option value='"+userInfo[i].user_id+"'>"+userInfo[i].user_id +"--"+userInfo[i].nick_name+"</option>";
+			}
+			$("#userSel").append(userSel);
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+			$("#userSel").empty();
+			alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+		}
+	});
+}
+
+	function userChange() {
+		var userId = $("#userSel").val();
+		selUserId = userId;
+		$(".searchContent").val("");
+		getAllBookList("", "", userId);
+	}
 
 </script>
   </head>
@@ -259,7 +301,11 @@ function exportExcel(){
   <form name="form" method="post">
     <div class="container" id='container'>
     	<div class="row">
-
+			<div class="col-sm-2">
+				<select id="userSel" class="form-control" onchange='userChange()'>
+					<option value="0">全部录入者</option>
+				</select>
+			</div>
     		<div class="col-sm-5">
     			<div class="input-group">
     				<div class="input-group-btn">
@@ -286,9 +332,7 @@ function exportExcel(){
 							导出 <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<li><a href="javascript:exportExcel();"
-								data-loading-text="正在导出..." id="exportExcel">导出图书列表</a></li>
-							<!-- <li><a href="javascript:exportXml();" data-loading-text="正在导出..." id="exportXml" data-toggle="modal" data-target="#myModal">导出资源文件</a></li> -->
+							<li><a href="javascript:exportExcel();" data-loading-text="正在导出..." id="exportExcel">导出图书列表</a></li>
 						</ul>
 					</div>
 				</div>

@@ -180,5 +180,25 @@ public class ConfigInfo {
 	 * 限制合同文件夹大小1KB
 	 */
 	public final static long LIMIT_CONTRACT_DIRECTORY_SIZE = 1*1024;
+
+	/**
+	 * 五洲 限制必须输入的字段
+	 */
+	public final static String LIMIT_BOOKINFO_WUZHOU = "book_isbn,book_language,book_name_cn,book_publish_time,book_cooperate_press,book_clcc,book_editor,book_name_english,book_author,book_author_english,book_translator,book_translator_english,book_series_cn,book_series_english,book_category1,book_publish_count,book_copyright_word_count,book_copyright_expires,book_print_count,book_size,book_kaiben,book_heigh,book_paper_price,book_keyword_cn,book_keyword_english,book_content_intr_cn,book_content_intr_english,book_author_intr_cn,book_author_intr_english,book_editor_recommend_cn,book_editor_recommend_english,book_cover_paper,book_image_paper,book_neiwen_paper,book_cover_publish_color,book_image_publish_color,book_neiwen_publish_color,book_zhuangzhen_class,book_zhuangzhen_type,book_neiwen_page_count,book_image_page_count,book_publish_page_count,book_design_cover_company,book_design_style_company,book_news_publish_count,book_news_distribute_count,book_news_count,book_news_shangjiao_count,book_publish_soft,book_paper_neiwen_style_file,book_paper_cover_style_file,book_paper_publish_pdf,book_contract";
+
+	/**
+	 * 国内 限制必须输入的字段
+	 */
+	public final static String LIMIT_BOOKINFO_GUONEI = "book_isbn,book_language,book_name_cn,book_publish_time,book_cooperate_press,book_clcc,book_editor,book_name_english,book_author,book_author_english,book_name_fa,book_name_xi,book_name_e,book_author_fa,book_author_xi,book_author_e,book_category1,book_ebook_price,book_ebook_dollar_price,book_content_intr_cn,book_content_intr_english,book_author_intr_cn,book_author_intr_english,book_editor_recommend_cn,book_editor_recommend_english,book_content_intr_fa,book_content_intr_xi,book_content_intr_e,book_author_intr_fa,book_author_intr_xi,book_author_intr_e,book_editor_recommend_fa,book_editor_recommend_xi,book_editor_recommend_e";
+
+	/**
+	 * 国际 限制必须输入的字段
+	 */
+	public final static String LIMIT_BOOKINFO_GUOJI = "book_isbn,book_language,book_name_cn,book_publish_time,book_cooperate_press,book_editor,book_author,book_name_foreign,book_author_foreign,book_category1,book_ebook_dollar_price,book_content_intr_cn,book_author_intr_cn,book_editor_recommend_cn";
+
+	/**
+	 * 合作社 限制必须输入的字段
+	 */
+	public final static String LIMIT_BOOKINFO_HEZUOSHE = "";
 	
 }

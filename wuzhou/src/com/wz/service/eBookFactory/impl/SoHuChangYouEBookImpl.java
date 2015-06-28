@@ -63,10 +63,10 @@ public class SoHuChangYouEBookImpl implements EBookFormat{
                 EBookTool.createBaseCell(wb, row, 2, StringUtil.ObjectToString(be.getBook_name_xi()), 0);
                 EBookTool.createBaseCell(wb, row, 3, StringUtil.ObjectToString(be.getBook_author()), 0);
                 EBookTool.createBaseCell(wb, row, 4, StringUtil.ObjectToString(be.getBook_author_xi()), 0);
-                EBookTool.createBaseCell(wb, row, 5, "", 1);//类型（分类）？？
+                EBookTool.createBaseCell(wb, row, 5, StringUtil.ObjectToString(be.getBook_category1()).replaceAll("[0-9]{2}\\-", ""), 1);
                 EBookTool.createBaseCell(wb, row, 6, StringUtil.ObjectToString(be.getBook_language().replaceAll("[0-9]{3}[\\-]{2}", "")), 0);
                 EBookTool.createBaseCell(wb, row, 7, StringUtil.ObjectToString(be.getBook_content_intr_xi()), 0);
-                EBookTool.createBaseCell(wb, row, 8, "有", 0);
+                EBookTool.createBaseCell(wb, row, 8, "", 0);
                 rowNum++;
             }
             wb.write(out);
