@@ -1496,10 +1496,23 @@ public class BookService {
 	 * @throws Exception
 	 */
 	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList, boolean flag) throws Exception{
-		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>();
-		List<BookEntityFileSize> list2 = new ArrayList<BookEntityFileSize>();
+		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>(); //合格
+		List<BookEntityFileSize> list2 = new ArrayList<BookEntityFileSize>(); //不合格
 		if(bookList==null||bookList.isEmpty()) return null;
 		for(BookEntity be : bookList) {
+
+			if(be.getUser_id()==1||be.getUser_id()==39) {
+				BookEntityFileSize befs = new BookEntityFileSize();
+				befs.setBe(be);
+				befs.setNeiwen(true);
+				befs.setFengmian(true);
+				befs.setFencengpdf(true);
+				befs.setContract(true);
+				befs.setBookInfo(true);
+				list.add(befs);
+				continue;
+			}
+
 			String path = be.getBook_mobi_serverpath().replace("/", "\\");
 			String bookRootPath = ConfigInfo.FTP_ROOT +"\\" + EBookTool.getUserNameByUserId(be.getUser_id(), userList) +"\\"+ be.getBook_serial_number();
 			if(path.startsWith("\\201409之前书目\\")) {
@@ -1620,6 +1633,12 @@ public class BookService {
 		for (int i = 0; i < exportColumnArray.length; i++) {
 			row1.createCell(i).setCellValue(ColumnMap.getBookTableCnByColumnName(exportColumnArray[i].trim()));
 		}
+		row1.createCell(exportColumnArray.length+1).setCellValue("排版文件");
+		row1.createCell(exportColumnArray.length+2).setCellValue("封面文件");
+		row1.createCell(exportColumnArray.length+3).setCellValue("分层PDF文件");
+		row1.createCell(exportColumnArray.length+4).setCellValue("合同");
+		row1.createCell(exportColumnArray.length+5).setCellValue("元数据警告");
+
 		for (int i = 0; i < list.size(); i++) {
 			BookEntity be = list.get(i).getBe();
 			Field[] fields = be.getClass().getFields();

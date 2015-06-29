@@ -1330,7 +1330,7 @@ public class BookAction extends ActionSupport {
 			out.write(result);
 		} catch (Exception e) {
 			e.printStackTrace();
-			out.write("<p class='text-danger'>对不起，更新失败，失败原因："+e.getMessage()+"</p>");
+			out.write("<p class='text-danger'>对不起，更新失败，失败原因：" + e.getMessage() + "</p>");
 		}
 		out.close();
 	}
@@ -1732,7 +1732,6 @@ public class BookAction extends ActionSupport {
 					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc ";
 				} else { //只有起始日期
 					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
-
 				}
 			} else {
 				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
@@ -1930,7 +1929,7 @@ public class BookAction extends ActionSupport {
 			condition += " ) ";
 		}
 		if(userId==0) {
-			condition+=" and 1=1 ";
+			condition+=" or user_id = 1 or user_id = 39 ";//加上2014-9之前的批量录入的
 		} else {
 			condition+= " and user_id = "+userId+" ";
 		}
@@ -1953,6 +1952,7 @@ public class BookAction extends ActionSupport {
 				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
 			}
 		}
+		System.out.println("+++"+hql);
 		List<BookEntity> bookList = bookService.getBookListByHql(hql);
 		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), true);
 		JSONArray json = JSONArray.fromObject(list);
@@ -1985,7 +1985,7 @@ public class BookAction extends ActionSupport {
 			condition += " ) ";
 		}
 		if(userId==0) {
-			condition+=" and 1=1 ";
+			condition+=" or user_id = 1 or user_id = 39 ";//加上2014-9之前的批量录入的
 		} else {
 			condition+= " and user_id = "+userId+" ";
 		}
@@ -2008,6 +2008,7 @@ public class BookAction extends ActionSupport {
 				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
 			}
 		}
+		System.out.println("---"+hql);
 		List<BookEntity> bookList = bookService.getBookListByHql(hql);
 		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), true);
 
