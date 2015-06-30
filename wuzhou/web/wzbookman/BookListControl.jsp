@@ -149,9 +149,15 @@ function getAllBookListBak(page, searchType, searchContent, bookUse, uId) {
 	$.ajax({
 		url:'getBookListByCheckRes.action',
 		type:'post',
-		async: false,
+		async: true,
 		data:{page:page,searchType:searchType,searchContent:searchContent, bookUse:bookUse, selUserId:uId},
+		beforeSend: function (XMLHttpRequest) {
+			//alert('远程调用开始...');
+			//$(".row table tbody").html("<tr><td style='align:center'><span class='aa'><img src='<%=basePath %>images/loading.gif' /></span></td></tr>");
+			$("#container").showLoading();
+		},
 		success: function(data) {
+			$("#container").hideLoading();
 			var json = eval('('+data+')');
 			if(json.bookList.length==0) {
 				$(".row table tbody").html("<span style='color:red;font-size:8pt;'>没有找到图书！</span>");
@@ -180,6 +186,7 @@ function getAllBookListBak(page, searchType, searchContent, bookUse, uId) {
 			}
 		},
 		error:function(XMLHttpRequest, textStatus, errorThrown) {
+			$("#container").hideLoading();
 			alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
 		}
 	});
