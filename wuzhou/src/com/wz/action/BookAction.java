@@ -944,7 +944,7 @@ public class BookAction extends ActionSupport {
 			pageNum = 1;
 		}
 		if ("".equals(searchType) || "".equals(searchContent)) {
-			if (userId == 0) {
+			if (userId == 0 || userId==1) {
 				hql = "from BookEntity where book_del_flag=0 order by book_id desc";
 				countHql = "select count(book_id) from wz_book where book_del_flag=0 order by book_id desc";
 			} else {
@@ -987,13 +987,14 @@ public class BookAction extends ActionSupport {
 		}
 		System.out.println(hql);
 		List<BookEntity> bookList = bookService.findPageFromBook(pageNum, ConfigInfo.PAGE_ROW_COUNT, hql);
+		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList());
 		int pageCount = bookService.getPageCount(countHql, ConfigInfo.PAGE_ROW_COUNT);
 		PageEntity pageEntity = new PageEntity();
 		pageEntity.setCurrentPage(pageNum);
 		pageEntity.setPageRowCount(ConfigInfo.PAGE_ROW_COUNT);
 		pageEntity.setRowCount(0);
 		pageEntity.setPageCount(pageCount);
-		map.put("bookList", bookList);
+		map.put("bookList", list);
 		map.put("pageEntity", pageEntity);
 		JSONObject json = JSONObject.fromObject(map);// 将map对象转换成json类型数据
 		out.print(json.toString());
@@ -1673,6 +1674,8 @@ public class BookAction extends ActionSupport {
 		String condition = " and 1 = 1 ";
 		if(userId != 0) {
 			condition += " and user_id = "+ userId + " ";
+		} else {
+			condition += " and (user_id != 1 and user_id != 39) ";
 		}
 		String hql = "";
 		if ("".equals(searchType) || "".equals(searchContent)) {
@@ -1717,6 +1720,8 @@ public class BookAction extends ActionSupport {
 		String condition = " and 1 = 1 ";
 		if(userId != 0) {
 			condition += " and user_id = "+ userId + " ";
+		} else {
+			condition += " and (user_id != 1 and user_id != 39) ";
 		}
 		String hql = "";
 		if ("".equals(searchType) || "".equals(searchContent)) {

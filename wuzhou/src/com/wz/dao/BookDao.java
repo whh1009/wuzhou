@@ -50,7 +50,7 @@ public class BookDao extends BaseDao {
 			ex.printStackTrace();
 			throw ex;
 		} finally{
-			session.clear(); 
+			session.clear();
 		}
 	}
 	

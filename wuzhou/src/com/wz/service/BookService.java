@@ -1491,6 +1491,66 @@ public class BookService {
 	 * 根据图书列表检查文件大小，以及元数据是否填写完整
 	 * @param bookList
 	 * @param userList
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList) throws Exception{
+		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>();
+		if(bookList==null||bookList.isEmpty()) return null;
+		for(BookEntity be : bookList) {
+			if(be.getUser_id()==1||be.getUser_id()==39) {
+				BookEntityFileSize befs = new BookEntityFileSize();
+				befs.setBe(be);
+				befs.setNeiwen(true);
+				befs.setFengmian(true);
+				befs.setFencengpdf(true);
+				befs.setContract(true);
+				befs.setBookInfo(true);
+				list.add(befs);
+				continue;
+			}
+
+			String path = be.getBook_mobi_serverpath().replace("/", "\\");
+			String bookRootPath = ConfigInfo.FTP_ROOT +"\\" + EBookTool.getUserNameByUserId(be.getUser_id(), userList) +"\\"+ be.getBook_serial_number();
+			if(path.startsWith("\\201409之前书目\\")) {
+				bookRootPath = ConfigInfo.FTP_ROOT +"\\201409之前书目\\"+ be.getBook_serial_number();
+			}
+			String neiwenPath = bookRootPath+"\\排版";
+			double neiwenSize = FileUtil.getDirSize(new File(neiwenPath))*1024; //MB转KB
+			boolean neiwen = false;
+			String fengmianPath = bookRootPath+"\\封面";
+			double fengmianSize = FileUtil.getDirSize(new File(fengmianPath))*1024;
+			boolean fengmian = false;
+			String fencengPdfPath = bookRootPath+"\\分层PDF";
+			double fencengPdfSize = FileUtil.getDirSize(new File(fencengPdfPath))*1024;
+			boolean fenceng = false;
+			String contractPath = bookRootPath + "\\合同";
+			double contractSize = FileUtil.getDirSize(new File(contractPath))*1024;
+			boolean contract = false;
+
+			boolean bookInfo = false;
+
+			if(neiwenSize>=Double.valueOf(ConfigInfo.LIMIT_NEIWEN_DIRECTORY_SIZE)/1024) neiwen = true;
+			if(fengmianSize>=Double.valueOf(ConfigInfo.LIMIT_COVER_DIRECTORY_SIZE)/1024) fengmian = true;
+			if(fencengPdfSize>=Double.valueOf(ConfigInfo.LIMIT_FENCENG_PDF_DIRECTORY_SIZE)/1024) fenceng = true;
+			if(contractSize>=Double.valueOf(ConfigInfo.LIMIT_CONTRACT_DIRECTORY_SIZE)/1024) contract = true;
+			bookInfo = checkBookInfo(be);
+			BookEntityFileSize befs = new BookEntityFileSize();
+			befs.setBe(be);
+			befs.setNeiwen(neiwen);
+			befs.setFengmian(fengmian);
+			befs.setFencengpdf(fenceng);
+			befs.setContract(contract);
+			befs.setBookInfo(bookInfo);
+			list.add(befs);
+		}
+		return list;
+	}
+
+	/**
+	 * 根据图书列表检查文件大小，以及元数据是否填写完整
+	 * @param bookList
+	 * @param userList
 	 * @param flag true 合格的返回，false 不合格的返回，
 	 * @return
 	 * @throws Exception
@@ -1605,6 +1665,7 @@ public class BookService {
 		for(String name : beanNames.split(",")) {
 			String val = StringUtil.ObjectToString(BeanUtils.getProperty(be, name));
 			if("".equals(val)) {
+				System.out.println("no："+name);
 				return false;
 			}
 		}

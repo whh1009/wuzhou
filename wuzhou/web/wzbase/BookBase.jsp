@@ -40,6 +40,10 @@ class样式说明
 pt 出版类型，分为本社和和其它两种，本社和其它切换显示
 zzs 纸质书属性，用于电子书和纸质书之间切换显示
 dzs 电子书属性，用于切换显示
+
+bitian 五洲必填
+zbitian 国内必填
+wbitian 国际必填
  -->
 <script type="text/javascript">
 	//获取当前用户

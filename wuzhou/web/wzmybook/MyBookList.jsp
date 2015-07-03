@@ -40,7 +40,15 @@
     	height: 32px;
     	width: 3em;
     }
-    
+	.jinggaofail{
+		color:red;
+	}
+	.jinggaosuc{
+		color:darkgreen;
+	}
+	.jinggao {
+		margin-right: 1em;
+	}
     </style>
 <script>
 //当前页
@@ -91,9 +99,9 @@ function intShowColumn() {
 			tHead = tHead + "<th>"+$(this).attr("cname")+"</th>";
 			count++;
 		});
-		tHead = tHead + "<th align='center' style='width:80px'>操作</th></tr>";
+		tHead = tHead + "<th align='center' style='width:80px'>操作</th><th align='center' style='width:80px'>电子文件</th><th align='center' style='width:80px'>元数据</th></tr>";
 		$(".row table thead").html(tHead);
-		$("#colspanAttr").prop("colspan", count+1);
+		$("#colspanAttr").prop("colspan", count+3);
 	}catch(e) {
 		alert(e.message);
 	}
@@ -129,13 +137,39 @@ function initSearchColumn() {
 					for(var j=0; j<items.length; j++) {
 						var ename = $(items[j]).attr("ename");
 						if (ename == "book_paper_price" || ename == "book_ebook_price"||ename=="book_paper_dollar_price"||ename=="book_ebook_dollar_price") {
-							tableStr = tableStr + "<td>"+json.bookList[i][ename].toFixed(2)+"</td>";
+							tableStr = tableStr + "<td>"+json.bookList[i].be[ename].toFixed(2)+"</td>";
 						} else {
-							tableStr = tableStr + "<td>"+json.bookList[i][ename]+"</td>";
+							tableStr = tableStr + "<td>"+json.bookList[i].be[ename]+"</td>";
 						}
 					}
-					tableStr = tableStr + "<td align='center' style='width:80px'><a class=\"text-success\" title=\"编辑\" href=\"javascript:edit('"+json.bookList[i].book_id+"');\"><span class=\"glyphicon glyphicon-edit\"></span></a>&nbsp;&nbsp;<a class=\"text-danger\" title=\"删除\" href=\"javascript:remove('"+json.bookList[i].book_id+"');\"><span class=\"glyphicon glyphicon-remove\"></span></a></td><tr>";
-					//tableStr = tableStr + "</tr>";
+					tableStr = tableStr + "<td align='center' style='width:80px'><a class=\"text-success\" title=\"编辑\" href=\"javascript:edit('"+json.bookList[i].be.book_id+"');\"><span class=\"glyphicon glyphicon-edit\"></span></a>&nbsp;&nbsp;<a class=\"text-danger\" title=\"删除\" href=\"javascript:remove('"+json.bookList[i].be.book_id+"');\"><span class=\"glyphicon glyphicon-remove\"></span></a></td><td>";
+					if(json.bookList[i].fengmian) {
+						tableStr+="<span class='jinggao jinggaosuc'><span class='glyphicon glyphicon-tree-deciduous'></span>封面</span>";
+					} else {
+						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>封面</span>";
+					}
+					if(json.bookList[i].neiwen) {
+						tableStr+="<span class='jinggao jinggaosuc'><span class='glyphicon glyphicon-tree-deciduous'></span>内文</span>";
+					} else {
+						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>内文</span><br />";
+					}
+					if(json.bookList[i].fencengpdf) {
+						tableStr+="<span class='jinggao jinggaosuc'><span class='glyphicon glyphicon-tree-deciduous'></span>分层PDF</span>";
+					} else {
+						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>分层PDF</span>";
+					}
+					if(json.bookList[i].contract) {
+						tableStr+="<span class='jinggao jinggaosuc'><span class='glyphicon glyphicon-tree-deciduous'></span>合同</span>";
+					} else {
+						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>合同</span>";
+					}
+					tableStr = tableStr + "</td><td align='center'>";
+					if(json.bookList[i].bookInfo) {
+						tableStr+="<span class='jinggao jinggaosuc'><span class='glyphicon glyphicon-tree-deciduous'></span>完整</span>";
+					} else {
+						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>缺少</span>";
+					}
+					tableStr = tableStr + "</td></tr>";
 				}
 				$("#currentPageSpan").html(page);
 				$(".row table tbody").html(tableStr);
