@@ -3,6 +3,8 @@ package com.wz.service;
 import com.wz.dao.BookExtendDao;
 import com.wz.entity.BookExtendEntity;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2015/6/29.
  */
@@ -26,6 +28,15 @@ public class BookExtendService {
 //            return true;
 //        }
 //    }
+
+    /**
+     * 查询所有图书
+     * @return
+     * @throws Exception
+     */
+    public List<BookExtendEntity> findAllBookExtend() throws Exception {
+        return bookExtendDao.getBookListByHql("from BookExtendEntity");
+    }
 
     /**
      * 根据图书ID 查找图书

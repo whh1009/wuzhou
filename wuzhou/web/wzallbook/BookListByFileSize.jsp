@@ -49,7 +49,6 @@ var selUserId = 0;
 
 var column="";
 $(function () {
-
 	column = "<s:property value="showColumn" />";
 	column = column.replace(/&lt;/ig,"<").replace(/&gt;/ig,">");
 	if(!column){
@@ -109,7 +108,10 @@ function intShowColumn() {
 		$(column).find("item").each(function() {
 			tHead = tHead + "<th>"+$(this).attr("cname")+"</th>";
 		});
-		tHead = tHead + "<th align='center' style='width:80px'>操作</th><th align='center' style='width:150px'>电子档警告</th><th align='center' style='width:150px'>元数据警告</th></tr>";
+		tHead = tHead + "<th align='center' style='width:80px'>操作</th>" +
+						"<th align='center' style='width:150px'>电子档警告</th>" +
+						"<th align='center' style='width:150px'>元数据警告</th>" +
+						"<th align='center' style='width:150px'>打印时间</th>";
 		tHead = tHead + "</tr>";
 		$(".row table thead").html(tHead);
 	}catch(e) {
@@ -146,6 +148,7 @@ function getAllBookList(searchType, searchContent, uid) {
 			if(json.length==0||json=="") {
 				$(".row table tbody").html("<tr><td style='align:center'><span style='color:red'>没有找到图书！</span></td></tr>");
 			} else {
+				$("#tableMark").html("共 "+json.length+" 条");
 				var items = $(column).find("item");
 				var tableStr="";
 				for(var i = 0; i < json.length; i++) {
@@ -186,7 +189,14 @@ function getAllBookList(searchType, searchContent, uid) {
 						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>缺少</span>";
 					}
 
-					tableStr = tableStr + "</td></tr>";
+					tableStr = tableStr + "</td>";
+					if(json[i].printTime==null){
+						tableStr+="<td></td>";
+					} else {
+						tableStr+="<td>"+ timeStamp2String(json[i].printTime.time, true) +"</td>";
+					}
+
+					tableStr+="</tr>";
 				}
 				$(".row table tbody").html(tableStr);
 				
@@ -197,6 +207,19 @@ function getAllBookList(searchType, searchContent, uid) {
 			alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
 		}
 	});
+}
+
+//格式化时间
+function timeStamp2String(time){
+	var datetime = new Date();
+	datetime.setTime(time);
+	var year = datetime.getFullYear();
+	var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+	var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+	var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();
+	var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+	var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+	return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
 }
 
 
@@ -393,7 +416,7 @@ function initAllUserName() {
 				</div>
 			</div>
 		</div>
-
+		<div id="tableMark"></div>
     	<div class="row">
 			<table class="table table-bordered table-hover table-condensed">
 				<thead>

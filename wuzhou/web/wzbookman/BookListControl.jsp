@@ -203,6 +203,7 @@ function getAllBookList(searchType, searchContent, bookUse, uId) {
 			if(json==""||json.length==0) {
 				$(".row table tbody").html("<tr><td><span style='color:red;font-size:8pt;'>没有找到图书！</span></td></tr>");
 			} else {
+				$("#tableMark").html("共 "+json.length+" 条");
 				var items = $(column).find("item");
 				var tableStr="";
 				for(var i = 0; i < json.length; i++) {
@@ -623,7 +624,7 @@ function userChange() {
                 </div>
     		</div>
     	</div>
-    	
+		<div id="tableMark"></div>
     	<div class="row">
 			<table class="table table-bordered table-hover table-condensed">
 				<thead>

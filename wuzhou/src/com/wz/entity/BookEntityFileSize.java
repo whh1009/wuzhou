@@ -1,5 +1,7 @@
 package com.wz.entity;
 
+import java.util.Date;
+
 /**
  *
  * Created by wanghonghui on 2015/6/14.
@@ -11,6 +13,9 @@ public class BookEntityFileSize {
     private boolean fencengpdf; // 检查分层PDF
     private boolean contract; //检查合同
     private boolean bookInfo; //检查图书元数据是否填写完整
+    private Date printTime; //图书打印时间
+
+
     public boolean isBookInfo() {
         return bookInfo;
     }
@@ -19,7 +24,13 @@ public class BookEntityFileSize {
         this.bookInfo = bookInfo;
     }
 
+    public Date getPrintTime() {
+        return printTime;
+    }
 
+    public void setPrintTime(Date printTime) {
+        this.printTime = printTime;
+    }
 
     public BookEntity getBe() {
         return be;

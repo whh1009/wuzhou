@@ -99,9 +99,13 @@ function intShowColumn() {
 			tHead = tHead + "<th>"+$(this).attr("cname")+"</th>";
 			count++;
 		});
-		tHead = tHead + "<th align='center' style='width:80px'>操作</th><th align='center' style='width:80px'>电子文件</th><th align='center' style='width:80px'>元数据</th></tr>";
+		tHead = tHead + "<th align='center' style='width:80px'>操作</th>" +
+						"<th align='center' style='width:80px'>电子文件</th>" +
+						"<th align='center' style='width:80px'>元数据</th>" +
+						"<th align='center' style='width:100px'>打印时间</th>" +
+						"</tr>";
 		$(".row table thead").html(tHead);
-		$("#colspanAttr").prop("colspan", count+3);
+		$("#colspanAttr").prop("colspan", count+4);
 	}catch(e) {
 		alert(e.message);
 	}
@@ -169,7 +173,16 @@ function initSearchColumn() {
 					} else {
 						tableStr+="<span class='jinggao jinggaofail'><span class='glyphicon glyphicon-tree-deciduous'></span>缺少</span>";
 					}
-					tableStr = tableStr + "</td></tr>";
+					tableStr = tableStr + "</td>";
+
+					if(json.bookList[i].printTime==null){
+						tableStr+="<td></td>";
+					} else {
+						tableStr+="<td>"+ timeStamp2String(json.bookList[i].printTime.time, true) +"</td>";
+					}
+
+					tableStr+="</tr>";
+
 				}
 				$("#currentPageSpan").html(page);
 				$(".row table tbody").html(tableStr);
@@ -186,7 +199,18 @@ function initSearchColumn() {
 		}
 	});
 }
-
+//格式化时间
+function timeStamp2String(time){
+	var datetime = new Date();
+	datetime.setTime(time);
+	var year = datetime.getFullYear();
+	var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+	var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+	var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();
+	var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+	var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+	return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
+}
 
 //搜索方式
 function searchTypeBtn(searchType, columnName) {
@@ -348,7 +372,7 @@ function remove(bookId) {
 function exportExcel(){
 	var userId="<s:property value="#session.userEntity.user_id" />";
 	$.ajax({
-		url:'createExcel.action',
+		url:'createExcelByBookListByCondition.action',
 		type:'post',
 		async: false,
 		data: {searchType:searchType,searchContent:searchContent, userId:userId},

@@ -281,25 +281,31 @@ wbitian 国际必填
 			$(".bitian").each(function() {
 				$(this).css("color", "#555555");
 			});
-			$(".zbitian").each(function() {//中国必填添加颜色
+			$(".zbitian").each(function() {//中国取消必填
 				$(this).css("color", "#555555");
 			});
-			$(".wbitian").each(function() {//中国必填添加颜色
+			$(".wbitian").each(function() {//中国取消必填
 				$(this).css("color", "#555555");
 			});
 		} else if(pt=="1") { //五洲
 			$("#bsn0").val("B");
 			//设置图书编号
 			$("#book_serial_number").val($("#bsn0").val() + "_" + $("#bsn1").val() + "_" + $("#bsn2").val() + "_" + $("#bsn3").val() + "_" + $("#bsn4").val());
-			//选择本社，修改“必填”颜色
-			$(".bitian").each(function() {
-				$(this).css("color", "#CC0033");
-			});
 			if($(".bilingual").val().indexOf("500")!=-1) { //双语对应
 				$(".sydybt").css("color","#CC0033");
 			} else {
 				$(".sydybt").css("color","#555555");
 			}
+			$(".zbitian").each(function() {//中国取消必填
+				$(this).css("color", "#555555");
+			});
+			$(".wbitian").each(function() {//中国取消必填
+				$(this).css("color", "#555555");
+			});
+			//选择本社，修改“必填”颜色
+			$(".bitian").each(function() {
+				$(this).css("color", "#CC0033");
+			});
 		} else if(pt=="3") {//国内
 			$("#bsn0").val("Z");
 			//设置图书编号

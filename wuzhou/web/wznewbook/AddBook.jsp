@@ -98,6 +98,8 @@ dzs 电子书属性，用于切换显示
 			$('input:radio[name="publishType"][value="3"]').attr('checked', 'checked');
 			$(".limitUser").hide();
 			initColor(3); //直接定位国内
+		} else {
+			initColor(1); //其他的定位五洲
 		}
 	}
 

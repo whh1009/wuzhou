@@ -156,6 +156,16 @@ public class BookEntity {
 
 	public String book_mark;//图书备注 2015-05-01新增
 
+	public Integer book_old_flag; //标识是否是2014年9月份之前的书目，如果是标记1，否则为0 add-time 2015-07-08新增
+
+	public Integer getBook_old_flag() {
+		return book_old_flag;
+	}
+
+	public void setBook_old_flag(Integer book_old_flag) {
+		this.book_old_flag = book_old_flag;
+	}
+
 	public String getBook_mark() {
 		return book_mark;
 	}

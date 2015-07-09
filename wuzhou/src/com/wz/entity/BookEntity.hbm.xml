@@ -158,5 +158,6 @@
 		<property name="book_del_flag" type="java.lang.Integer" column="book_del_flag" />
 		<property name="user_id" type="java.lang.Integer" column="user_id" />
 		<property name="book_mark" type="java.lang.String" column="book_mark" />
+		<property name="book_old_flag" type="java.lang.Integer" column="book_old_flag" />
 	</class>
 </hibernate-mapping>

@@ -25,7 +25,12 @@ import java.util.Date;
  * <p/>
  * <p/>
  * <p/>
+ * //wz_book_extend 插入book_id
  * insert into wz_book_extend (book_id) select book_id from wz_book where book_flag = 0 and book_serial_number in (select DISTINCT(book_serial_number) from wz_log where modify_type = '新书保存')
+ * //wz_book_extend 更新 book_create_time
+ * update wz_book_extend e join (select b.book_id, l.modify_time from wz_book b join wz_log l on b.book_serial_number = l.book_serial_number and l.modify_type='新书保存' order by modify_time desc) t on e.book_id = t.book_id set e.book_create_time = t.modify_time;
+ * //wz_book 更新 book_old_flag
+ * update wz_book set book_old_flag = 1 where book_id not in (select book_id from wz_book_extend) or user_id in (1,39);
  */
 public class BookExtendEntity {
     private Integer book_id;

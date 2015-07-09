@@ -28,6 +28,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class BookService {
@@ -863,8 +864,8 @@ public class BookService {
 		File constractFile = new File(constract);
 		constractFile.mkdirs();
 
-		new File(cover.replace("MOBI","电子书封面")).mkdirs();
-		new File(cover.replace("MOBI", "样章")).mkdirs();
+		new File(mobi.replace("MOBI","电子书封面")).mkdirs();
+		new File(mobi.replace("MOBI", "样章")).mkdirs();
 
 	}
 
@@ -1225,6 +1226,8 @@ public class BookService {
 		new File(dir+"\\字体").mkdirs();
 		new File(dir+"\\分层PDF").mkdirs();
 		new File(dir+"\\阅读PDF").mkdirs();
+		new File(dir+"\\电子书封面").mkdirs();
+		new File(dir+"\\样章").mkdirs();
 	}
 	
 	
@@ -1494,11 +1497,11 @@ public class BookService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList) throws Exception{
+	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList, List<BookExtendEntity> bookExtendList) throws Exception{
 		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>();
 		if(bookList==null||bookList.isEmpty()) return null;
 		for(BookEntity be : bookList) {
-			if(be.getUser_id()==1||be.getUser_id()==39) {
+			if(be.getUser_id()==1||be.getUser_id()==39||be.getBook_old_flag()==1) {
 				BookEntityFileSize befs = new BookEntityFileSize();
 				befs.setBe(be);
 				befs.setNeiwen(true);
@@ -1506,8 +1509,16 @@ public class BookService {
 				befs.setFencengpdf(true);
 				befs.setContract(true);
 				befs.setBookInfo(true);
+				befs.setPrintTime(null);
 				list.add(befs);
 				continue;
+			}
+			Date printTime = null;
+			for(BookExtendEntity bee : bookExtendList) {
+				if(be.getBook_id().equals(bee.getBook_id())) {
+					printTime = bee.getBook_print_time();
+					break;
+				}
 			}
 
 			String path = be.getBook_mobi_serverpath().replace("/", "\\");
@@ -1542,6 +1553,7 @@ public class BookService {
 			befs.setFencengpdf(fenceng);
 			befs.setContract(contract);
 			befs.setBookInfo(bookInfo);
+			befs.setPrintTime(printTime);
 			list.add(befs);
 		}
 		return list;
@@ -1555,13 +1567,14 @@ public class BookService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList, boolean flag) throws Exception{
+	public List<BookEntityFileSize> limitFileSizeByBookList(List<BookEntity> bookList, List<UserEntity> userList, List<BookExtendEntity> bookExtendList, boolean flag) throws Exception{
 		List<BookEntityFileSize> list = new ArrayList<BookEntityFileSize>(); //合格
 		List<BookEntityFileSize> list2 = new ArrayList<BookEntityFileSize>(); //不合格
 		if(bookList==null||bookList.isEmpty()) return null;
+
 		for(BookEntity be : bookList) {
 
-			if(be.getUser_id()==1||be.getUser_id()==39) {
+			if(be.getBook_old_flag()==1) { //2014-09以前的书目，默认合格
 				BookEntityFileSize befs = new BookEntityFileSize();
 				befs.setBe(be);
 				befs.setNeiwen(true);
@@ -1569,6 +1582,7 @@ public class BookService {
 				befs.setFencengpdf(true);
 				befs.setContract(true);
 				befs.setBookInfo(true);
+				befs.setPrintTime(null);
 				list.add(befs);
 				continue;
 			}
@@ -1608,6 +1622,14 @@ public class BookService {
 				befs.setBookInfo(bookInfo);
 				list.add(befs);
 			} else { //有不合格的
+				Date printTime = null; //获取打印时间，没有的返回null
+				if(bookExtendList.isEmpty()||bookExtendList.size()==0) printTime = null;
+				for(BookExtendEntity bee : bookExtendList) {
+					if(be.getBook_id().equals(bee.getBook_id())) {
+						printTime = bee.getBook_print_time();
+						break;
+					}
+				}
 				BookEntityFileSize befs = new BookEntityFileSize();
 				befs.setBe(be);
 				befs.setNeiwen(neiwen);
@@ -1615,6 +1637,7 @@ public class BookService {
 				befs.setFencengpdf(fenceng);
 				befs.setContract(contract);
 				befs.setBookInfo(bookInfo);
+				befs.setPrintTime(printTime);
 				list2.add(befs);
 			}
 		}
@@ -1665,7 +1688,6 @@ public class BookService {
 		for(String name : beanNames.split(",")) {
 			String val = StringUtil.ObjectToString(BeanUtils.getProperty(be, name));
 			if("".equals(val)) {
-				System.out.println("no："+name);
 				return false;
 			}
 		}

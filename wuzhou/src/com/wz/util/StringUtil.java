@@ -221,11 +221,23 @@ public class StringUtil extends StringUtils {
 		return "";
 	}
 
-	// 首字母大写
+	/**
+	 * 首字母大写
+ 	 */
 	private static String toUpCase(String str) {
 		StringBuffer newstr = new StringBuffer();
 		newstr.append((str.substring(0, 1)).toUpperCase()).append(str.substring(1, str.length()));
 		return newstr.toString();
+	}
+
+	/**
+	 * Boolean 转 int
+	 * @param bool
+	 * @return
+	 */
+	public static int bool2int(boolean bool) {
+		if(bool) return 1;
+		else return -1;
 	}
 
 	public static void main(String args[]) {

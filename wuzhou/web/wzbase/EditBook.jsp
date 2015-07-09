@@ -570,7 +570,7 @@
 					return;
 			}
 		}
-		checkFileUpload();
+		//checkFileUpload();
 		if(printFlag==1) {
 			if(window.confirm("请先保存数据后再打印")){
 				$("input[name='printDocx']").val("print");
