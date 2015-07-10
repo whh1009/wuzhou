@@ -302,6 +302,7 @@ public class BookAction extends ActionSupport {
 				int flag = 0;
 				//设为当前用户
 				//bookEntity.setUser_id(userEntity.getUser_id());
+				bookEntity.setBook_old_flag(0); //设置当前为新书
 				flag = bookService.addBook(bookEntity);
 				if (flag == 1) {
 					Date now = new Date();
@@ -1739,8 +1740,6 @@ public class BookAction extends ActionSupport {
 		String condition = " and 1 = 1 ";
 		if(userId != 0) {
 			condition += " and user_id = "+ userId + " ";
-		} else {
-			condition += " and (user_id != 1 and user_id != 39) ";
 		}
 		String hql = "";
 		if ("".equals(searchType) || "".equals(searchContent)) {
@@ -1763,7 +1762,7 @@ public class BookAction extends ActionSupport {
 
 			}
 		}
-		System.out.println("XXXXXXX---"+hql);
+		System.out.println("图书资源检查--不合格图书---"+hql);
 		List<BookEntity> bookList = bookService.getBookListByHql(hql);
 		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), bookExtendService.findAllBookExtend(), false);
 		Collections.sort(list, new Comparator<BookEntityFileSize>() { //按照打印时间排序
@@ -1774,7 +1773,7 @@ public class BookAction extends ActionSupport {
 				return StringUtil.bool2int(arg1.getPrintTime().before(arg0.getPrintTime()));
 			}
 		});
-		System.out.println("===="+list.size());
+		System.out.println("图书资源检查--不合格图书---"+list.size());
 		JSONArray json = JSONArray.fromObject(list);
 		out.print(json.toString());
 		out.flush();
@@ -1794,8 +1793,6 @@ public class BookAction extends ActionSupport {
 		String condition = " and 1 = 1 ";
 		if(userId != 0) {
 			condition += " and user_id = "+ userId + " ";
-		} else {
-			condition += " and (user_id != 1 and user_id != 39) ";
 		}
 		String hql = "";
 		if ("".equals(searchType) || "".equals(searchContent)) {
@@ -2021,7 +2018,7 @@ public class BookAction extends ActionSupport {
 
 		String hql = "";
 		if ("".equals(searchType) || "".equals(searchContent)) {
-			hql = "from BookEntity where book_del_flag=0 and book_old_flag = 1 "+condition+" order by book_id desc";
+			hql = "from BookEntity where book_del_flag=0 "+condition+" order by book_id desc";
 		} else {
 			// mysql 转义
 			searchContent = bookService.repMySqlChar(searchContent);
@@ -2029,12 +2026,12 @@ public class BookAction extends ActionSupport {
 			String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
 			if("book_publish_time".equals(columnName)) { //出版时间
 				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
-					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 and book_old_flag = 1 "+condition+" order by book_id desc ";
+					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc ";
 				} else { //只有起始日期
-					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 and book_old_flag = 1 "+condition+" order by book_id desc ";
+					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
 				}
 			} else {
-				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 and book_old_flag = 1 "+condition+" order by book_id desc ";
+				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
 			}
 		}
 		log.debug("0.1--"+hql);
@@ -2075,7 +2072,7 @@ public class BookAction extends ActionSupport {
 		}
 		String hql = "";
 		if ("".equals(searchType) || "".equals(searchContent)) {
-			hql = "from BookEntity where book_del_flag=0 and book_old_flag = 1 "+condition+" order by book_id desc";
+			hql = "from BookEntity where book_del_flag=0 "+condition+" order by book_id desc";
 		} else {
 			// mysql 转义
 			searchContent = bookService.repMySqlChar(searchContent);
@@ -2083,12 +2080,12 @@ public class BookAction extends ActionSupport {
 			String columnName = ColumnMap.getBookTableColumnNameByCn(searchType);
 			if("book_publish_time".equals(columnName)) { //出版时间
 				if(searchContent.contains(" 到 ")) { //有起始日期，也有结束日期
-					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 and book_old_flag = 1 "+condition+" order by book_id desc ";
+					hql = "from BookEntity where book_publish_time between '"+searchContent.split(" 到 ")[0]+"' and '"+searchContent.split(" 到 ")[1]+"' and book_del_flag = 0 "+condition+" order by book_id desc ";
 				} else { //只有起始日期
-					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 and book_old_flag = 1 "+condition+" order by book_id desc ";
+					hql = "from BookEntity where book_publish_time = '" + searchContent.trim() + "' and book_del_flag = 0 "+condition+" order by book_id desc ";
 				}
 			} else {
-				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 and book_old_flag = 1 "+condition+" order by book_id desc ";
+				hql = "from BookEntity where " + columnName + " like '%" + searchContent.trim() + "%' and book_del_flag = 0 "+condition+" order by book_id desc ";
 			}
 		}
 		log.debug("1.1---" + hql);

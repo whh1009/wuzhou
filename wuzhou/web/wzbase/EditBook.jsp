@@ -658,6 +658,7 @@
 			<input type="hidden" name="bookEntity.book_flag" value="<s:property value='bookEntity.book_flag'></s:property>" />
 			<input type="hidden" name="bookEntity.book_del_flag" value="<s:property value='bookEntity.book_del_flag'></s:property>" />
 			<input type="hidden" name="bookEntity.book_type" id="book_type" value="<s:property value='bookEntity.book_type'></s:property>" />
+			<input type="hidden" name="bookEntity.book_old_flag" id="book_old_flag" value="<s:property value='bookEntity.book_old_flag'></s:property>" />
 			<div class="row">
 				<div class="col-sm-4"></div>
 				<div class="col-sm-4"></div>
