@@ -131,8 +131,12 @@ function initSearchColumn() {
 		data:{page:page,searchType:searchType,searchContent:searchContent,userId:userId},
 		success: function(data) {
 			var json = eval('('+data+')');
-			if(json.bookList.length==0) {
+			if(json.bookList==null||json.bookList.length==0) {
 				$(".row table tbody").html("<span style='color:red;font-size:8pt;'>没有找到图书！</span>");
+				$("#currentPageSpan").html("1");
+				$("#pageCountSpan").html("1");
+				$("#pageRowCountSpan").html("1");
+				initPageNum();
 			} else {
 				var items = $(column).find("item");
 				var tableStr="";

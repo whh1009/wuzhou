@@ -58,7 +58,38 @@ dzs 电子书属性，用于切换显示
 			e.preventDefault();
 			$(this).tab("show");
 		});
+
+
+		$("input[name='bookEntity.book_editor']").blur(function() {
+			checkIsbn();
+		});
 	});
+
+	function checkIsbn() {
+		var bi = $("#book_isbn").val();
+		if(bi=="") {
+			alert("请输入ISBN");
+			$("#book_isbn").focus();
+			return;
+		}
+		$.ajax({
+				url:"checkIsbn.action",
+				data:{bookIsbn:bi},
+				async:false,
+				type:"post",
+				success:function(data){
+					if(data==0){
+						alert("未获取到ISBN");
+						$("#book_isbn").focus();
+						return;
+					} else if(data==-1) {
+						alert("ISBN有重复，请修改");
+						$("#book_isbn").focus();
+						return;
+					}
+				}
+		});
+	}
 	
 	function myLimit(arg) {
 		var userId = "<s:property value='#session.userEntity.user_id'></s:property>";
@@ -143,10 +174,38 @@ dzs 电子书属性，用于切换显示
 					alert("随机码没有生成，请重新登录再试");
 					return;
 				}
-				if (window.confirm("确定保存吗？")) {
-					document.form.action = "addBook.action";
-					document.form.submit();
+
+				var bi = $("#book_isbn").val();
+				if(bi=="") {
+					alert("请输入ISBN");
+					$("#book_isbn").focus();
+					return;
 				}
+				$.ajax({
+					url:"checkIsbn.action",
+					data:{bookIsbn:bi},
+					async:false,
+					type:"post",
+					success:function(data){
+						if(data==0){
+							alert("未获取到ISBN");
+							$("#book_isbn").focus();
+							return;
+						} else if(data==-1) {
+							alert("ISBN有重复，请修改");
+							$("#book_isbn").focus();
+							return;
+						} else {
+							if (window.confirm("确定保存吗？")) {
+								document.form.action = "addBook.action";
+								document.form.submit();
+								//window.location.href="../wzmybook/myBookList.action";
+							}
+						}
+					}
+				});
+
+//				}
 			}
 		//} else { //其他
 		//	$.ajax({
@@ -359,7 +418,7 @@ dzs 电子书属性，用于切换显示
 </head>
 <body>
 	<div class="container" id="container">
-		<form name="form" method="post"  target='submitframe'>
+		<form name="form" method="post">
 			<input type="hidden" name="bookEntity.user_id" value="<s:property value='#session.userEntity.user_id'></s:property>" />
 			<input type="hidden" name="bookEntity.book_flag" value=0 />
 			<input type="hidden" name="bookEntity.book_del_flag" value=0 />

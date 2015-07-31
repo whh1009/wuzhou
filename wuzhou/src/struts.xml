@@ -95,10 +95,10 @@
 
 		<!-- 填写新书发稿、设计、印制通知单页面 -->
 		<action name="addBook" class="com.wz.action.BookAction" method="addBook">
-			<!-- <result name="success" type="redirectAction">wzmybook/myBookList</result>
-			<result name="input" type="redirectAction">addBookPage</result>
+			<result name="success" type="redirectAction">wzmybook/myBookList</result>
+			<result name="input" type="chain">addBookPage</result>
 			<result name="noLogin" type="redirectAction">toLogin</result>
-			<result name="ftpError" type="redirect">FtpError.jsp</result> -->
+			<!-- <result name="ftpError" type="redirect">FtpError.jsp</result> -->
 		</action>
 
 		<!-- ##我的图书列表 -->
@@ -497,6 +497,9 @@
 
 
 		<action name="createExcelByBookListByCondition" class="com.wz.action.BookAction" method="createExcelByBookListByCondition"/>
+
+		<!-- 验证isbn是否唯一 -->
+		<action name="checkIsbn" class="com.wz.action.BookAction" method="checkIsbn"></action>
 	</package>
 
 </struts>

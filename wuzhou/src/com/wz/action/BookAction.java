@@ -282,19 +282,10 @@ public class BookAction extends ActionSupport {
 		out.close();
 	}
 
-	/**
-	 * 创建“本社”新书
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public void addBook() throws Exception {
+	public String addBook() throws Exception {
 		try {
 			LogEntity logEntity = new LogEntity();
 			HttpServletRequest request = ServletActionContext.getRequest();
-			HttpServletResponse response = ServletActionContext.getResponse();
-			response.setContentType("text/html;charset=UTF-8");
-			PrintWriter out = response.getWriter();
 			UserEntity userEntity = (UserEntity) request.getSession().getAttribute("userEntity");
 			if (userEntity == null) {
 				throw new Exception();
@@ -314,29 +305,77 @@ public class BookAction extends ActionSupport {
 					logService.addLog(logEntity);
 					// 修改本地创建目录
 					bookService.createFold(bookEntity);
-					/**
-					 * String ftpConfigXmlPath =
-					 * request.getRealPath("/")+"xml\\FTPConfig.xml";
-					 * //FTP服务器端创建目录 int success =
-					 * bookService.createFtpFold(bookEntity, ftpConfigXmlPath);
-					 * if(success!=1) { return "ftpError"; }
-					 */
 					//添加创建时间
 					BookExtendEntity bee = new BookExtendEntity();
 					bee.setBook_id(bookEntity.book_id);
 					bee.setBook_create_time(now);
 					bookExtendService.saveBookExtend(bee);
-					out.write("<script type=\"text/javascript\">alert('保存成功!');</script>");
+					return Action.SUCCESS;
 				} else {
-					out.write("<script type=\"text/javascript\">alert('保存失败!');</script>");
+					return Action.LOGIN;
 				}
 			}
-			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
+
+	/**
+	 * 创建“本社”新书
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+//	public void addBook() throws Exception {
+//		try {
+//	LogEntity logEntity = new LogEntity();
+//	HttpServletRequest request = ServletActionContext.getRequest();
+//	HttpServletResponse response = ServletActionContext.getResponse();
+//	response.setContentType("text/html;charset=UTF-8");
+//	PrintWriter out = response.getWriter();
+//	UserEntity userEntity = (UserEntity) request.getSession().getAttribute("userEntity");
+//	if (userEntity == null) {
+//		throw new Exception();
+//	} else {
+//		int flag = 0;
+//		//设为当前用户
+//		//bookEntity.setUser_id(userEntity.getUser_id());
+//		bookEntity.setBook_old_flag(0); //设置当前为新书
+//		flag = bookService.addBook(bookEntity);
+//		if (flag == 1) {
+//			Date now = new Date();
+//			//添加日志
+//			logEntity.setModify_time(now);
+//			logEntity.setModify_type("新书保存");
+//			logEntity.setBook_serial_number(bookEntity.getBook_serial_number());
+//			logEntity.setUser_name(userEntity.getNick_name());
+//			logService.addLog(logEntity);
+//			// 修改本地创建目录
+//			bookService.createFold(bookEntity);
+//			/**
+//			 * String ftpConfigXmlPath =
+//			 * request.getRealPath("/")+"xml\\FTPConfig.xml";
+//			 * //FTP服务器端创建目录 int success =
+//			 * bookService.createFtpFold(bookEntity, ftpConfigXmlPath);
+//			 * if(success!=1) { return "ftpError"; }
+//			 */
+//			//添加创建时间
+//			BookExtendEntity bee = new BookExtendEntity();
+//			bee.setBook_id(bookEntity.book_id);
+//			bee.setBook_create_time(now);
+//			bookExtendService.saveBookExtend(bee);
+//			out.write("<script type=\"text/javascript\">alert('保存成功!');</script>");
+//		} else {
+//			out.write("<script type=\"text/javascript\">alert('保存失败!');</script>");
+//		}
+//	}
+//	out.close();
+//} catch (Exception e) {
+//		e.printStackTrace();
+//		throw e;
+//		}
+//	}
 
 	/**
 	 * 创建“其他”新书
@@ -989,7 +1028,6 @@ public class BookAction extends ActionSupport {
 		log.debug("调试1：" + hql);
 		List<BookEntity> bookList = bookService.findPageFromBook(pageNum, ConfigInfo.PAGE_ROW_COUNT, hql);
 		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(), bookExtendService.findAllBookExtend());
-		log.debug("调试2："+list.size());
 		int pageCount = bookService.getPageCount(countHql, ConfigInfo.PAGE_ROW_COUNT);
 		PageEntity pageEntity = new PageEntity();
 		pageEntity.setCurrentPage(pageNum);
@@ -2177,4 +2215,28 @@ public class BookAction extends ActionSupport {
 		out.close();
 	}
 
+	/**
+	 * 用于验证isbn是否唯一
+	 * @throws Exception
+	 */
+	public void checkIsbn() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = null;
+		out = response.getWriter();
+		String bookIsbn = StringUtil.ObjectToString(request.getParameter("bookIsbn"));
+		if("".equals(bookIsbn)) { //未获取到isbn
+			out.write("0");
+		} else {
+			List list = bookService.getBookListByHql("from BookEntity where book_isbn = '"+bookIsbn+"' and book_del_flag = 0");
+			int count = (list==null||list.isEmpty())?0:list.size();
+			if(count==0) { //isbn唯一
+				out.write("1");
+			} else { //isbn不唯一
+				out.write("-1");
+			}
+		}
+		out.close();
+	}
 }
