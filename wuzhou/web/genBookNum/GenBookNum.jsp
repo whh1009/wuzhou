@@ -17,24 +17,21 @@
     <![endif]-->
     <script>
         $(function () {
-            $("#open-wizard").click(function(){
-
-            });
+//
 
         });
     </script>
 </head>
 <body style="padding:30px;">
-<button id="open-wizard" style="display:none">
+<button id="open-wizard">
     Open wizard
 </button>
 
-<div class="wizard" id="satellite-wizard" data-title="Create Server">
+<div class="wizard" id="satellite-wizard" data-title="书号创建">
 
-    <!-- Step 1 Name & FQDN -->
+    <!-- Step 1 -->
     <div class="wizard-card" data-cardname="name">
-        <h3>Name & FQDN</h3>
-
+        <h3>Step 1</h3>
         <div class="wizard-input-section">
             <div class="form-group">
                 <div class="col-sm-6">
@@ -75,7 +72,7 @@
     </div>
 
     <div class="wizard-card" data-cardname="group">
-        <h3>Server Group</h3>
+        <h3>Step 2</h3>
 
         <div class="wizard-input-section">
             <p>
