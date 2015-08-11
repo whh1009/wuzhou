@@ -31,41 +31,29 @@
 
     <!-- Step 1 -->
     <div class="wizard-card" data-cardname="name">
-        <h3>Step 1</h3>
+        <h3>出版社</h3>
         <div class="wizard-input-section">
-            <div class="form-group">
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="label" name="label" placeholder="Server label" data-validate="validateServerLabel">
-                </div>
+            <%--<div class="form-group">--%>
+                <%--<div class="col-sm-6">--%>
+                    <%--<input type="text" class="form-control" id="label" name="label" placeholder="Server label" data-validate="validateServerLabel">--%>
+                <%--</div>--%>
+            <%--</div>--%>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="optionsRadios" id="benshe" value="option2" checked> 五洲
+                </label>
+            </div>
+            <div class="radio disabled">
+                <label>
+                    <input type="radio" name="optionsRadios" id="qita" value="option3"> 其他社
+                </label>
             </div>
         </div>
 
         <div class="wizard-input-section">
-            <p>
-                Full Qualified Domain Name
-            </p>
-
             <div class="form-group">
                 <div class="col-sm-8">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="fqdn" name="fqdn" placeholder="FQDN" data-validate="validateFQDN" data-is-valid="0" data-lookup="0" />
-								<span class="input-group-btn" id="btn-fqdn">
-									<button class="btn btn-default" type="button" onclick='lookup();'>
-                                        Lookup
-                                    </button> </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="wizard-input-section">
-            <p>
-                Server ip.
-            </p>
-
-            <div class="form-group">
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" id="ip" name="ip" placeholder="IP" data-serialize="1" />
+                    <input type="text" class="form-control" id="press" name="press" placeholder="出版社" data-validate="validatePress" data-is-valid="0" data-lookup="0" />
                 </div>
             </div>
         </div>
@@ -300,17 +288,11 @@
         });
         $(".chzn-select").chosen();
 
-        $('#fqdn').on('input', function() {
+        $('#press').on('input', function() {
             if ($(this).val().length != 0) {
-                $('#ip').val('').attr('disabled', 'disabled');
-                $('#fqdn, #ip').parents('.form-group').removeClass('has-error has-success');
-            } else {
-                $('#ip').val('').removeAttr('disabled');
+                $('#fqdn').parents('.form-group').removeClass('has-error has-success');
             }
         });
-
-        var pattern = /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/;
-        x = 46;
 
         $('#ip').on('input', function() {
             if ($(this).val().length != 0) {
@@ -413,12 +395,11 @@
         return retValue;
     };
 
-    function validateFQDN(el) {
+    function validatePress(el) {
         var $this = $(el);
         var retValue = {};
 
         if ($this.is(':disabled')) {
-            // FQDN Disabled
             retValue.status = true;
         } else {
             if ($this.data('lookup') === 0) {
