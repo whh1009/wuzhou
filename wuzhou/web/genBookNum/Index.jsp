@@ -8,46 +8,17 @@
     <script src="js/bootstrap.min.js" type="text/javascript"></script>
     <script src="js/bootstrap-wizard.min.js" type="text/javascript"></script>
     <title></title>
-    <script>
-        $(function() {
-            var wizard = $("#some-wizard").wizard({
-                    keyboard: false,
-                    contentHeight: 700,
-                    contentWidth: 800,
-                    backdrop: 'static'
-            });
-            wizard.show();
-
-            $('#press').on('input', function() {
-                if ($(this).val().length > 0) {
-                    $('#press').parents('.form-group').removeClass('has-error has-success');
-                }
-            });
-            //初始化
-            //$("#press").val("五洲传播出版社");
-            $("#benshe").on('click', function() {
-                $("#press").val("五洲传播出版社");
-            });
-            $("#qita").on('click', function() {
-                $("#press").val("");
-            });
-
-
-        });
-
-
-        function validatePress(el) {
-            var name = el.val();
-            var retValue = {};
-            if (name == "") {
-                retValue.status = false;
-                retValue.msg = "请输入出版社名称";
-            } else {
-                retValue.status = true;
-            }
-            return retValue;
+    <style>
+        .wizard-card {
+            border-top: 1px solid #EEE;
+            display:none;
+            padding:35px;
+            padding-top:20px;
+            overflow-y:inherit;
         }
-    </script>
+
+    </style>
+
 </head>
 <body>
 <div class="wizard" id="some-wizard" data-title="书号创建">
@@ -56,12 +27,12 @@
         <div class="wizard-input-section">
             <div class="radio">
                 <label>
-                    <input type="radio" name="optionsRadios" id="benshe" value="bs"> 五洲
+                    <input type="radio" name="pressRadio" id="benshe" value="bs"> 五洲
                 </label>
             </div>
             <div class="radio disabled">
                 <label>
-                    <input type="radio" name="optionsRadios" id="qita" value="qt" checked> 其他社
+                    <input type="radio" name="pressRadio" id="qita" value="qt" checked> 其他社
                 </label>
             </div>
         </div>
@@ -89,41 +60,215 @@
     </div>
     <div class="wizard-card" data-cardname="card3">
         <h3>图书 & 期刊</h3>
-        Some content
-    </div>
-    <div class="wizard-card" data-cardname="card4">
-        <h3>语种</h3>
-        <div class="col-sm-4">
-            <div class="input-group">
-                <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle input-group-myaddon twz" data-toggle="dropdown">
-                        <span class="bitian zbitian wbitian">文种 <span class="caret"></span></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:closesydy();initWenzhong('yw','001');">001--英文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('xw','002');">002--西文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('zw','003');">003--中文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('fw','004');">004--法文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('dy','005');">005--德语</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('ay','006');">006--阿语</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('ey','007');">007--俄语</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('tw','008');">008--土文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('ry','009');">009--日语</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('hy','010');">010--韩语</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('ydly','011');">011--意大利语</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('ynw','012');">012--印尼文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('hskstw','013');">013--哈萨克斯坦文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('mw','014');">014--蒙文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('zw','015');">015--藏文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('bs','016');">016--波斯文</a></li>
-                        <li><a href="javascript:closesydy();initWenzhong('bs','017');">017--柯尔克孜文</a></li>
-                        <li><a href="javascript:opensydy();initWenzhong('sydy','500');">500--双语对应</a></li>
-                    </ul>
+        <div class="wizard-input-section">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="bookType" id="tushu" value="ts" checked> 图书
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="bookType" id="qikan" value="qk"> 期刊
+                </label>
+            </div>
+        </div>
+        <div class="wizard-input-section">
+            <div class="form-group">
+                <div class="col-md-4 ts">
+                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="请输入图书ISBN后5位" data-validate="validateISBN" maxlength="5" />
                 </div>
-                <input type="text" class="form-control" name="bookEntity.book_language" id="wenzhong" placeholder="请选择" readonly>
+                <div class="col-md-6 ts">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="">文种 <span class="caret"></span></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:initWenzhong('001--英文');">001--英文</a></li>
+                                <li><a href="javascript:initWenzhong('002--西文');">002--西文</a></li>
+                                <li><a href="javascript:initWenzhong('003--中文');">003--中文</a></li>
+                                <li><a href="javascript:initWenzhong('004--法文');">004--法文</a></li>
+                                <li><a href="javascript:initWenzhong('005--德语');">005--德语</a></li>
+                                <li><a href="javascript:initWenzhong('006--阿语');">006--阿语</a></li>
+                                <li><a href="javascript:initWenzhong('007--俄语');">007--俄语</a></li>
+                                <li><a href="javascript:initWenzhong('008--土文');">008--土文</a></li>
+                                <li><a href="javascript:initWenzhong('009--日语');">009--日语</a></li>
+                                <li><a href="javascript:initWenzhong('010--韩语');">010--韩语</a></li>
+                                <li><a href="javascript:initWenzhong('011--意大利语');">011--意大利语</a></li>
+                                <li><a href="javascript:initWenzhong('012--印尼文');">012--印尼文</a></li>
+                                <li><a href="javascript:initWenzhong('013--哈萨克斯坦文');">013--哈萨克斯坦文</a></li>
+                                <li><a href="javascript:initWenzhong('014--蒙文');">014--蒙文</a></li>
+                                <li><a href="javascript:initWenzhong('015--藏文');">015--藏文</a></li>
+                                <li><a href="javascript:initWenzhong('016--波斯文');">016--波斯文</a></li>
+                                <li><a href="javascript:initWenzhong('017--柯尔克孜文');">017--柯尔克孜文</a></li>
+                                <li><a href="javascript:initWenzhong('500--双语对应');">500--双语对应</a></li>
+                            </ul>
+                        </div>
+                        <input type="text" class="form-control" name="wenzhong" id="wenzhong" placeholder="请选择" data-validate="validateWenZhong" readonly>
+                    </div>
+                </div>
+                <div class="col-md-6 qk">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="">期刊号 <span class="caret"></span></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:initQiKanHao('01');">01</a></li>
+                                <li><a href="javascript:initQiKanHao('02');">02</a></li>
+                                <li><a href="javascript:initQiKanHao('03');">03</a></li>
+                                <li><a href="javascript:initQiKanHao('04');">04</a></li>
+                                <li><a href="javascript:initQiKanHao('05');">05</a></li>
+                                <li><a href="javascript:initQiKanHao('06');">06</a></li>
+                                <li><a href="javascript:initQiKanHao('07');">07</a></li>
+                                <li><a href="javascript:initQiKanHao('08');">08</a></li>
+                                <li><a href="javascript:initQiKanHao('09');">09</a></li>
+                                <li><a href="javascript:initQiKanHao('10');">10</a></li>
+                                <li><a href="javascript:initQiKanHao('11');">11</a></li>
+                                <li><a href="javascript:initQiKanHao('12');">12</a></li>
+                            </ul>
+                        </div>
+                        <input type="text" class="form-control" name="qikanhao" id="qikanhao" placeholder="请选择期刊号" data-validate="validateQiKanHao" readonly>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <div class="wizard-card ts" data-cardname="card4">
+        <h3></h3>
+        <div class="form-group">
+
+        </div>
+    </div>
 </div>
+<script>
+    $(function() {
+        var wizard = $("#some-wizard").wizard({
+            keyboard: false,
+            contentHeight: 600,
+            contentWidth: 700,
+            backdrop: 'static'
+        });
+        wizard.show();
+
+        $('#press, #isbn').on('input', function() {
+            if ($(this).val().length > 0) {
+                $('#press').parents('.form-group').removeClass('has-error has-success');
+            }
+        });
+
+
+        //初始化
+        //$("#press").val("五洲传播出版社");
+        $("#benshe").on('click', function() {
+            $("#press").val("五洲传播出版社");
+        });
+        $("#qita").on('click', function() {
+            $("#press").val("");
+        });
+
+        $(".qk").hide();//默认期刊不显示
+        $("#tushu").on('click', function() {
+            $(".qk").hide();
+            $(".ts").show();
+        });
+        $("#qikan").on('click', function() {
+            $(".ts").hide();
+            $(".qk").show();
+        });
+
+        wizard.on("submit", function(wizard) {
+            var card1 = wizard.cards["card1"];
+            var card2 = wizard.cards["card2"];
+            var card3 = wizard.cards["card3"];
+            var card4 = wizard.cards["card4"];
+//            $.ajax({
+//                url: "",
+//                type: "POST",
+//                data: wizard.serialize(),
+//                success: function() {
+//                    wizard.submitSuccess(); // displays the success card
+//                    wizard.hideButtons(); // hides the next and back buttons
+//                    wizard.updateProgressBar(0); // sets the progress meter to 0
+//                },
+//                error: function() {
+//                    wizard.submitError(); // display the error card
+//                    wizard.hideButtons(); // hides the next and back buttons
+//                }
+//            });
+        });
+    });
+
+
+    function validatePress(el) {
+        var name = el.val();
+        var retValue = {};
+        if (name == "") {
+            retValue.status = false;
+            retValue.msg = "请输入出版社名称";
+        } else {
+            retValue.status = true;
+        }
+        return retValue;
+    }
+
+    function validateISBN(el) {
+        var name = el.val();
+        var retValue = {};
+        if($(".ts").css("display")=="block") {
+            if (name == "" || isNaN(name) || name.length != 5) {
+                retValue.status = false;
+                retValue.msg = "请输入5位数字";
+            } else {
+                retValue.status = true;
+            }
+        } else {
+            retValue.status = true;
+        }
+        return retValue;
+    }
+
+    function validateQiKanHao(el) {
+        var name = el.val();
+        var retValue = {};
+        if($(".qk").css("display")=="block") {
+            if (name == "") {
+                retValue.status = false;
+                retValue.msg = "请选择期刊号";
+            } else {
+                retValue.status = true;
+            }
+        } else {
+            retValue.status = true;
+        }
+        return retValue;
+    }
+
+    function validateWenZhong(el) {
+        var name = el.val();
+        var retValue = {};
+        if($(".ts").css("display")=="block") {
+            if (name == "") {
+                retValue.status = false;
+                retValue.msg = "请选择文种";
+            } else {
+                retValue.status = true;
+            }
+        } else {
+            retValue.status = true;
+        }
+        return retValue;
+    }
+
+    function initWenzhong(wz) {
+        $("#wenzhong").val(wz);
+    }
+
+    function initQiKanHao(qkh) {
+        $("#qikanhao").val(qkh);
+    }
+
+
+</script>
 </body>
 </html>
