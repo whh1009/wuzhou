@@ -4,11 +4,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/bootstrap.min.css" rel="stylesheet"/>
     <link href="css/bootstrap-wizard.css" rel="stylesheet"/>
+    <link href="css/bootstrap-slider.css" rel="stylesheet"/>
+
     <script src="../js/jquery-1.10.2.min.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js" type="text/javascript"></script>
     <script src="js/bootstrap-wizard.min.js" type="text/javascript"></script>
+    <script src="js/bootstrap-slider.js" type="text/javascript"></script>
     <title></title>
     <style>
+        /*
         .wizard-card {
             border-top: 1px solid #EEE;
             display:none;
@@ -16,7 +20,7 @@
             padding-top:20px;
             overflow-y:inherit;
         }
-
+    */
     </style>
 
 </head>
@@ -61,6 +65,7 @@
     <div class="wizard-card" data-cardname="card3">
         <h3>图书 & 期刊</h3>
         <div class="wizard-input-section">
+            <p>&nbsp;</p>
             <div class="radio">
                 <label>
                     <input type="radio" name="bookType" id="tushu" value="ts" checked> 图书
@@ -72,18 +77,24 @@
                 </label>
             </div>
         </div>
-        <div class="wizard-input-section">
+        <div class="wizard-input-section ts">
+            <p>ISBN后五位</p>
             <div class="form-group">
-                <div class="col-md-4 ts">
+                <div class="col-md-8">
                     <input type="text" class="form-control" id="isbn" name="isbn" placeholder="请输入图书ISBN后5位" data-validate="validateISBN" maxlength="5" />
                 </div>
-                <div class="col-md-6 ts">
+            </div>
+        </div>
+        <div class="wizard-input-section ts">
+            <p>文种</p>
+            <div class="form-group">
+                <div class="col-md-8">
                     <div class="input-group">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <span class="">文种 <span class="caret"></span></span>
                             </button>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu"  style="overflow-y:visible;">
                                 <li><a href="javascript:initWenzhong('001--英文');">001--英文</a></li>
                                 <li><a href="javascript:initWenzhong('002--西文');">002--西文</a></li>
                                 <li><a href="javascript:initWenzhong('003--中文');">003--中文</a></li>
@@ -107,7 +118,12 @@
                         <input type="text" class="form-control" name="wenzhong" id="wenzhong" placeholder="请选择" data-validate="validateWenZhong" readonly>
                     </div>
                 </div>
-                <div class="col-md-6 qk">
+            </div>
+        </div>
+        <div class="wizard-input-section qk">
+            <p>期刊号</p>
+            <div class="form-group">
+                <div class="col-md-8">
                     <div class="input-group">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -130,6 +146,15 @@
                         </div>
                         <input type="text" class="form-control" name="qikanhao" id="qikanhao" placeholder="请选择期刊号" data-validate="validateQiKanHao" readonly>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="wizard-input-section">
+            <p>出版数量</p>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <input id="publishCount" data-slider-id='ex1Slider' type="text" data-slider-min="1" data-slider-max="99" data-slider-step="1" data-slider-value="1"/>
+                    <span id="ex1CurrentSliderValLabel"> &nbsp;出版数量： <span id="ex1SliderVal">1</span></span>
                 </div>
             </div>
         </div>
@@ -176,6 +201,13 @@
             $(".ts").hide();
             $(".qk").show();
         });
+
+        //初始化slider 出版数量
+        $("#publishCount").slider();
+        $("#publishCount").on("slide", function(slideEvt) {
+            $("#ex1SliderVal").text(slideEvt.value);
+        });
+
 
         wizard.on("submit", function(wizard) {
             var card1 = wizard.cards["card1"];
