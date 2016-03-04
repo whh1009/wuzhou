@@ -26,33 +26,24 @@
 </head>
 <body>
 <div class="wizard" id="some-wizard" data-title="书号创建">
+
     <div class="wizard-card" data-cardname="card1">
-        <h3>出版社</h3>
-        <div class="wizard-input-section">
-            <div class="radio">
-                <label>
-                    <input type="radio" name="pressRadio" id="benshe" value="bs"> 五洲
-                </label>
-            </div>
-            <div class="radio disabled">
-                <label>
-                    <input type="radio" name="pressRadio" id="qita" value="qt" checked> 其他社
-                </label>
-            </div>
-        </div>
+        <h3>书名</h3>
         <div class="wizard-input-section">
             <div class="form-group">
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="press" name="press" placeholder="出版社名称" data-validate="validatePress" data-is-valid="0" data-lookup="0" />
+                    <input type="text" class="form-control" id="bookName" name="bookName" placeholder="书名" data-validate="validateBookName" data-is-valid="0" data-lookup="0" />
                 </div>
             </div>
         </div>
     </div>
+
     <div class="wizard-card" data-cardname="card2">
         <h3>出版时间</h3>
         <div class="wizard-input-section">
             <select id="publishTime" class="form-control">
-                <option value="015" selected>2015</option>
+                <option value="016" selected>2016</option>
+                <option value="015">2015</option>
                 <option value="014">2014</option>
                 <option value="013">2013</option>
                 <option value="012">2012</option>
@@ -77,11 +68,11 @@
                 </label>
             </div>
         </div>
-        <div class="wizard-input-section ts">
-            <p>ISBN后五位</p>
+        <div class="wizard-input-section">
+            <p>期刊号/ISBN后五位</p>
             <div class="form-group">
                 <div class="col-md-8">
-                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="请输入图书ISBN后5位" data-validate="validateISBN" maxlength="5" />
+                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="请输入期刊号或ISBN后5位" data-validate="validateISBN" maxlength="5" />
                 </div>
             </div>
         </div>
@@ -119,7 +110,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div><!--
         <div class="wizard-input-section qk">
             <p>期刊号</p>
             <div class="form-group">
@@ -146,9 +137,10 @@
                         </div>
                         <input type="text" class="form-control" name="qikanhao" id="qikanhao" placeholder="请选择期刊号" data-validate="validateQiKanHao" readonly>
                     </div>
+
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="wizard-input-section">
             <p>出版数量</p>
             <div class="form-group">
@@ -159,12 +151,49 @@
             </div>
         </div>
     </div>
-    <div class="wizard-card ts" data-cardname="card4">
-        <h3></h3>
-        <div class="form-group">
-
+    <div class="wizard-card" data-cardname="card4">
+        <h3>出版形式</h3>
+        <div class="wizard-input-section">
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <label class="radio">
+                        <input type="radio" name="pubType" value="1" checked> 纯E-only
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="pubType" value="2"> 半E-only合并
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="pubType" value="3"> 半E-only拆分
+                    </label>
+                    <hr />
+                    <label class="radio">
+                        <input type="radio" name="pubType" value="4"> 期刊
+                    </label>
+                    <hr />
+                    <label class="radio">
+                        <input type="radio" name="pubType" value="5"> 英文公版书
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="pubType" value="6"> 阿文公版书
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="pubType" value="7"> 西文公版书
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="wizard-card" data-cardname="card5">
+        <h3>书号</h3>
+        <div class="wizard-input-section">
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <h2 id="bookNum"></h2>
+                </div>
+                </div>
+        </div>
+    </div>
+
 </div>
 <script>
     $(function() {
@@ -176,7 +205,7 @@
         });
         wizard.show();
 
-        $('#press, #isbn').on('input', function() {
+        $('#bookName, #isbn').on('input', function() {
             if ($(this).val().length > 0) {
                 $('#press').parents('.form-group').removeClass('has-error has-success');
             }
@@ -214,6 +243,25 @@
             var card2 = wizard.cards["card2"];
             var card3 = wizard.cards["card3"];
             var card4 = wizard.cards["card4"];
+            //var card5 = wizard.cards["card5"];
+            var bookNum="";
+            var publishTime = $("#publishTime").val();
+            bookNum+=publishTime+"-"+$("#isbn").val()+"-";
+            var bookType = $("input[name='bookType']:checked").val();
+            var pubCount = $("#ex1SliderVal").html(); //出版数量
+            var pubType = $("input[name='pubType']:checked").val(); //出版形式
+            bookNum += pubType+"-";
+            if(parseInt(pubCount)<10) {
+                pubCount = "0"+pubCount;
+            }
+            if(bookType=="ts") { //图书
+                var wenzhong = $("#wenzhong").val();
+                bookNum+=wenzhong.substr(0,3)+"-";
+            } else { //期刊
+                bookNum+="000"+"-";
+            }
+            bookNum+=pubCount;
+            $("#bookNum").html(bookNum+"<hr />"+bookNum.replace(/\-/g, ""));
 //            $.ajax({
 //                url: "",
 //                type: "POST",
@@ -232,12 +280,12 @@
     });
 
 
-    function validatePress(el) {
+    function validateBookName(el) {
         var name = el.val();
         var retValue = {};
         if (name == "") {
             retValue.status = false;
-            retValue.msg = "请输入出版社名称";
+            retValue.msg = "请输入书名";
         } else {
             retValue.status = true;
         }
@@ -247,16 +295,16 @@
     function validateISBN(el) {
         var name = el.val();
         var retValue = {};
-        if($(".ts").css("display")=="block") {
+        //if($(".ts").css("display")=="block") {
             if (name == "" || isNaN(name) || name.length != 5) {
                 retValue.status = false;
                 retValue.msg = "请输入5位数字";
             } else {
                 retValue.status = true;
             }
-        } else {
-            retValue.status = true;
-        }
+        //} else {
+        //    retValue.status = true;
+        //}
         return retValue;
     }
 

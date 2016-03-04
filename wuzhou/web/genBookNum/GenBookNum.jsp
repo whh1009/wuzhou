@@ -23,9 +23,7 @@
     </script>
 </head>
 <body style="padding:30px;">
-<button id="open-wizard">
-    Open wizard
-</button>
+<button id="open-wizard" class="btn btn-info">创建书号</button>
 
 <div class="wizard" id="satellite-wizard" data-title="书号创建">
 

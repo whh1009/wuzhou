@@ -2075,7 +2075,6 @@ public class BookAction extends ActionSupport {
 		log.debug("0.1--"+hql);
 		List<BookEntity> bookList = bookService.getBookListByHql(hql);
 		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(),bookExtendService.findAllBookExtend(), true);
-		log.debug("查询--调试1："+list.size());
 		JSONArray json = JSONArray.fromObject(list);
 		out.print(json.toString());
 		out.flush();
@@ -2129,7 +2128,7 @@ public class BookAction extends ActionSupport {
 		log.debug("1.1---" + hql);
 		List<BookEntity> bookList = bookService.getBookListByHql(hql);
 		List<BookEntityFileSize> list = bookService.limitFileSizeByBookList(bookList, userService.userList(),bookExtendService.findAllBookExtend(), true);
-		log.debug("导出--调试2："+list.size());
+
 
 		Object obj = request.getSession().getAttribute("userEntity");
 		String exportColumn = ConfigInfo.DEFAULT_EXPORT_COLUMN;
